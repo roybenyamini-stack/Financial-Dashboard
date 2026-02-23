@@ -1125,7 +1125,7 @@ async function sendChat() {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         system: 'אתה עוזר פיננסי שמנתח תיק השקעות. ענה בעברית בתמציתיות וברורות. הנתונים באלפי ש"ח.\n\n' + ctx,
         messages: chatHistory
@@ -1143,12 +1143,25 @@ async function sendChat() {
 }
 
 function buildContext() {
-  var ctx = 'תיק השקעות באלפי ש"ח. חודשים: ' + LABELS.join(',') + '\n';
-  Object.entries(FUNDS).forEach(function(e) {
-    var f = e[1];
-    ctx += f.name + ':' + f.data.map(function(v){ return v||0; }).join(',') + '\n';
+  var latest = LABELS.length - 1;
+  var first = 0;
+  var ctx = 'תיק השקעות (אלפי ש"ח). ';
+  ctx += 'תקופה: ' + LABELS[first] + ' עד ' + LABELS[latest] + '. ';
+  ctx += 'סהכ נוכחי: ' + Math.round(ALL_TOTALS[latest]) + '. ';
+  ctx += 'קטגוריות: ';
+  var cats = {};
+  Object.values(FUNDS).forEach(function(f) {
+    if(!cats[f.cat]) cats[f.cat] = 0;
+    cats[f.cat] += f.data[latest] || 0;
   });
-  ctx += 'סהכ:' + ALL_TOTALS.map(function(v){ return Math.round(v); }).join(',');
+  Object.entries(cats).forEach(function(e) {
+    ctx += CAT_NAMES[e[0]] + ':' + Math.round(e[1]) + ' ';
+  });
+  ctx += '. קרנות עיקריות: ';
+  Object.values(FUNDS).forEach(function(f) {
+    var v = f.data[latest];
+    if(v && v > 100) ctx += f.name + ':' + v + ' ';
+  });
   return ctx;
 }
 function answerQ(q) {
