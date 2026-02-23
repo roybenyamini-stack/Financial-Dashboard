@@ -90,6 +90,8 @@ body {
   padding: 24px 28px;
   margin-bottom: 20px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  width: 100%;
+  box-sizing: border-box;
 }
 .chart-header {
   display: flex;
@@ -116,7 +118,7 @@ body {
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--active-color, #1a1a2e);
 }
-.chart-container { height: 240px; margin-top: 16px; }
+.chart-container { height: 240px; margin-top: 16px; width: 100%; position: relative; }
 @media (max-width: 900px) {
   .chart-container { height: 200px; }
   .chart-section { padding: 16px; }
@@ -1176,53 +1178,198 @@ function buildContext() {
   return ctx;
 }
 
-function buildDataContext() {
-  let ctx = 'נתוני תיק השקעות (אלפי ש"ח). ';
-  ctx += 'חודשים: ' + LABELS.join(', ') + '.\n\n';
-  Object.entries(FUNDS).forEach(([k, f]) => {
-    const vals = f.data.map((v,i) => LABELS[i]+':'+v).join(', ');
-    ctx += f.name + ' [' + CAT_NAMES[f.cat] + ']: ' + vals + '\n';
-  });
-  ctx += '\nסה"כ תיק: ' + LABELS.map((l,i) => l+':'+Math.round(ALL_TOTALS[i])).join(', ');
-  ctx += '\n\nבסיס מדידה (ינו\' 25): ';
-  Object.entries(BASE).forEach(([cat,v]) => { if(v>0) ctx += CAT_NAMES[cat]+':'+v+' '; });
-  return ctx;
-}
-
-const chatHistory = [];
-
-async function sendChat() {
+function sendChat() {
   const input = document.getElementById('chat-input');
   const q = input.value.trim();
   if(!q) return;
   input.value = '';
-  document.getElementById('chat-send').disabled = true;
   addMsg('user', q);
-  chatHistory.push({role:'user', content: q});
-  const thinking = addMsg('thinking', 'חושב...');
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: 'אתה עוזר פיננסי שמנתח תיק השקעות. ענה בעברית בתמציתיות וברורות. הנתונים באלפי ש"ח.\n\n' + buildDataContext(),
-        messages: chatHistory
-      })
-    });
-    const data = await response.json();
-    thinking.remove();
-    const answer = data.content?.[0]?.text || 'לא הצלחתי לקבל תשובה.';
-    chatHistory.push({role:'assistant', content: answer});
-    addMsg('assistant', answer);
-  } catch(e) {
-    thinking.remove();
-    chatHistory.push({role:'assistant', content: 'שגיאת חיבור.'});
-    addMsg('assistant', 'שגיאת חיבור לשרת. ודא שהדשבורד פתוח ב-claude.ai.');
-  }
-  document.getElementById('chat-send').disabled = false;
+  setTimeout(() => addMsg('assistant', answerQuestion(q)), 200);
   document.getElementById('chat-input').focus();
+}
+
+function answerQuestion(q) {
+  const orig = q;
+  q = q.toLowerCase();
+
+  const monthMap = {
+    'ינו':0,'ינואר':0,'פבר':1,'פברואר':1,'מרץ':2,'מרס':2,
+    'אפר':3,'אפריל':3,'מאי':4,'יוני':5,'יולי':6,
+    'אוג':7,'אוגוסט':7,'ספט':8,'ספטמבר':8,
+    'אוק':9,'אוקטובר':9,'נוב':10,'נובמבר':10,'דצמ':11,'דצמבר':11,
+  };
+
+  function findMonthIndices(str) {
+    const found = [];
+    const tokens = str.split(/[\s,?\u2013\-]+/);
+    for(let i=0;i<tokens.length;i++) {
+      for(const [key,mIdx] of Object.entries(monthMap)) {
+        if(tokens[i].includes(key)) {
+          const ctx = tokens.slice(i,i+3).join(' ');
+          const yr = ctx.includes('2026')||ctx.includes("'26")||ctx.includes(' 26') ? 26 : 25;
+          found.push(Math.min(yr===26?mIdx+12:mIdx, LABELS.length-1));
+          break;
+        }
+      }
+    }
+    return found;
+  }
+
+  const monthIndices = findMonthIndices(q);
+  const monthIdx = monthIndices[0] ?? -1;
+
+  function findFund(str) {
+    const checks = [
+      ['הראל מגוון','מגוון'],['פוליסת חיסכון','מגוון'],['928884078','מגוון'],
+      ['הראל מניות','מניות'],['106863031','מניות'],
+      ['הראל כללי','כללי'],['109062745','כללי'],
+      ['ארביטראז','ארביטראז'],['ואליו','ארביטראז'],
+      ['מיטב קרנות','169301968'],['169301968','169301968'],
+      ['טרייד','טרייד'],['כספית','כספית'],
+      ['מור גמל','מור גמל'],['מור קה','מור קה'],
+      ['פניקס','פניקס'],['שקלי','שקלי'],['דולרי','דולרי'],
+    ];
+    for(const [qk,nk] of checks) {
+      if(str.includes(qk)) {
+        for(const [k,f] of Object.entries(FUNDS))
+          if(f.name.toLowerCase().includes(nk)) return [k,f];
+      }
+    }
+    return null;
+  }
+
+  function catTot(cat,idx) {
+    return Object.values(FUNDS).filter(f=>f.cat===cat).reduce((s,f)=>s+(f.data[idx]||0),0);
+  }
+
+  function fmtChange(v1,v2,l1,l2) {
+    const d=v2-v1, p=v1>0?(d/v1*100).toFixed(1):'—';
+    return l1+': '+Math.round(v1).toLocaleString()+
+           '\n'+l2+': '+Math.round(v2).toLocaleString()+
+           '\nשינוי: '+(d>=0?'+':'')+Math.round(d).toLocaleString()+
+           ' ('+(d>=0?'+':'')+p+'%)';
+  }
+
+  // Determine year range
+  let yearFrom=-1, yearTo=-1;
+  if(q.includes('2025')&&!q.includes('2026')){yearFrom=0;yearTo=11;}
+  else if(q.includes('2026')&&!q.includes('2025')){yearFrom=12;yearTo=LABELS.length-1;}
+  else if(q.includes('2025')&&q.includes('2026')){yearFrom=0;yearTo=LABELS.length-1;}
+
+  const isChange=['עלה','ירד','שינוי','עלייה','ירידה','גדל','בכמה','צמח','השתנה','הפרש','תשואה','ביצועים','השווה','השוואה'].some(w=>q.includes(w));
+
+  const fundResult = findFund(q);
+
+  // --- Best performer ---
+  if(q.includes('הכי') && (q.includes('רווחי')||q.includes('מוצלח')||q.includes('גבוה')||q.includes('טוב'))) {
+    const fi = yearFrom>=0?yearFrom:0;
+    const ti = yearTo>=0?yearTo:LABELS.length-1;
+    let best=null, bestPct=-Infinity;
+    Object.entries(FUNDS).forEach(([k,f])=>{
+      const v1=f.data[fi]||0, v2=f.data[ti]||0;
+      if(v1>0){const p=(v2-v1)/v1*100; if(p>bestPct){bestPct=p;best=f;}}
+    });
+    if(best) return 'הקרן עם התשואה הגבוהה ביותר: '+best.name+
+                   '\nתשואה: +'+(bestPct.toFixed(1))+'%'+
+                   '\n('+LABELS[fi]+' → '+LABELS[ti]+')';
+  }
+
+  // --- Worst performer ---
+  if(q.includes('הכי') && (q.includes('גרוע')||q.includes('נמוך')||q.includes('ירד')||q.includes('חלש'))) {
+    const fi=yearFrom>=0?yearFrom:0, ti=yearTo>=0?yearTo:LABELS.length-1;
+    let worst=null, worstPct=Infinity;
+    Object.entries(FUNDS).forEach(([k,f])=>{
+      const v1=f.data[fi]||0, v2=f.data[ti]||0;
+      if(v1>0){const p=(v2-v1)/v1*100; if(p<worstPct){worstPct=p;worst=f;}}
+    });
+    if(worst) return 'הקרן עם הביצועים הנמוכים ביותר: '+worst.name+
+                    '\nתשואה: '+(worstPct>=0?'+':'')+worstPct.toFixed(1)+'%';
+  }
+
+  // --- Compare two categories ---
+  if(q.includes('השווה')||q.includes('השוואה')||q.includes('לעומת')||q.includes('מול')) {
+    const catKwMap = {
+      'hishtalmut':['השתלמות'],'gemel_invest':['גמל להשקעה'],
+      'gemel':['קופות גמל','גמל'],'harel':['הראל'],'meitav':['מיטב'],
+    };
+    const found=[];
+    for(const [cat,kws] of Object.entries(catKwMap))
+      if(kws.some(kw=>q.includes(kw))) found.push(cat);
+    if(found.length>=2) {
+      const fi=yearFrom>=0?yearFrom:0, ti=yearTo>=0?yearTo:LABELS.length-1;
+      return found.map(cat=>{
+        const v1=catTot(cat,fi),v2=catTot(cat,ti),d=v2-v1;
+        const p=v1>0?(d/v1*100).toFixed(1):'—';
+        return CAT_NAMES[cat]+': '+(d>=0?'+':'')+Math.round(d).toLocaleString()+' ('+(d>=0?'+':'')+p+'%)';
+      }).join('\n');
+    }
+  }
+
+  // --- Specific fund ---
+  if(fundResult) {
+    const [k,f]=fundResult;
+    if(monthIndices.length>=2) {
+      return f.name+':\n'+fmtChange(f.data[monthIndices[0]]||0,f.data[monthIndices[1]]||0,LABELS[monthIndices[0]],LABELS[monthIndices[1]]);
+    }
+    if(yearFrom>=0||isChange) {
+      const fi=yearFrom>=0?yearFrom:0, ti=yearTo>=0?yearTo:LABELS.length-1;
+      return f.name+':\n'+fmtChange(f.data[fi]||0,f.data[ti]||0,LABELS[fi],LABELS[ti]);
+    }
+    if(monthIdx>=0) {
+      const v=f.data[monthIdx];
+      return f.name+' ב'+LABELS[monthIdx]+': '+(v!=null?v.toLocaleString()+' אלפי ש"ח':'אין נתון');
+    }
+    const latest=f.data[LABELS.length-1]||0, first=f.data[0]||0;
+    return f.name+':\n'+fmtChange(first,latest,LABELS[0],LABELS[LABELS.length-1]);
+  }
+
+  // --- Category ---
+  const catKw={
+    'hishtalmut':['השתלמות'],'gemel':['קופות גמל','קופת גמל','גמל'],
+    'gemel_invest':['גמל להשקעה'],'harel':['הראל'],'meitav':['מיטב'],
+    'mezuman':['מזומן'],'arbitrage':['ארביטראז','ואליו'],'dira':['דירה'],'chov':['חוב'],
+  };
+  for(const [cat,kws] of Object.entries(catKw)) {
+    if(kws.some(kw=>q.includes(kw))) {
+      if(q.includes('גבוה')||q.includes('שיא')) {
+        let max=0,maxL='';
+        LABELS.forEach((l,i)=>{const v=catTot(cat,i);if(v>max){max=v;maxL=l;}});
+        return CAT_NAMES[cat]+' – ערך גבוה ביותר: '+Math.round(max).toLocaleString()+' אלפי ש"ח ב'+maxL;
+      }
+      if(isChange||yearFrom>=0) {
+        const fi=yearFrom>=0?yearFrom:(monthIndices[0]??0);
+        const ti=yearTo>=0?yearTo:(monthIndices[1]??LABELS.length-1);
+        return CAT_NAMES[cat]+':\n'+fmtChange(catTot(cat,fi),catTot(cat,ti),LABELS[fi],LABELS[ti]);
+      }
+      if(monthIdx>=0) return CAT_NAMES[cat]+' ב'+LABELS[monthIdx]+': '+Math.round(catTot(cat,monthIdx)).toLocaleString()+' אלפי ש"ח';
+      const l=catTot(cat,LABELS.length-1),e=catTot(cat,0);
+      return CAT_NAMES[cat]+':\n'+fmtChange(e,l,LABELS[0],LABELS[LABELS.length-1]);
+    }
+  }
+
+  // --- Total ---
+  if(q.includes('סך')||q.includes('סה"כ')||q.includes('תיק')||q.includes('כולל')||q.includes('נכסים')) {
+    if(monthIdx>=0) return 'סה"כ תיק ב'+LABELS[monthIdx]+': '+Math.round(ALL_TOTALS[monthIdx]).toLocaleString()+' אלפי ש"ח';
+    if(isChange||yearFrom>=0) {
+      const fi=yearFrom>=0?yearFrom:0, ti=yearTo>=0?yearTo:LABELS.length-1;
+      return 'סה"כ תיק:\n'+fmtChange(ALL_TOTALS[fi],ALL_TOTALS[ti],LABELS[fi],LABELS[ti]);
+    }
+    return 'סה"כ תיק כרגע: '+Math.round(ALL_TOTALS[ALL_TOTALS.length-1]).toLocaleString()+' אלפי ש"ח';
+  }
+
+  // --- All returns ---
+  if(q.includes('תשואה')||q.includes('ביצועים')) {
+    const fi=yearFrom>=0?yearFrom:0, ti=yearTo>=0?yearTo:LABELS.length-1;
+    const lines=[];
+    ['hishtalmut','gemel','gemel_invest','harel','meitav'].forEach(cat=>{
+      const v1=catTot(cat,fi),v2=catTot(cat,ti),d=v2-v1;
+      const p=v1>0?(d/v1*100).toFixed(1):'—';
+      lines.push(CAT_NAMES[cat]+': '+(d>=0?'+':'')+p+'%');
+    });
+    return 'תשואה '+LABELS[fi]+' – '+LABELS[ti]+':\n'+lines.join('\n');
+  }
+
+  return 'אני יכול לענות על:\n• כמה היה הראל מגוון בספטמבר 25?\n• בכמה עלתה הראל מגוון בשנת 2025?\n• איזו קרן הייתה הכי רווחית ב-2025?\n• השווה הראל לעומת מיטב בשנת 2025\n• מה התשואה של כל הקטגוריות?\n• סך הכל התיק בדצמבר 25?';
 }
 </script>
 </body>
