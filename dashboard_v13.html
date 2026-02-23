@@ -1143,14 +1143,12 @@ async function sendChat() {
 }
 
 function buildContext() {
-  var ctx = 'נתוני תיק השקעות באלפי ש"ח:\n';
-  ctx += 'חודשים: ' + LABELS.join(', ') + '\n\n';
-  Object.entries(FUNDS).forEach(function(entry) {
-    var k = entry[0], f = entry[1];
-    ctx += f.name + ' [' + CAT_NAMES[f.cat] + ']: ';
-    ctx += LABELS.map(function(l,i){ return l+'='+f.data[i]; }).join(', ') + '\n';
+  var ctx = 'תיק השקעות באלפי ש"ח. חודשים: ' + LABELS.join(',') + '\n';
+  Object.entries(FUNDS).forEach(function(e) {
+    var f = e[1];
+    ctx += f.name + ':' + f.data.map(function(v){ return v||0; }).join(',') + '\n';
   });
-  ctx += '\nסה"כ תיק: ' + LABELS.map(function(l,i){ return l+'='+Math.round(ALL_TOTALS[i]); }).join(', ');
+  ctx += 'סהכ:' + ALL_TOTALS.map(function(v){ return Math.round(v); }).join(',');
   return ctx;
 }
 function answerQ(q) {
