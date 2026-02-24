@@ -1106,6 +1106,7 @@ function addMsg(txt, isUser) {
   d.textContent = txt;
   cm.appendChild(d);
   cm.scrollTop = cm.scrollHeight;
+  return d;
 }
 var chatHistory = [];
 
@@ -1121,24 +1122,28 @@ async function sendChat() {
 
   try {
     var ctx = buildContext();
+    var controller = new AbortController();
+    var timeout = setTimeout(function(){ controller.abort(); }, 25000);
     var res = await fetch('https://holy-poetry-claude-proxy.roy-benyamini.workers.dev', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
+      signal: controller.signal,
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1000,
-        system: 'אתה עוזר פיננסי שמנתח תיק השקעות. ענה בעברית בתמציתיות וברורות. הנתונים באלפי ש"ח.\n\n' + ctx,
+        max_tokens: 300,
+        system: 'אתה עוזר פיננסי. ענה בעברית בקצרה. ' + ctx,
         messages: chatHistory
       })
     });
+    clearTimeout(timeout);
     var data = await res.json();
     thinking.remove();
-    var answer = (data.content && data.content[0]) ? data.content[0].text : 'לא התקבלה תשובה.';
+    var answer = (data.content && data.content[0]) ? data.content[0].text : JSON.stringify(data);
     chatHistory.push({role:'assistant', content: answer});
     addMsg(answer, false);
   } catch(e) {
     thinking.remove();
-    addMsg('שגיאת חיבור. נסה שוב.', false);
+    addMsg('שגיאה: ' + e.message, false);
   }
 }
 
