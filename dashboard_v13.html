@@ -1148,25 +1148,14 @@ async function sendChat() {
 }
 
 function buildContext() {
-  var latest = LABELS.length - 1;
-  var first = 0;
-  var ctx = 'תיק השקעות (אלפי ש"ח). ';
-  ctx += 'תקופה: ' + LABELS[first] + ' עד ' + LABELS[latest] + '. ';
-  ctx += 'סהכ נוכחי: ' + Math.round(ALL_TOTALS[latest]) + '. ';
-  ctx += 'קטגוריות: ';
-  var cats = {};
+  var ctx = 'תיק השקעות באלפי ש"ח.\n';
+  ctx += 'חודשים: ' + LABELS.join(',') + '\n';
+  ctx += 'נתונים לכל קרן (לפי סדר החודשים):\n';
   Object.values(FUNDS).forEach(function(f) {
-    if(!cats[f.cat]) cats[f.cat] = 0;
-    cats[f.cat] += f.data[latest] || 0;
+    ctx += f.name + ' [' + CAT_NAMES[f.cat] + ']: ' + 
+           f.data.map(function(v){return v!=null?Math.round(v):'';}).join(',') + '\n';
   });
-  Object.entries(cats).forEach(function(e) {
-    ctx += CAT_NAMES[e[0]] + ':' + Math.round(e[1]) + ' ';
-  });
-  ctx += '. קרנות עיקריות: ';
-  Object.values(FUNDS).forEach(function(f) {
-    var v = f.data[latest];
-    if(v && v > 100) ctx += f.name + ':' + v + ' ';
-  });
+  ctx += 'סהכ תיק: ' + ALL_TOTALS.map(function(v){return Math.round(v);}).join(',') + '\n';
   return ctx;
 }
 function answerQ(q) {
