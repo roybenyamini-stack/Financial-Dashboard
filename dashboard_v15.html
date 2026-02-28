@@ -232,6 +232,7 @@ tr:last-child td { border-bottom: none; }
       <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
     </label>
     <span id="excel-status" style="color:rgba(255,255,255,0.7); font-size:11px; margin-right:10px;"></span>
+    <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
   </div>
 </div>
 
@@ -307,6 +308,19 @@ tr:last-child td { border-bottom: none; }
   </div>
   <div class="chart-container" dir="ltr">
     <canvas id="mainChart"></canvas>
+  </div>
+</div>
+
+<!-- NOTES MODAL -->
+<div id="notes-modal" onclick="if(event.target===this)closeNotes();" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:white; border-radius:16px; width:90%; max-width:680px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column; font-family:Heebo,sans-serif;" dir="rtl">
+    <div style="background:#1a1a2e; color:white; padding:18px 22px; display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:16px; font-weight:700;">📝 הערות תיק</span>
+      <button onclick="closeNotes()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:18px; overflow-y:auto; flex:1;">
+      <div id="notes-list"></div>
+    </div>
   </div>
 </div>
 
@@ -1139,6 +1153,94 @@ function updateTableCells() {
   });
 }
 
+// ===== NOTES SYSTEM =====
+const NOTES = [
+  {
+    date: '17/02/2026',
+    month: '2026-02',
+    type: 'מכירת נכס',
+    title: 'מכירת הראל מניות 106863031',
+    fields: [
+      { label: 'סכום כולל בפוליסה', value: '1,685 אלפי ש״ח' },
+      { label: 'מס רווח הון', value: '21 אלפי ש״ח' },
+      { label: 'תמורה נטו לחשבון', value: '1,664 אלפי ש״ח' },
+    ],
+    link: 'https://www.icloud.com/iclouddrive/0b7Ys2tFPQdLEa5E2PaIYoalQ#IMG%5F5589',
+    linkLabel: 'מכתב הראל 17.02.2026'
+  },
+];
+
+const NOTE_TYPE_COLOR = {
+  'מכירת נכס': '#dc2626',
+  'קניית נכס': '#16a34a',
+  'הכרה במזומן': '#0891b2',
+  'העברה בין קרנות': '#7c3aed',
+  'אחר': '#64748b',
+};
+
+function openNotes() {
+  renderNotesList();
+  const modal = document.getElementById('notes-modal');
+  modal.style.display = 'flex';
+}
+
+function closeNotes() {
+  document.getElementById('notes-modal').style.display = 'none';
+}
+
+function renderNotesList() {
+  const list = document.getElementById('notes-list');
+  if (NOTES.length === 0) {
+    list.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">אין הערות עדיין</p>';
+    return;
+  }
+  list.innerHTML = NOTES.map((n, i) => {
+    const color = NOTE_TYPE_COLOR[n.type] || '#64748b';
+    const fieldsHtml = n.fields.map(f =>
+      '<div style="display:flex; gap:8px; margin-bottom:4px;">' +
+      '<span style="color:#888; min-width:160px;">' + f.label + ':</span>' +
+      '<span style="font-weight:600;">' + f.value + '</span></div>'
+    ).join('');
+    const linkHtml = n.link ?
+      '<a href="' + n.link + '" target="_blank" style="color:#0891b2; font-size:12px; text-decoration:none;">📎 ' + (n.linkLabel || 'מסמך רפרנס') + '</a>' : '';
+    return '<div style="border:1px solid #e5e7eb; border-radius:12px; padding:16px; margin-bottom:12px; border-right:4px solid ' + color + ';">' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">' +
+      '<div>' +
+      '<span style="background:' + color + '20; color:' + color + '; font-size:11px; padding:3px 8px; border-radius:20px; font-weight:600;">' + n.type + '</span>' +
+      '<span style="font-weight:700; font-size:14px; margin-right:10px;">' + n.title + '</span>' +
+      '</div>' +
+      '<span style="color:#888; font-size:12px;">' + n.date + '</span>' +
+      '</div>' +
+      fieldsHtml +
+      (linkHtml ? '<div style="margin-top:8px;">' + linkHtml + '</div>' : '') +
+      '</div>';
+  }).join('');
+}
+
+// Mark chart months that have notes
+function markNoteMonths() {
+  // Will color x-axis labels that have notes
+  const noteMonths = new Set(NOTES.map(n => n.month));
+  if (!chart || !chart.data.labels) return;
+  const labels = chart.data.labels;
+  // Map label to month key
+  const MONTH_HEB = {'ינו':1,'פבר':2,'מרץ':3,'אפר':4,'מאי':5,'יונ':6,'יול':7,'אוג':8,'ספט':9,'אוק':10,'נוב':11,'דצמ':12};
+  chart.options.scales.x.ticks.color = function(ctx) {
+    const label = ctx.tick && labels[ctx.index];
+    if (!label) return '#64748b';
+    // Parse label like "פבר' 26"
+    const m = label.match(/^(א-ת{2,3})'\s*(\d{2})$/);
+    if (!m) return '#64748b';
+    const mon = MONTH_HEB[m[1]];
+    const yr = 2000 + parseInt(m[2]);
+    const key = yr + '-' + String(mon).padStart(2,'0');
+    return noteMonths.has(key) ? '#f59e0b' : '#64748b';
+  };
+  chart.update();
+}
+
+// ===== END NOTES SYSTEM =====
+
 // Init – load last saved data if available
 if (loadFromLocalStorage()) {
   winStart = Math.max(0, LABELS.length - WINDOW);
@@ -1158,6 +1260,7 @@ if (loadFromLocalStorage()) {
 document.getElementById('card-all').classList.add('active');
 updateNavButtons();
 updateChartStats(currentData, currentView);
+markNoteMonths();
 </script>
 
 <style>
@@ -1515,6 +1618,7 @@ function loadExcelFile(input) {
       // Refresh table cells from updated FUNDS data
       updateTableCells();
       saveToLocalStorage();
+      markNoteMonths();
 
       // Refresh UI – reset currentData so chart picks up new arrays
       currentData = (currentView === 'all' || !currentView) ? ALL_TOTALS : (CAT_TOTALS[currentView] || ALL_TOTALS);
