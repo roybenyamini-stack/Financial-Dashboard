@@ -1436,7 +1436,7 @@ function loadNotesFromExcel(workbook) {
     });
     all.forEach(n => NOTES.push(n));
     saveNotesToStorage();
-  } catch(e) { console.error('שגיאה בקריאת Notes:', e); }
+  } catch(e) { console.warn('שגיאה בקריאת Notes:', e); }
 }
 
 function loadNotesFromStorage() {
@@ -1912,7 +1912,6 @@ function loadExcelFile(input) {
       winStart = Math.max(0, LABELS.length - WINDOW);
 
       // Read Notes sheet if exists
-      console.log('wb type:', typeof wb, wb ? Object.keys(wb).slice(0,3) : 'null');
       loadNotesFromExcel(wb);
 
       // Refresh table cells from updated FUNDS data
