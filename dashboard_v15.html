@@ -993,12 +993,15 @@ function updateNavButtons() {
   const from = LABELS[winStart];
   const to = LABELS[Math.min(winStart + WINDOW - 1, LABELS.length - 1)];
   document.getElementById('winRange').textContent = to + ' – ' + from;
-  // Update sold fund notice above window label
+  // Update sold fund notice - only show if sale month is in current window
   const soldNotice = document.getElementById('sold-fund-notice');
   if (soldNotice) {
     const ann = getSoldAnnotations(currentView);
-    if (ann.length > 0) {
-      soldNotice.textContent = 'מכירת ' + ann[0].name.replace('הראל מניות 106863031','הראל מניות').trim() + ' | ' + ann[0].value;
+    const winFrom = winStart;
+    const winTo = winStart + WINDOW - 1;
+    const visibleAnn = ann.filter(a => a.winIdx >= 0 && a.winIdx < WINDOW);
+    if (visibleAnn.length > 0) {
+      soldNotice.textContent = 'מכירת ' + visibleAnn[0].name.replace('הראל מניות 106863031','הראל מניות').trim() + ' | ' + visibleAnn[0].value;
       soldNotice.style.display = 'block';
     } else {
       soldNotice.style.display = 'none';
