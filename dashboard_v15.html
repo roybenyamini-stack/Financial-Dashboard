@@ -1642,6 +1642,15 @@ function buildContext() {
            f.data.map(function(v){return v!=null?Math.round(v):'';}).join(',') + '\n';
   });
   ctx += 'סהכ תיק: ' + ALL_TOTALS.map(function(v){return Math.round(v);}).join(',') + '\n';
+  // Add notes to context
+  if (NOTES.length > 0) {
+    ctx += '\nהערות תיק:\n';
+    NOTES.forEach(function(n) {
+      ctx += '- ' + n.date + ' | ' + n.type + ' | ' + n.title;
+      n.fields.forEach(function(f) { ctx += ' | ' + f.label + ': ' + f.value; });
+      ctx += '\n';
+    });
+  }
   return ctx;
 }
 function answerQ(q) {
