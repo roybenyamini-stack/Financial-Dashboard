@@ -1248,22 +1248,7 @@ function updateTableCells() {
 }
 
 // ===== NOTES SYSTEM =====
-const NOTES = [
-  {
-    _hardcoded: true,
-    date: '17/02/2026',
-    month: '2026-02',
-    type: 'מכירת נכס',
-    title: 'הראל מניות 106863031',
-    fields: [
-      { label: 'סכום כולל בפוליסה', value: '1,685' },
-      { label: 'מס רווח הון', value: '21' },
-      { label: 'תמורה נטו לחשבון', value: '1,664' },
-    ],
-    link: 'https://www.icloud.com/iclouddrive/0b7Ys2tFPQdLEa5E2PaIYoalQ#IMG%5F5589',
-    linkLabel: 'מכתב הראל 17.02.2026'
-  },
-];
+const NOTES = [];
 
 const NOTE_TYPE_COLOR = {
   'מכירת נכס': '#dc2626',
@@ -1391,15 +1376,16 @@ function loadNotesFromExcel(workbook) {
       let dateStr = '';
       const raw = r[iDate];
       if (typeof raw === 'number') {
-        // Excel serial date
+        // Excel serial date - use local time
         const d = new Date(Math.round((raw - 25569) * 86400 * 1000));
         const dd = String(d.getUTCDate()).padStart(2,'0');
         const mm = String(d.getUTCMonth()+1).padStart(2,'0');
         dateStr = dd + '/' + mm + '/' + d.getUTCFullYear();
       } else if (raw instanceof Date) {
-        const dd = String(raw.getDate()).padStart(2,'0');
-        const mm = String(raw.getMonth()+1).padStart(2,'0');
-        dateStr = dd + '/' + mm + '/' + raw.getFullYear();
+        // cellDates:true gives local date - use UTC to avoid timezone shift
+        const dd = String(raw.getUTCDate()).padStart(2,'0');
+        const mm = String(raw.getUTCMonth()+1).padStart(2,'0');
+        dateStr = dd + '/' + mm + '/' + raw.getUTCFullYear();
       } else {
         dateStr = String(raw);
       }
