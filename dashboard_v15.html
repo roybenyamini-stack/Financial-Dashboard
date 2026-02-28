@@ -793,6 +793,32 @@ function getWindow(data) {
 const ctx = document.getElementById('mainChart').getContext('2d');
 let currentData = ALL_TOTALS;
 
+// Sold fund annotation plugin
+const soldAnnotationPlugin = {
+  id: 'soldAnnotation',
+  afterDraw(ch) {
+    const ann = ch._soldAnnotations;
+    if (!ann || !ann.length) return;
+    const ctx2 = ch.ctx;
+    const meta = ch.getDatasetMeta(0);
+    ann.forEach(a => {
+      const pt = meta.data[a.winIdx];
+      if (!pt) return;
+      ctx2.save();
+      ctx2.beginPath();
+      ctx2.arc(pt.x, pt.y, 5, 0, 2 * Math.PI);
+      ctx2.fillStyle = '#ef4444';
+      ctx2.fill();
+      ctx2.font = 'bold 10px Heebo,sans-serif';
+      ctx2.fillStyle = '#ef4444';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('⬇ מכירה | ' + a.value, pt.x, pt.y - 12);
+      ctx2.restore();
+    });
+  }
+};
+Chart.register(soldAnnotationPlugin);
+
 let chart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -1076,6 +1102,29 @@ function updateChartStats(data, viewCat) {
   }
 }
 
+function getSoldAnnotations(viewCat) {
+  if (!viewCat || viewCat === 'all') return [];
+  const annotations = [];
+  Object.values(FUNDS).forEach(f => {
+    if (f.cat !== viewCat) return;
+    let wasActive = false;
+    for (let i = 0; i < f.data.length; i++) {
+      if ((f.data[i]||0) > 0) wasActive = true;
+      else if (wasActive) {
+        // Fund sold at index i - find position in current window
+        const winLabels = getWindow(CAT_CHART_TOTALS[viewCat] || []).labels;
+        const labelAtSale = LABELS[i];
+        const winIdx = winLabels.indexOf(labelAtSale);
+        if (winIdx >= 0) {
+          annotations.push({ winIdx, name: f.name, value: Math.round(f.data[i-1]||0).toLocaleString() });
+        }
+        break;
+      }
+    }
+  });
+  return annotations;
+}
+
 function updateChart(data, color, label) {
   currentData = data;
   const w = getWindow(data);
@@ -1085,6 +1134,10 @@ function updateChart(data, color, label) {
   chart.data.datasets[0].backgroundColor = color.replace(')', ',0.08)').replace('rgb','rgba');
   chart.data.datasets[0].pointBackgroundColor = color;
   chart.data.datasets[0].label = label;
+
+  // Store sold annotations for afterDraw
+  chart._soldAnnotations = getSoldAnnotations(currentView);
+
   updateChartStats(data, currentView);;
   chart.update();
   document.getElementById('activeLabel').style.setProperty('--active-color', color);
