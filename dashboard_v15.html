@@ -839,7 +839,17 @@ function getCatTotal(cat, idx) {
 }
 function getCatMeasured(cat, idx) {
   const excl = EXCLUDE_FROM_PCT[cat] || [];
-  return Object.entries(FUNDS).filter(([k,f]) => f.cat===cat && !excl.includes(k)).reduce((s,[,f]) => s+(f.data[idx]||0), 0);
+  return Object.entries(FUNDS)
+    .filter(([k,f]) => f.cat===cat && !excl.includes(k) && (f.data[idx]||0) > 0)
+    .reduce((s,[,f]) => s+(f.data[idx]||0), 0);
+}
+
+function getCatBase(cat, idx) {
+  // Base: only funds that are active (>0) at the end index
+  const excl = EXCLUDE_FROM_PCT[cat] || [];
+  return Object.entries(FUNDS)
+    .filter(([k,f]) => f.cat===cat && !excl.includes(k) && (f.data[idx]||0) > 0)
+    .reduce((s,[,f]) => s+(f.data[idx]||0), 0);
 }
 
 function updateDynamicStats() {
@@ -857,7 +867,7 @@ function updateDynamicStats() {
       if (f.cat !== cat) return;
       const v = f.data[endIdx] || 0;
       catTotals[cat] += v;
-      if (!excl.includes(k)) catMeasured[cat] += v;
+      if (!excl.includes(k) && v > 0) catMeasured[cat] += v;
     });
   });
 
@@ -870,7 +880,10 @@ function updateDynamicStats() {
   const grandMeasuredStart = cats.reduce((s,c) => {
     if(noPctCats.includes(c)) return s;
     const excl = EXCLUDE_FROM_PCT[c]||[];
-    return s + Object.entries(FUNDS).filter(([k,f])=>f.cat===c&&!excl.includes(k)).reduce((a,[,f])=>a+(f.data[startIdx]||0),0);
+    // Only include funds active (>0) at endIdx in the base calculation
+    return s + Object.entries(FUNDS)
+      .filter(([k,f])=>f.cat===c && !excl.includes(k) && (f.data[endIdx]||0)>0)
+      .reduce((a,[,f])=>a+(f.data[startIdx]||0),0);
   }, 0);
   const grandBase = grandMeasuredStart > 0 ? grandMeasuredStart : cats.reduce((s,c) => noPctCats.includes(c) ? s : s + (BASE[c]||0), 0);
   const grandBase0 = cats.reduce((s,c) => {
