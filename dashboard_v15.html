@@ -764,16 +764,28 @@ LABELS.forEach((_, i) => {
   });
 });
 
-// Category chart totals (for chart - excludes funds sold before end of data)
+// Category chart totals (for chart - excludes fund value after it reaches 0)
 function buildCatChartTotals() {
-  const endIdx = LABELS.length - 1;
+  // For each fund, find the first month it reaches 0 after being active
+  function getSoldIdx(fund) {
+    let wasActive = false;
+    for (let i = 0; i < fund.data.length; i++) {
+      if ((fund.data[i]||0) > 0) wasActive = true;
+      else if (wasActive) return i; // first 0 after being active = sold
+    }
+    return -1; // never sold
+  }
   const totals = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
   LABELS.forEach((_, i) => {
     Object.entries(totals).forEach(([cat, arr]) => {
-      // Only include fund if it's active at the last known month (endIdx)
       const vals = Object.values(FUNDS)
-        .filter(f => f.cat===cat && (f.data[endIdx]||0) > 0)
-        .map(f => f.data[i]||0);
+        .filter(f => f.cat===cat)
+        .map(f => {
+          const soldIdx = getSoldIdx(f);
+          // If sold, exclude from month of sale onwards
+          if (soldIdx >= 0 && i >= soldIdx) return 0;
+          return f.data[i]||0;
+        });
       arr.push(vals.reduce((a,b)=>a+b,0));
     });
   });
