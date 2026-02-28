@@ -993,15 +993,29 @@ function updateNavButtons() {
   const from = LABELS[winStart];
   const to = LABELS[Math.min(winStart + WINDOW - 1, LABELS.length - 1)];
   document.getElementById('winRange').textContent = to + ' – ' + from;
-  // Update sold fund notice - only show if sale month is in current window
+  // Show sold notice only when last visible month is the sale month
   const soldNotice = document.getElementById('sold-fund-notice');
   if (soldNotice) {
-    const ann = getSoldAnnotations(currentView);
-    const winFrom = winStart;
-    const winTo = winStart + WINDOW - 1;
-    const visibleAnn = ann.filter(a => a.winIdx >= 0 && a.winIdx < WINDOW);
-    if (visibleAnn.length > 0) {
-      soldNotice.textContent = 'מכירת ' + visibleAnn[0].name.replace('הראל מניות 106863031','הראל מניות').trim() + ' | ' + visibleAnn[0].value;
+    let noticeText = '';
+    if (currentView && currentView !== 'all') {
+      const lastVisIdx = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
+      Object.values(FUNDS).forEach(f => {
+        if (f.cat !== currentView) return;
+        let wasActive = false;
+        for (let i = 0; i < f.data.length; i++) {
+          if ((f.data[i]||0) > 0) wasActive = true;
+          else if (wasActive) {
+            // sold at index i – show notice if i === lastVisIdx
+            if (i === lastVisIdx) {
+              noticeText = 'מכירת ' + f.name.replace('הראל מניות 106863031','הראל מניות').replace(/\d+/g,'').trim() + ' | ' + Math.round(f.data[i-1]||0).toLocaleString();
+            }
+            break;
+          }
+        }
+      });
+    }
+    if (noticeText) {
+      soldNotice.textContent = noticeText;
       soldNotice.style.display = 'block';
     } else {
       soldNotice.style.display = 'none';
