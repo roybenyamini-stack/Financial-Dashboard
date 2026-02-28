@@ -1250,6 +1250,7 @@ function updateTableCells() {
 // ===== NOTES SYSTEM =====
 const NOTES = [
   {
+    _hardcoded: true,
     date: '17/02/2026',
     month: '2026-02',
     type: 'מכירת נכס',
@@ -1359,6 +1360,83 @@ function editNote(i) {
 
 function saveNotesToStorage() {
   try { localStorage.setItem('dashboard_v15_notes', JSON.stringify(NOTES)); } catch(e) {}
+}
+
+function loadNotesFromExcel(workbook) {
+  try {
+    const sheet = workbook.Sheets['Notes'];
+    if (!sheet) return;
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null });
+    // Find header row
+    let headerIdx = -1;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i] && rows[i].includes('תאריך')) { headerIdx = i; break; }
+    }
+    if (headerIdx < 0) return;
+    const headers = rows[headerIdx];
+    const iDate   = headers.indexOf('תאריך');
+    const iType   = headers.indexOf('סוג');
+    const iTitle  = headers.indexOf('פירוט');
+    const iGross  = headers.indexOf('סכום כולל');
+    const iTax    = headers.indexOf('מס');
+    const iNet    = headers.indexOf('נטו');
+    const iAmount = headers.indexOf('סכום');
+    const iLink   = headers.indexOf('קישור');
+
+    const excelNotes = [];
+    for (let i = headerIdx + 1; i < rows.length; i++) {
+      const r = rows[i];
+      if (!r || !r[iDate]) continue;
+      // Format date
+      let dateStr = '';
+      const raw = r[iDate];
+      if (typeof raw === 'number') {
+        // Excel serial date
+        const d = new Date(Math.round((raw - 25569) * 86400 * 1000));
+        const dd = String(d.getUTCDate()).padStart(2,'0');
+        const mm = String(d.getUTCMonth()+1).padStart(2,'0');
+        dateStr = dd + '/' + mm + '/' + d.getUTCFullYear();
+      } else if (raw instanceof Date) {
+        const dd = String(raw.getDate()).padStart(2,'0');
+        const mm = String(raw.getMonth()+1).padStart(2,'0');
+        dateStr = dd + '/' + mm + '/' + raw.getFullYear();
+      } else {
+        dateStr = String(raw);
+      }
+      // Month key
+      const parts = dateStr.split('/');
+      const monthKey = parts.length === 3 ? parts[2] + '-' + parts[1].padStart(2,'0') : '';
+      // Fields
+      const fields = [];
+      if (r[iGross]) fields.push({ label: 'סכום כולל בפוליסה', value: String(r[iGross]) });
+      if (r[iTax])   fields.push({ label: 'מס רווח הון',        value: String(r[iTax]) });
+      if (r[iNet])   fields.push({ label: 'תמורה נטו לחשבון',   value: String(r[iNet]) });
+      if (r[iAmount])fields.push({ label: 'סכום',               value: String(r[iAmount]) });
+
+      excelNotes.push({
+        date: dateStr,
+        month: monthKey,
+        type: r[iType] || 'אחר',
+        title: r[iTitle] || '',
+        fields,
+        link: r[iLink] || null,
+        linkLabel: r[iLink] ? 'מסמך רפרנס' : null
+      });
+    }
+    if (excelNotes.length === 0) return;
+    // Merge: excel notes override, keep built-in not in excel
+    const excelKeys = new Set(excelNotes.map(n => n.date + n.title));
+    // Keep hardcoded notes not present in excel
+    const hardcoded = NOTES.filter(n => n._hardcoded && !excelKeys.has(n.date + n.title));
+    NOTES.length = 0;
+    // newest first: sort by date desc
+    const all = [...excelNotes, ...hardcoded].sort((a,b) => {
+      const pd = s => { const p = s.split('/'); return p.length===3 ? new Date(p[2],p[1]-1,p[0]) : new Date(0); };
+      return pd(b.date) - pd(a.date);
+    });
+    all.forEach(n => NOTES.push(n));
+    saveNotesToStorage();
+  } catch(e) { console.warn('שגיאה בקריאת Notes:', e); }
 }
 
 function loadNotesFromStorage() {
@@ -1832,6 +1910,9 @@ function loadExcelFile(input) {
 
       // Reset window to end
       winStart = Math.max(0, LABELS.length - WINDOW);
+
+      // Read Notes sheet if exists
+      loadNotesFromExcel(workbook);
 
       // Refresh table cells from updated FUNDS data
       updateTableCells();
