@@ -1194,27 +1194,43 @@ function renderNotesList() {
     list.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">אין הערות עדיין</p>';
     return;
   }
-  list.innerHTML = NOTES.map((n, i) => {
+
+  // Table headers based on note type columns
+  const colHeaders = ['תאריך','אירוע','פירוט','סכום כולל','מס','תמורה נטו','מסמך'];
+  
+  let tableHtml = '<table style="width:100%; border-collapse:collapse; font-size:13px; font-family:Heebo,sans-serif;" dir="rtl">';
+  // Header row
+  tableHtml += '<thead><tr style="border-bottom:2px solid #1a1a2e;">';
+  colHeaders.forEach(h => {
+    tableHtml += '<th style="padding:8px 10px; color:#1a1a2e; font-weight:700; text-align:right; white-space:nowrap;">' + h + '</th>';
+  });
+  tableHtml += '</tr></thead><tbody>';
+
+  // Data rows (newest first)
+  NOTES.forEach((n, i) => {
     const color = NOTE_TYPE_COLOR[n.type] || '#64748b';
-    const fieldsHtml = n.fields.map(f =>
-      '<div style="display:flex; gap:8px; margin-bottom:4px;">' +
-      '<span style="color:#888; min-width:160px;">' + f.label + ':</span>' +
-      '<span style="font-weight:600;">' + f.value + '</span></div>'
-    ).join('');
-    const linkHtml = n.link ?
-      '<a href="' + n.link + '" target="_blank" style="color:#0891b2; font-size:12px; text-decoration:none;">📎 ' + (n.linkLabel || 'מסמך רפרנס') + '</a>' : '';
-    return '<div style="border:1px solid #e5e7eb; border-radius:12px; padding:16px; margin-bottom:12px; border-right:4px solid ' + color + ';">' +
-      '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">' +
-      '<div>' +
-      '<span style="background:' + color + '20; color:' + color + '; font-size:11px; padding:3px 8px; border-radius:20px; font-weight:600;">' + n.type + '</span>' +
-      '<span style="font-weight:700; font-size:14px; margin-right:10px;">' + n.title + '</span>' +
-      '</div>' +
-      '<span style="color:#888; font-size:12px;">' + n.date + '</span>' +
-      '</div>' +
-      fieldsHtml +
-      (linkHtml ? '<div style="margin-top:8px;">' + linkHtml + '</div>' : '') +
-      '</div>';
-  }).join('');
+    const bg = i % 2 === 0 ? '#f9fafb' : 'white';
+    const gross = n.fields.find(f => f.label === 'סכום כולל בפוליסה');
+    const tax   = n.fields.find(f => f.label === 'מס רווח הון');
+    const net   = n.fields.find(f => f.label === 'תמורה נטו לחשבון');
+    const linkHtml = n.link
+      ? '<a href="' + n.link + '" target="_blank" style="color:#0891b2; text-decoration:none; font-size:16px;">📎</a>'
+      : '';
+    const taxVal = tax ? '<span style="color:#dc2626;">-' + tax.value + '</span>' : '—';
+
+    tableHtml += '<tr style="background:' + bg + '; border-bottom:1px solid #e5e7eb;">' +
+      '<td style="padding:10px; white-space:nowrap; color:#555;">' + n.date + '</td>' +
+      '<td style="padding:10px;"><span style="background:' + color + '20; color:' + color + '; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap;">' + n.type + '</span></td>' +
+      '<td style="padding:10px; font-weight:600;">' + n.title + '</td>' +
+      '<td style="padding:10px; text-align:left; white-space:nowrap;">' + (gross ? gross.value : '—') + '</td>' +
+      '<td style="padding:10px; text-align:left; white-space:nowrap;">' + taxVal + '</td>' +
+      '<td style="padding:10px; text-align:left; font-weight:700; white-space:nowrap;">' + (net ? net.value : '—') + '</td>' +
+      '<td style="padding:10px; text-align:center;">' + linkHtml + '</td>' +
+      '</tr>';
+  });
+
+  tableHtml += '</tbody></table>';
+  list.innerHTML = tableHtml;
 }
 
 // Mark chart months that have notes
