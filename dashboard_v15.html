@@ -755,7 +755,7 @@ const FUNDS = {
 const CAT_COLORS = { mezuman:'#0891b2', chov:'#64748b', arbitrage:'#7c3aed', dira:'#78716c', hishtalmut:'#dc2626', gemel:'#b45309', gemel_invest:'#9f1239', harel:'#a16207', meitav:'#7c3aed', all:'#1a1a2e' };
 const CAT_NAMES  = { mezuman:'מזומן', chov:'חוב', arbitrage:'ארביטראז׳ ואליו', dira:'דירה', hishtalmut:'קרנות השתלמות', gemel:'קופות גמל', gemel_invest:'גמל להשקעה', harel:'הראל', meitav:'מיטב', all:'סה״כ כל הקטגוריות' };
 
-// Category totals
+// Category totals (for table display - includes all funds)
 const CAT_TOTALS = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
 LABELS.forEach((_, i) => {
   Object.entries(CAT_TOTALS).forEach(([cat, arr]) => {
@@ -763,6 +763,23 @@ LABELS.forEach((_, i) => {
     arr.push(vals.reduce((a,b)=>a+b,0));
   });
 });
+
+// Category chart totals (for chart - excludes funds sold before end of data)
+function buildCatChartTotals() {
+  const endIdx = LABELS.length - 1;
+  const totals = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
+  LABELS.forEach((_, i) => {
+    Object.entries(totals).forEach(([cat, arr]) => {
+      // Only include fund if it's active at the last known month (endIdx)
+      const vals = Object.values(FUNDS)
+        .filter(f => f.cat===cat && (f.data[endIdx]||0) > 0)
+        .map(f => f.data[i]||0);
+      arr.push(vals.reduce((a,b)=>a+b,0));
+    });
+  });
+  return totals;
+}
+let CAT_CHART_TOTALS = buildCatChartTotals();
 const ALL_TOTALS = LABELS.map((_,i) => {
   let t = 0;
   Object.entries(CAT_TOTALS).forEach(([cat, arr]) => { t += cat === 'chov' ? -(arr[i]||0) : (arr[i]||0); });
@@ -1071,7 +1088,7 @@ function selectView(cat) {
   if (cat === 'all') {
     updateChart(ALL_TOTALS, '#1a1a2e', CAT_NAMES.all);
   } else {
-    updateChart(CAT_TOTALS[cat], CAT_COLORS[cat], CAT_NAMES[cat]);
+    updateChart(CAT_CHART_TOTALS[cat] || CAT_TOTALS[cat], CAT_COLORS[cat], CAT_NAMES[cat]);
   }
 }
 
@@ -1923,6 +1940,9 @@ function loadExcelFile(input) {
 
       // Reset window to end
       winStart = Math.max(0, LABELS.length - WINDOW);
+
+      // Rebuild chart totals (excludes sold funds)
+      CAT_CHART_TOTALS = buildCatChartTotals();
 
       // Read Notes sheet if exists
       loadNotesFromExcel(wb);
