@@ -303,7 +303,10 @@ tr:last-child td { border-bottom: none; }
   </div>
   <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
     <button id="btnNext" onclick="slideWindow(1)" title="תקופה הבאה" style="background:#f0f2f5;border:none;border-radius:8px;width:32px;height:32px;font-size:15px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8594;</button>
-    <span id="winRange" style="font-size:13px;color:#555;font-family:Heebo;font-weight:700;min-width:160px;text-align:center;"></span>
+    <div style="text-align:center;">
+      <div id="sold-fund-notice" style="display:none;font-size:11px;color:#b45309;font-family:Heebo;font-weight:600;margin-bottom:2px;"></div>
+      <span id="winRange" style="font-size:13px;color:#555;font-family:Heebo;font-weight:700;min-width:160px;text-align:center;"></span>
+    </div>
     <button id="btnPrev" onclick="slideWindow(-1)" title="תקופה קודמת" style="background:#f0f2f5;border:none;border-radius:8px;width:32px;height:32px;font-size:15px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8592;</button>
   </div>
   <div class="chart-container" dir="ltr">
@@ -793,40 +796,6 @@ function getWindow(data) {
 const ctx = document.getElementById('mainChart').getContext('2d');
 let currentData = ALL_TOTALS;
 
-// Sold fund annotation plugin
-const soldAnnotationPlugin = {
-  id: 'soldAnnotation',
-  afterDraw(ch) {
-    const ann = ch._soldAnnotations;
-    if (!ann || !ann.length) return;
-    const ctx2 = ch.ctx;
-    const meta = ch.getDatasetMeta(0);
-    ann.forEach(a => {
-      const pt = meta.data[a.winIdx];
-      if (!pt) return;
-      ctx2.save();
-      // Draw red dot
-      ctx2.beginPath();
-      ctx2.arc(pt.x, pt.y, 6, 0, 2 * Math.PI);
-      ctx2.fillStyle = '#ef4444';
-      ctx2.fill();
-      // Draw label with white background
-      const txt = '⬇ מכירה | ' + a.value;
-      ctx2.font = 'bold 11px Heebo,sans-serif';
-      ctx2.textAlign = 'right';
-      ctx2.direction = 'rtl';
-      const txtW = ctx2.measureText(txt).width;
-      const tx = pt.x + 4, ty = pt.y - 14;
-      ctx2.fillStyle = 'rgba(255,255,255,0.85)';
-      ctx2.fillRect(tx - txtW - 4, ty - 12, txtW + 8, 16);
-      ctx2.fillStyle = '#dc2626';
-      ctx2.fillText(txt, tx + txtW - 2, ty);
-      ctx2.restore();
-    });
-  }
-};
-Chart.register(soldAnnotationPlugin);
-
 let chart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -1024,6 +993,17 @@ function updateNavButtons() {
   const from = LABELS[winStart];
   const to = LABELS[Math.min(winStart + WINDOW - 1, LABELS.length - 1)];
   document.getElementById('winRange').textContent = to + ' – ' + from;
+  // Update sold fund notice above window label
+  const soldNotice = document.getElementById('sold-fund-notice');
+  if (soldNotice) {
+    const ann = getSoldAnnotations(currentView);
+    if (ann.length > 0) {
+      soldNotice.textContent = 'מכירת ' + ann[0].name.replace('הראל מניות 106863031','הראל מניות').trim() + ' | ' + ann[0].value;
+      soldNotice.style.display = 'block';
+    } else {
+      soldNotice.style.display = 'none';
+    }
+  }
   syncTableScroll();
   updateDynamicStats();
 }
@@ -1147,13 +1127,11 @@ function updateChart(data, color, label) {
   chart.data.datasets[0].pointBackgroundColor = color;
   chart.data.datasets[0].label = label;
 
-  // Store sold annotations for afterDraw
-  chart._soldAnnotations = getSoldAnnotations(currentView);
-
   updateChartStats(data, currentView);;
   chart.update();
   document.getElementById('activeLabel').style.setProperty('--active-color', color);
   document.getElementById('activeLabelText').textContent = label;
+
 }
 
 function selectView(cat) {
