@@ -354,6 +354,10 @@ tr:last-child td { border-bottom: none; }
           <input id="nf-net" type="text" placeholder="0" style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
         </div>
       </div>
+      <div id="nf-fields-amount" style="display:none; margin-bottom:10px;">
+        <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">סכום (אלפי ש״ח)</label>
+        <input id="nf-amount" type="text" placeholder="0" style="width:200px; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
+      </div>
       <div style="margin-bottom:10px;">
         <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">קישור מסמך (iCloud)</label>
         <input id="nf-link" type="text" placeholder="https://..." style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
@@ -1277,15 +1281,21 @@ function showAddForm() {
   const yyyy = d.getFullYear();
   document.getElementById('nf-date').value = dd+'/'+mm+'/'+yyyy;
   // Show/hide sale fields based on type
-  document.getElementById('nf-type').onchange = function() {
-    const hasSale = ['מכירת נכס','קניית נכס'].includes(this.value);
-    document.getElementById('nf-fields-sale').style.display = hasSale ? 'grid' : 'none';
-  };
+  document.getElementById('nf-type').onchange = updateNoteFields;
+  updateNoteFields();
+}
+
+function updateNoteFields() {
+  const type = document.getElementById('nf-type').value;
+  const hasSale = ['מכירת נכס','קניית נכס'].includes(type);
+  const hasAmount = ['הכרה במזומן','העברה בין קרנות','אחר'].includes(type);
+  document.getElementById('nf-fields-sale').style.display = hasSale ? 'grid' : 'none';
+  document.getElementById('nf-fields-amount').style.display = hasAmount ? 'block' : 'none';
 }
 
 function hideAddForm() {
   document.getElementById('notes-add-form').style.display = 'none';
-  ['nf-date','nf-title','nf-gross','nf-tax','nf-net','nf-link'].forEach(id => {
+  ['nf-date','nf-title','nf-gross','nf-tax','nf-net','nf-link','nf-amount'].forEach(id => {
     document.getElementById(id).value = '';
   });
 }
@@ -1305,14 +1315,12 @@ function saveNewNote() {
   const parts = date.split('/');
   const monthKey = parts.length === 3 ? parts[2] + '-' + parts[1].padStart(2,'0') : '';
 
+  const amount = document.getElementById('nf-amount').value.trim();
   const fields = [];
   if (gross) fields.push({ label: 'סכום כולל בפוליסה', value: gross });
   if (tax)   fields.push({ label: 'מס רווח הון', value: tax });
   if (net)   fields.push({ label: 'תמורה נטו לחשבון', value: net });
-  // For other types - store in net field as amount
-  if (!gross && !tax && !net) {
-    // generic note - no fields
-  }
+  if (amount) fields.push({ label: 'סכום', value: amount });
 
   const note = { date, month: monthKey, type, title, fields, link: link || null, linkLabel: link ? 'מסמך רפרנס' : null };
   NOTES.unshift(note); // newest first
@@ -1401,7 +1409,7 @@ function renderNotesList() {
     const bg = i % 2 === 0 ? '#f9fafb' : 'white';
     const gross = n.fields.find(f => f.label === 'סכום כולל בפוליסה');
     const tax   = n.fields.find(f => f.label === 'מס רווח הון');
-    const net   = n.fields.find(f => f.label === 'תמורה נטו לחשבון');
+    const net   = n.fields.find(f => f.label === 'תמורה נטו לחשבון') || n.fields.find(f => f.label === 'סכום');
     const linkHtml = n.link
       ? '<a href="' + n.link + '" target="_blank" style="color:#0891b2; text-decoration:none; font-size:14px; font-weight:600;">מסמך ↗</a>'
       : '';
