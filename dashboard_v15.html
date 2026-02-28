@@ -1168,6 +1168,7 @@ function selectView(cat) {
   } else {
     updateChart(CAT_CHART_TOTALS[cat] || CAT_TOTALS[cat], CAT_COLORS[cat], CAT_NAMES[cat]);
   }
+  updateNavButtons();
 }
 
 function selectFund(fundKey, color) {
