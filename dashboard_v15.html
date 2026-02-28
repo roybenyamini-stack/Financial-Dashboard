@@ -1956,6 +1956,10 @@ function loadExcelFile(input) {
       // Rebuild chart totals (excludes sold funds)
       CAT_CHART_TOTALS = buildCatChartTotals();
 
+      // Refresh chart with updated data
+      if (currentView && currentView !== 'all') selectView(currentView);
+      else selectView('all');
+
       // Read Notes sheet if exists
       loadNotesFromExcel(wb);
 
