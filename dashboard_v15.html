@@ -1119,14 +1119,49 @@ function loadFromLocalStorage() {
 }
 
 function updateTableCells() {
-  // Update fund rows from FUNDS data
+  const numCols = LABELS.length;
+
+  // Add missing header columns to all tables
+  document.querySelectorAll('thead tr').forEach(headerRow => {
+    const existingCols = headerRow.querySelectorAll('th[data-col]').length;
+    // Find max existing col index
+    let maxCol = -1;
+    headerRow.querySelectorAll('th[data-col]').forEach(th => {
+      maxCol = Math.max(maxCol, parseInt(th.getAttribute('data-col')));
+    });
+    // Add missing columns
+    for (let c = maxCol + 1; c < numCols; c++) {
+      const th = document.createElement('th');
+      th.setAttribute('data-col', c);
+      th.textContent = LABELS[c];
+      headerRow.appendChild(th);
+    }
+    // Update existing header labels
+    headerRow.querySelectorAll('th[data-col]').forEach(th => {
+      const col = parseInt(th.getAttribute('data-col'));
+      if (col < numCols) th.textContent = LABELS[col];
+    });
+  });
+
+  // Add missing td cells to fund rows and update values
   document.querySelectorAll('tr[data-fund]').forEach(row => {
     const fundKey = row.getAttribute('data-fund');
     const fund = FUNDS[fundKey];
     if (!fund) return;
+    let maxCol = -1;
+    row.querySelectorAll('td[data-col]').forEach(td => {
+      maxCol = Math.max(maxCol, parseInt(td.getAttribute('data-col')));
+    });
+    // Add missing tds
+    for (let c = maxCol + 1; c < numCols; c++) {
+      const td = document.createElement('td');
+      td.setAttribute('data-col', c);
+      row.appendChild(td);
+    }
+    // Update all tds
     row.querySelectorAll('td[data-col]').forEach(td => {
       const col = parseInt(td.getAttribute('data-col'));
-      if (col >= LABELS.length) return;
+      if (col >= numCols) return;
       const val = fund.data[col];
       if (val === null || val === undefined || isNaN(val)) {
         td.textContent = '—';
@@ -1137,13 +1172,23 @@ function updateTableCells() {
       }
     });
   });
-  // Update total-row cells from CAT_TOTALS
+
+  // Add missing td cells to total rows and update values
   document.querySelectorAll('tr.total-row').forEach(row => {
     const section = row.closest('.category-section');
     if (!section) return;
     const catId = section.id.replace('sec-', '');
     const catArr = CAT_TOTALS[catId];
     if (!catArr) return;
+    let maxCol = -1;
+    row.querySelectorAll('td[data-col]').forEach(td => {
+      maxCol = Math.max(maxCol, parseInt(td.getAttribute('data-col')));
+    });
+    for (let c = maxCol + 1; c < numCols; c++) {
+      const td = document.createElement('td');
+      td.setAttribute('data-col', c);
+      row.appendChild(td);
+    }
     row.querySelectorAll('td[data-col]').forEach(td => {
       const col = parseInt(td.getAttribute('data-col'));
       if (col >= catArr.length) return;
