@@ -805,14 +805,22 @@ const soldAnnotationPlugin = {
       const pt = meta.data[a.winIdx];
       if (!pt) return;
       ctx2.save();
+      // Draw red dot
       ctx2.beginPath();
-      ctx2.arc(pt.x, pt.y, 5, 0, 2 * Math.PI);
+      ctx2.arc(pt.x, pt.y, 6, 0, 2 * Math.PI);
       ctx2.fillStyle = '#ef4444';
       ctx2.fill();
-      ctx2.font = 'bold 10px Heebo,sans-serif';
-      ctx2.fillStyle = '#ef4444';
-      ctx2.textAlign = 'center';
-      ctx2.fillText('⬇ מכירה | ' + a.value, pt.x, pt.y - 12);
+      // Draw label with white background
+      const txt = '⬇ מכירה | ' + a.value;
+      ctx2.font = 'bold 11px Heebo,sans-serif';
+      ctx2.textAlign = 'right';
+      ctx2.direction = 'rtl';
+      const txtW = ctx2.measureText(txt).width;
+      const tx = pt.x + 4, ty = pt.y - 14;
+      ctx2.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx2.fillRect(tx - txtW - 4, ty - 12, txtW + 8, 16);
+      ctx2.fillStyle = '#dc2626';
+      ctx2.fillText(txt, tx + txtW - 2, ty);
       ctx2.restore();
     });
   }
