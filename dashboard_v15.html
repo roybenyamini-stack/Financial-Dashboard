@@ -1105,16 +1105,20 @@ function updateChartStats(data, viewCat) {
 function getSoldAnnotations(viewCat) {
   if (!viewCat || viewCat === 'all') return [];
   const annotations = [];
+  const winLabels = getWindow(CAT_TOTALS[viewCat] || ALL_TOTALS).labels;
   Object.values(FUNDS).forEach(f => {
     if (f.cat !== viewCat) return;
     let wasActive = false;
     for (let i = 0; i < f.data.length; i++) {
       if ((f.data[i]||0) > 0) wasActive = true;
       else if (wasActive) {
-        // Fund sold at index i - find position in current window
-        const winLabels = getWindow(CAT_CHART_TOTALS[viewCat] || []).labels;
-        const labelAtSale = LABELS[i];
-        const winIdx = winLabels.indexOf(labelAtSale);
+        // Fund sold at index i (first 0 after being active)
+        // Show annotation on last visible window point before/at sale
+        const saleLabel = LABELS[i]; // e.g. מרץ 26
+        const lastActiveLabel = LABELS[i-1]; // e.g. פבר 26
+        // Try to place on sale month if visible, else on last active month
+        let winIdx = winLabels.indexOf(saleLabel);
+        if (winIdx < 0) winIdx = winLabels.indexOf(lastActiveLabel);
         if (winIdx >= 0) {
           annotations.push({ winIdx, name: f.name, value: Math.round(f.data[i-1]||0).toLocaleString() });
         }
