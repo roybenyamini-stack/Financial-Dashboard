@@ -1159,11 +1159,11 @@ const NOTES = [
     date: '17/02/2026',
     month: '2026-02',
     type: 'מכירת נכס',
-    title: 'מכירת הראל מניות 106863031',
+    title: 'הראל מניות 106863031',
     fields: [
-      { label: 'סכום כולל בפוליסה', value: '1,685 אלפי ש״ח' },
-      { label: 'מס רווח הון', value: '21 אלפי ש״ח' },
-      { label: 'תמורה נטו לחשבון', value: '1,664 אלפי ש״ח' },
+      { label: 'סכום כולל בפוליסה', value: '1,685' },
+      { label: 'מס רווח הון', value: '21' },
+      { label: 'תמורה נטו לחשבון', value: '1,664' },
     ],
     link: 'https://www.icloud.com/iclouddrive/0b7Ys2tFPQdLEa5E2PaIYoalQ#IMG%5F5589',
     linkLabel: 'מכתב הראל 17.02.2026'
@@ -1221,7 +1221,7 @@ function renderNotesList() {
     tableHtml += '<tr style="background:' + bg + '; border-bottom:1px solid #e5e7eb;">' +
       '<td style="padding:10px; white-space:nowrap; color:#555;">' + n.date + '</td>' +
       '<td style="padding:10px;"><span style="background:' + color + '20; color:' + color + '; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap;">' + n.type + '</span></td>' +
-      '<td style="padding:10px; font-weight:600;">' + n.title + '</td>' +
+      '<td style="padding:10px; font-weight:600; white-space:nowrap;">' + n.title + '</td>' +
       '<td style="padding:10px; text-align:left; white-space:nowrap;">' + (gross ? gross.value : '—') + '</td>' +
       '<td style="padding:10px; text-align:left; white-space:nowrap;">' + taxVal + '</td>' +
       '<td style="padding:10px; text-align:left; font-weight:700; white-space:nowrap;">' + (net ? net.value : '—') + '</td>' +
