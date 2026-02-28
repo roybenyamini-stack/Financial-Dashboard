@@ -766,26 +766,11 @@ LABELS.forEach((_, i) => {
 
 // Category chart totals (for chart - excludes fund value after it reaches 0)
 function buildCatChartTotals() {
-  // For each fund, find the first month it reaches 0 after being active
-  function getSoldIdx(fund) {
-    let wasActive = false;
-    for (let i = 0; i < fund.data.length; i++) {
-      if ((fund.data[i]||0) > 0) wasActive = true;
-      else if (wasActive) return i; // first 0 after being active = sold
-    }
-    return -1; // never sold
-  }
+  // Same as CAT_TOTALS - show actual values including sold funds as 0
   const totals = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
   LABELS.forEach((_, i) => {
     Object.entries(totals).forEach(([cat, arr]) => {
-      const vals = Object.values(FUNDS)
-        .filter(f => f.cat===cat)
-        .map(f => {
-          const soldIdx = getSoldIdx(f);
-          // If sold, exclude from month of sale onwards
-          if (soldIdx >= 0 && i >= soldIdx) return 0;
-          return f.data[i]||0;
-        });
+      const vals = Object.values(FUNDS).filter(f => f.cat===cat).map(f => f.data[i]||0);
       arr.push(vals.reduce((a,b)=>a+b,0));
     });
   });
@@ -831,7 +816,28 @@ let chart = new Chart(ctx, {
       legend: { display: false },
       tooltip: {
         rtl: true, textDirection: 'rtl',
-        callbacks: { label: c => ` ${Math.round(c.parsed.y).toLocaleString()} אלף` }
+        callbacks: {
+          label: c => {
+            const val = ` ${Math.round(c.parsed.y).toLocaleString()} אלף`;
+            // Check if any fund in current category was sold at this point
+            if (currentView && currentView !== 'all') {
+              const colIdx = c.dataIndex;
+              const soldFunds = Object.values(FUNDS).filter(f => {
+                if (f.cat !== currentView) return false;
+                let wasActive = false;
+                for (let i = 0; i < f.data.length; i++) {
+                  if ((f.data[i]||0) > 0) wasActive = true;
+                  else if (wasActive && i === colIdx) return true;
+                }
+                return false;
+              });
+              if (soldFunds.length > 0) {
+                return [val, '⚠️ כולל מכירת: ' + soldFunds.map(f=>f.name).join(', ')];
+              }
+            }
+            return val;
+          }
+        }
       }
     },
     scales: {
