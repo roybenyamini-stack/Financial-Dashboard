@@ -315,8 +315,53 @@ tr:last-child td { border-bottom: none; }
 <div id="notes-modal" onclick="if(event.target===this)closeNotes();" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
   <div style="background:white; border-radius:16px; width:90%; max-width:780px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column; font-family:Heebo,sans-serif;" dir="rtl">
     <div style="background:#1a1a2e; color:white; padding:18px 22px; display:flex; justify-content:space-between; align-items:center;">
-      <span style="font-size:16px; font-weight:700;">📝 הערות תיק</span>
       <button onclick="closeNotes()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">✕</button>
+      <span style="font-size:16px; font-weight:700;">📝 הערות תיק</span>
+      <button onclick="showAddForm()" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:white; border-radius:8px; padding:6px 14px; font-size:13px; cursor:pointer; font-family:Heebo,sans-serif;">+ הוסף הערה</button>
+    </div>
+    <div id="notes-add-form" style="display:none; padding:16px 18px; border-bottom:1px solid #e5e7eb; background:#f9fafb;" dir="rtl">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+        <div>
+          <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">תאריך</label>
+          <input id="nf-date" type="text" placeholder="DD/MM/YYYY" style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">סוג אירוע</label>
+          <select id="nf-type" style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
+            <option>מכירת נכס</option>
+            <option>קניית נכס</option>
+            <option>הכרה במזומן</option>
+            <option>העברה בין קרנות</option>
+            <option>אחר</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">פירוט</label>
+        <input id="nf-title" type="text" placeholder="תיאור קצר" style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
+      </div>
+      <div id="nf-fields-sale" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
+        <div>
+          <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">סכום כולל</label>
+          <input id="nf-gross" type="text" placeholder="0" style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">מס</label>
+          <input id="nf-tax" type="text" placeholder="0" style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">תמורה נטו</label>
+          <input id="nf-net" type="text" placeholder="0" style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:11px; color:#888; display:block; margin-bottom:3px;">קישור מסמך (iCloud)</label>
+        <input id="nf-link" type="text" placeholder="https://..." style="width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-family:Heebo,sans-serif; font-size:13px; box-sizing:border-box;">
+      </div>
+      <div style="display:flex; gap:8px; justify-content:flex-start;">
+        <button onclick="saveNewNote()" style="background:#1a1a2e; color:white; border:none; border-radius:8px; padding:8px 20px; font-family:Heebo,sans-serif; font-size:13px; cursor:pointer;">שמור הערה</button>
+        <button onclick="hideAddForm()" style="background:#f0f2f5; color:#555; border:none; border-radius:8px; padding:8px 16px; font-family:Heebo,sans-serif; font-size:13px; cursor:pointer;">ביטול</button>
+      </div>
     </div>
     <div style="padding:18px; overflow-y:auto; flex:1;">
       <div id="notes-list"></div>
@@ -1223,6 +1268,105 @@ const NOTE_TYPE_COLOR = {
   'אחר': '#64748b',
 };
 
+function showAddForm() {
+  document.getElementById('notes-add-form').style.display = 'block';
+  // Set today's date
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yyyy = d.getFullYear();
+  document.getElementById('nf-date').value = dd+'/'+mm+'/'+yyyy;
+  // Show/hide sale fields based on type
+  document.getElementById('nf-type').onchange = function() {
+    const hasSale = ['מכירת נכס','קניית נכס'].includes(this.value);
+    document.getElementById('nf-fields-sale').style.display = hasSale ? 'grid' : 'none';
+  };
+}
+
+function hideAddForm() {
+  document.getElementById('notes-add-form').style.display = 'none';
+  ['nf-date','nf-title','nf-gross','nf-tax','nf-net','nf-link'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+function saveNewNote() {
+  const date = document.getElementById('nf-date').value.trim();
+  const type = document.getElementById('nf-type').value;
+  const title = document.getElementById('nf-title').value.trim();
+  const gross = document.getElementById('nf-gross').value.trim();
+  const tax = document.getElementById('nf-tax').value.trim();
+  const net = document.getElementById('nf-net').value.trim();
+  const link = document.getElementById('nf-link').value.trim();
+
+  if (!date || !title) { alert('נא למלא תאריך ופירוט'); return; }
+
+  // Parse month key from date DD/MM/YYYY
+  const parts = date.split('/');
+  const monthKey = parts.length === 3 ? parts[2] + '-' + parts[1].padStart(2,'0') : '';
+
+  const fields = [];
+  if (gross) fields.push({ label: 'סכום כולל בפוליסה', value: gross });
+  if (tax)   fields.push({ label: 'מס רווח הון', value: tax });
+  if (net)   fields.push({ label: 'תמורה נטו לחשבון', value: net });
+  // For other types - store in net field as amount
+  if (!gross && !tax && !net) {
+    // generic note - no fields
+  }
+
+  const note = { date, month: monthKey, type, title, fields, link: link || null, linkLabel: link ? 'מסמך רפרנס' : null };
+  NOTES.unshift(note); // newest first
+  saveNotesToStorage();
+  hideAddForm();
+  renderNotesList();
+  markNoteMonths();
+}
+
+function deleteNote(i) {
+  if (!confirm('למחוק הערה זו?')) return;
+  NOTES.splice(i, 1);
+  saveNotesToStorage();
+  renderNotesList();
+  markNoteMonths();
+}
+
+function editNote(i) {
+  const n = NOTES[i];
+  showAddForm();
+  document.getElementById('nf-date').value = n.date;
+  document.getElementById('nf-type').value = n.type;
+  document.getElementById('nf-title').value = n.title;
+  const gross = n.fields.find(f => f.label === 'סכום כולל בפוליסה');
+  const tax   = n.fields.find(f => f.label === 'מס רווח הון');
+  const net   = n.fields.find(f => f.label === 'תמורה נטו לחשבון');
+  if (gross) document.getElementById('nf-gross').value = gross.value;
+  if (tax)   document.getElementById('nf-tax').value = tax.value;
+  if (net)   document.getElementById('nf-net').value = net.value;
+  document.getElementById('nf-link').value = n.link || '';
+  // Remove old note and save new on submit
+  NOTES.splice(i, 1);
+  saveNotesToStorage();
+  renderNotesList();
+}
+
+function saveNotesToStorage() {
+  try { localStorage.setItem('dashboard_v15_notes', JSON.stringify(NOTES)); } catch(e) {}
+}
+
+function loadNotesFromStorage() {
+  try {
+    const raw = localStorage.getItem('dashboard_v15_notes');
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    // Merge: saved notes first, then built-in notes not already present
+    const savedTitles = new Set(saved.map(n => n.date + n.title));
+    const builtIn = NOTES.filter(n => !savedTitles.has(n.date + n.title));
+    NOTES.length = 0;
+    saved.forEach(n => NOTES.push(n));
+    builtIn.forEach(n => NOTES.push(n));
+  } catch(e) {}
+}
+
 function openNotes() {
   renderNotesList();
   const modal = document.getElementById('notes-modal');
@@ -1241,7 +1385,7 @@ function renderNotesList() {
   }
 
   // Table headers based on note type columns
-  const colHeaders = ['קישור','תמורה נטו','מס','סכום כולל','פירוט','אירוע','תאריך'];
+  const colHeaders = ['קישור','תמורה נטו','מס','סכום כולל','פירוט','אירוע','תאריך',''];
   
   let tableHtml = '<table style="width:100%; border-collapse:collapse; font-size:13px; font-family:Heebo,sans-serif;" dir="rtl">';
   // Header row
@@ -1271,6 +1415,10 @@ function renderNotesList() {
       '<td style="padding:10px 16px; font-weight:600; white-space:nowrap;">' + n.title + '</td>' +
       '<td style="padding:10px;"><span style="background:' + color + '20; color:' + color + '; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap;">' + n.type + '</span></td>' +
       '<td style="padding:10px; white-space:nowrap; color:#555;">' + n.date + '</td>' +
+      '<td style="padding:10px; white-space:nowrap;">' +
+        '<button onclick="editNote(' + i + ')" style="background:none; border:none; cursor:pointer; font-size:14px; padding:2px 5px;" title="עריכה">✏️</button>' +
+        '<button onclick="deleteNote(' + i + ')" style="background:none; border:none; cursor:pointer; font-size:14px; padding:2px 5px;" title="מחיקה">🗑️</button>' +
+      '</td>' +
       '</tr>';
   });
 
@@ -1318,6 +1466,7 @@ if (loadFromLocalStorage()) {
   chart.data.datasets[0].data = w.data;
   chart.update();
 }
+loadNotesFromStorage();
 document.getElementById('card-all').classList.add('active');
 updateNavButtons();
 updateChartStats(currentData, currentView);
