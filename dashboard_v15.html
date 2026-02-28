@@ -933,8 +933,13 @@ function updateDynamicStats() {
       if(el('sec-pct-'+cat)) { el('sec-pct-'+cat).textContent=''; el('sec-pct-'+cat).className='cat-pct'; }
       return;
     }
-    if (BASE[cat] === 0) return;
-    const pct = ((catMeasured[cat] - BASE[cat]) / BASE[cat] * 100).toFixed(1);
+    // Dynamic base: only funds active (>0) at endIdx
+    const excl = EXCLUDE_FROM_PCT[cat] || [];
+    const dynamicBase = Object.entries(FUNDS)
+      .filter(([k,f]) => f.cat===cat && !excl.includes(k) && (f.data[endIdx]||0) > 0)
+      .reduce((s,[,f]) => s + (f.data[startIdx]||0), 0);
+    if (dynamicBase === 0) return;
+    const pct = ((catMeasured[cat] - dynamicBase) / dynamicBase * 100).toFixed(1);
     const sign = pct >= 0 ? '+' : '';
     const arrow = pct >= 0 ? '▲' : '▼';
     if(el('card-chg-'+cat)) el('card-chg-'+cat).textContent = arrow + ' ' + sign + pct + '%';
