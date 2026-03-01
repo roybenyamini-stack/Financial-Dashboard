@@ -14,8 +14,20 @@ body {
   font-family: 'Heebo', sans-serif;
   background: #f0f2f5;
   color: #1a1a2e;
-  min-height: 100vh;
-  padding: 20px;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+#top-fixed {
+  padding: 20px 20px 0 20px;
+  flex-shrink: 0;
+}
+#categories-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px 20px;
 }
 
 /* HEADER */
@@ -204,6 +216,7 @@ tr:last-child td { border-bottom: none; }
 <body>
 
 <!-- HEADER -->
+<div id="top-fixed">
 <div class="header">
   <div class="header-title">
     <h1>📊 תיק השקעות</h1>
@@ -307,7 +320,10 @@ tr:last-child td { border-bottom: none; }
     </div>
     <div class="active-label" id="activeLabel" style="--active-color:#1a1a2e">
       <span class="dot"></span>
-      <span id="activeLabelText">סה״כ כל הקטגוריות</span>
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span id="activeLabelText">סה״כ כל הקטגוריות</span>
+        <div id="activeLabelTags" style="display:flex;gap:4px;"></div>
+      </div>
     </div>
   </div>
   <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
@@ -384,7 +400,9 @@ tr:last-child td { border-bottom: none; }
     </div>
   </div>
 </div>
+</div><!-- end top-fixed -->
 
+<div id="categories-scroll">
 <!-- CATEGORY: מזומן -->
 <div class="category-section" id="sec-mezuman" style="--cat-color:#0891b2;--cat-color-light:#e0f2fe;--cat-color-ultralight:#f0fbff">
   <div class="category-header" id="hdr-mezuman" onclick="toggleCat('mezuman'); selectView('mezuman')">
@@ -800,6 +818,32 @@ const ALL_TOTALS = LABELS.map((_,i) => {
   Object.entries(CAT_TOTALS).forEach(([cat, arr]) => { t += cat === 'chov' ? -(arr[i]||0) : (arr[i]||0); });
   return t;
 });
+
+
+// Fund tags for chart label
+const FUND_TAGS = {
+  'מורקהש499293':        [{text:'פעילה', cls:'note-active'},{text:'מנייתית', cls:'note-equity'}],
+  'אשקהש6730513':        [{text:'מנייתית', cls:'note-equity'}],
+  '6730511אשגמל':        [{text:'פעילה', cls:'note-active'},{text:'מנייתית', cls:'note-equity'}],
+  '6899425אשגמל':        [{text:'מנייתית', cls:'note-equity'}],
+  'הפניקסגמל926-084678': [{text:'מנייתית', cls:'note-equity'}],
+  'מורגמללהשקעה':        [{text:'מנייתית', cls:'note-equity'}],
+  'הראלמניות106863031':  [{text:'מנייתית', cls:'note-equity-sold'}],
+  'מיטבשקלית':           [{text:'כספית', cls:'note-cash-fund'}],
+};
+
+function updateActiveTags(fundKey) {
+  const tagsDiv = document.getElementById('activeLabelTags');
+  if (!tagsDiv) return;
+  tagsDiv.innerHTML = '';
+  const tags = FUND_TAGS[fundKey] || [];
+  tags.forEach(t => {
+    const span = document.createElement('span');
+    span.className = 'note ' + t.cls;
+    span.textContent = t.text;
+    tagsDiv.appendChild(span);
+  });
+}
 
 const WINDOW = 13;
 let winStart = Math.max(0, LABELS.length - WINDOW);
@@ -1251,6 +1295,7 @@ function updateChart(data, color, label) {
 
 function selectView(cat) {
   currentFund = null;
+  updateActiveTags(null);
   currentView = cat;
   // Clear fund row highlights
   document.querySelectorAll('tr[data-fund]').forEach(r => r.classList.remove('fund-active'));
@@ -1268,6 +1313,8 @@ function selectView(cat) {
   }
   updateNavButtons();
 }
+
+
 
 function selectFund(fundKey, color) {
   const fund = FUNDS[fundKey];
@@ -1328,6 +1375,7 @@ function selectFund(fundKey, color) {
 
   document.querySelectorAll('.card, .card-total').forEach(c => c.classList.remove('active'));
   updateChart(fund.data.map(v => v ?? NaN), color, fund.name);
+  updateActiveTags(fundKey);
 }
 
 function toggleCat(id) {
@@ -1764,16 +1812,17 @@ markNoteMonths();
 
 
 <!-- CHAT -->
-<div id="cb" onclick="toggleChat()" style="position:fixed;bottom:24px;left:24px;width:52px;height:52px;background:#1a1a2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:9999;">💬</div>
-<div id="cp" style="display:none;position:fixed;bottom:88px;left:24px;width:340px;max-height:460px;background:#1a1a2e;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4);flex-direction:column;z-index:9999;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
+</div><!-- end categories-scroll -->
+<div id="cb" onclick="toggleChat()" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);width:56px;height:56px;background:#1a1a2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:9999;">💬</div>
+<div id="cp" style="display:none;position:fixed;bottom:96px;left:50%;transform:translateX(-50%);width:520px;max-height:600px;background:#1a1a2e;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);flex-direction:column;z-index:9999;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
   <div style="padding:12px 16px;background:#0f0f23;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);">
-    <span style="color:white;font-family:Heebo,sans-serif;font-size:14px;font-weight:600;">🤖 שאל על הדשבורד</span>
+    <span style="color:white;font-family:Heebo,sans-serif;font-size:16px;font-weight:600;">🤖 שאל על הדשבורד</span>
     <span onclick="toggleChat()" style="color:#888;cursor:pointer;font-size:18px;">✕</span>
   </div>
-  <div id="cm" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:180px;max-height:300px;"></div>
+  <div id="cm" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:240px;max-height:420px;"></div>
   <div style="padding:10px;display:flex;gap:8px;border-top:1px solid rgba(255,255,255,0.1);">
-    <input id="ci" type="text" placeholder="שאל שאלה..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;background:#0f0f23;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 10px;color:white;font-family:Heebo,sans-serif;font-size:13px;direction:rtl;outline:none;"/>
-    <button onclick="sendChat()" style="background:#4ade80;color:#0f0f23;border:none;border-radius:8px;padding:8px 12px;font-family:Heebo,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">שלח</button>
+    <input id="ci" type="text" placeholder="שאל שאלה..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;background:#0f0f23;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 10px;color:white;font-family:Heebo,sans-serif;font-size:15px;direction:rtl;outline:none;"/>
+    <button onclick="sendChat()" style="background:#4ade80;color:#0f0f23;border:none;border-radius:8px;padding:8px 12px;font-family:Heebo,sans-serif;font-size:15px;font-weight:700;cursor:pointer;">שלח</button>
   </div>
 </div>
 <script>
@@ -1791,7 +1840,7 @@ function toggleChat() {
 function addMsg(txt, isUser) {
   var cm = document.getElementById('cm');
   var d = document.createElement('div');
-  d.style.cssText = 'padding:9px 12px;border-radius:10px;font-family:Heebo,sans-serif;font-size:13px;line-height:1.5;direction:rtl;max-width:85%;white-space:pre-wrap;';
+  d.style.cssText = 'padding:9px 12px;border-radius:10px;font-family:Heebo,sans-serif;font-size:15px;line-height:1.6;direction:rtl;max-width:85%;white-space:pre-wrap;';
   if(isUser) {
     d.style.cssText += 'background:#2d2d4e;color:white;align-self:flex-end;margin-right:auto;';
   } else {
