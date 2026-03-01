@@ -994,13 +994,10 @@ function updateDynamicStats() {
     el('hdr-change-val').textContent = (v<0?'-':'') + Math.abs(v).toLocaleString();
     el('hdr-change-val').style.color = v<0 ? '#ef4444' : '#4ade80';
   }
-  // הפקדות ידועות לפי חודש (index ב-LABELS)
+  // הפקדות ידועות לפי חודש (index ב-LABELS) - רק הפקדות אמיתיות
   const DEPOSIT_EVENTS = [
-    { col: 0,  amt: 286, desc: 'הראל כללי' },
     { col: 1,  amt: 81,  desc: 'גמל להשקעה' },
-    { col: 10, amt: 414, desc: 'פניקס' },
     { col: 13, amt: 901, desc: 'קרן כספית' },
-    { col: 14, amt: 173, desc: 'הכרה במזומן' },
   ];
   const depositStart = winStart;
   const depositEnd = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
