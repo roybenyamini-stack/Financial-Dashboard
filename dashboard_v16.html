@@ -32,21 +32,21 @@ body {
 .header {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   border-radius: 20px;
-  padding: 24px 32px;
-  margin-bottom: 20px;
+  padding: 14px 24px;
+  margin-bottom: 10px;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 8px 32px rgba(15,52,96,0.3);
 }
-.header-title h1 { font-size: 20px; font-weight: 800; }
+.header-title h1 { font-size: 16px; font-weight: 800; }
 .header-title p { font-size: 12px; opacity: 0.5; margin-top: 3px; }
 .header-stats { display: flex; gap: 36px; align-items: center; }
 .stat-item { text-align: center; display: flex; flex-direction: column; align-items: center; }
 .stat-value { margin-top: 8px; margin-bottom: 4px; }
 .stat-label { font-size: 10px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
-.stat-value { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+.stat-value { font-size: 18px; font-weight: 800; letter-spacing: -1px; }
 .stat-value.green { color: #4ade80; }
 .stat-change { font-size: 11px; opacity: 0.6; margin-top: 2px; }
 .divider { width: 1px; height: 44px; background: rgba(255,255,255,0.12); }
@@ -56,12 +56,12 @@ body {
   display: grid;
   grid-template-columns: auto repeat(9, 1fr);
   gap: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .card-total {
   background: #1a1a2e;
   border-radius: 14px;
-  padding: 16px 22px;
+  padding: 10px 16px;
   color: white;
   cursor: pointer;
   transition: all 0.2s;
@@ -73,13 +73,13 @@ body {
 }
 .card-total.active, .card-total:hover { background: #0f3460; transform: translateY(-2px); }
 .card-total .label { font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.8px; }
-.card-total .value { font-size: 20px; font-weight: 800; margin-top: 4px; }
+.card-total .value { font-size: 16px; font-weight: 800; margin-top: 2px; }
 .card-total .change { font-size: 11px; color: #4ade80; margin-top: 3px; }
 
 .card {
   background: white;
   border-radius: 14px;
-  padding: 16px 20px;
+  padding: 10px 14px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.06);
   border-right: 4px solid var(--cat-color);
   cursor: pointer;
@@ -90,7 +90,7 @@ body {
 .card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
 .card.active { border: 2px solid var(--cat-color); border-right: 4px solid var(--cat-color); box-shadow: 0 0 0 3px var(--cat-color-alpha); }
 .card .card-label { font-size: 11px; color: #999; font-weight: 500; margin-bottom: 5px; }
-.card .card-value { font-size: 20px; font-weight: 800; color: #1a1a2e; }
+.card .card-value { font-size: 16px; font-weight: 800; color: #1a1a2e; }
 .card .card-change { font-size: 11px; font-weight: 600; margin-top: 5px; }
 .card .card-change.pos { color: #16a34a; }
 
@@ -98,7 +98,7 @@ body {
 .chart-section {
   background: white;
   border-radius: 18px;
-  padding: 24px 28px;
+  padding: 12px 20px;
   margin-bottom: 20px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.06);
   width: 100%;
@@ -129,9 +129,9 @@ body {
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--active-color, #1a1a2e);
 }
-.chart-container { height: 240px; margin-top: 16px; width: 100%; position: relative; }
+.chart-container { height: 160px; margin-top: 8px; width: 100%; position: relative; }
 @media (max-width: 900px) {
-  .chart-container { height: 200px; }
+  .chart-container { height: 140px; }
   .chart-section { padding: 16px; }
   .chart-header { flex-direction: column; gap: 8px; }
 }
@@ -249,7 +249,7 @@ tr:last-child td { border-bottom: none; }
     </label>
     <span id="excel-status" style="color:rgba(255,255,255,0.7); font-size:11px; margin-right:10px;"></span>
     <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
-    <button onclick="toggleChat()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">💬 צ׳אט</button>
+    <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; margin-right:8px; opacity:0.85;" title="צ׳אט">💬</span>
   </div>
 </div>
 
