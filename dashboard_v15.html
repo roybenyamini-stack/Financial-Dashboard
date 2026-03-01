@@ -128,7 +128,7 @@ body {
 
 /* CATEGORY SECTIONS */
 .category-section {
-  background: white;
+  background: var(--cat-color-ultralight, white);
   border-radius: 14px;
   margin-bottom: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -389,6 +389,7 @@ tr:last-child td { border-bottom: none; }
     <div class="cat-header-left">
       <div class="cat-total" id="sec-val-mezuman">1,105</div>
       <div class="cat-pct" id="sec-pct-mezuman"></div>
+      <div class="cat-pct" id="sec-ytd-mezuman" style="font-size:10px;opacity:0.8;"></div>
       <div class="chevron" id="chev-mezuman">▼</div>
     </div>
   </div>
@@ -432,6 +433,7 @@ tr:last-child td { border-bottom: none; }
     <div class="cat-header-left">
       <div class="cat-total" id="sec-val-hishtalmut">4,606</div>
       <div class="cat-pct pos" id="sec-pct-hishtalmut">+16.9%</div>
+      <div class="cat-pct" id="sec-ytd-hishtalmut" style="font-size:10px;opacity:0.8;"></div>
       <div class="chevron" id="chev-hishtalmut">▼</div>
     </div>
   </div>
@@ -480,6 +482,7 @@ tr:last-child td { border-bottom: none; }
     <div class="cat-header-left">
       <div class="cat-total" id="sec-val-gemel">1,730</div>
       <div class="cat-pct pos" id="sec-pct-gemel">+17.6%</div>
+      <div class="cat-pct" id="sec-ytd-gemel" style="font-size:10px;opacity:0.8;"></div>
       <div class="chevron" id="chev-gemel">▼</div>
     </div>
   </div>
@@ -532,6 +535,7 @@ tr:last-child td { border-bottom: none; }
     <div class="cat-header-left">
       <div class="cat-total" id="sec-val-gemel_invest">902</div>
       <div class="cat-pct pos" id="sec-pct-gemel_invest">+21.8%</div>
+      <div class="cat-pct" id="sec-ytd-gemel_invest" style="font-size:10px;opacity:0.8;"></div>
       <div class="chevron" id="chev-gemel_invest">▼</div>
     </div>
   </div>
@@ -560,7 +564,7 @@ tr:last-child td { border-bottom: none; }
 </div>
 
 <!-- CATEGORY: הראל + מיטב -->
-<div class="category-section" id="sec-harel" style="margin-bottom: 20px;" style="--cat-color:#a16207;--cat-color-light:#fef9c3;--cat-color-ultralight:#fffef5">
+<div class="category-section" id="sec-harel" style="--cat-color:#a16207;--cat-color-light:#fef9c3;--cat-color-ultralight:#fefce8" style="--cat-color:#a16207;--cat-color-light:#fef9c3;--cat-color-ultralight:#fffef5">
   <div class="category-header" id="hdr-harel" onclick="toggleCat('harel'); selectView('harel')">
     <div class="cat-header-right">
       <div class="cat-icon">🏛</div>
@@ -572,6 +576,7 @@ tr:last-child td { border-bottom: none; }
     <div class="cat-header-left">
       <div class="cat-total" id="sec-val-harel">7,726</div>
       <div class="cat-pct pos" id="sec-pct-harel">+11.4%</div>
+      <div class="cat-pct" id="sec-ytd-harel" style="font-size:10px;opacity:0.8;"></div>
       <div class="chevron" id="chev-harel">▼</div>
     </div>
   </div>
@@ -605,7 +610,7 @@ tr:last-child td { border-bottom: none; }
 
 <!-- CATEGORY: מיטב קרנות -->
 <div style="margin-top: 8px;"></div>
-<div class="category-section" id="sec-meitav" style="margin-top: 20px; --cat-color:#7c3aed;--cat-color-light:#ede9fe;--cat-color-ultralight:#f8f7ff">
+<div class="category-section" id="sec-meitav" style="--cat-color:#7c3aed;--cat-color-light:#ede9fe;--cat-color-ultralight:#f8f7ff">
   <div class="category-header" id="hdr-meitav" onclick="toggleCat('meitav'); selectView('meitav')">
     <div class="cat-header-right">
       <div class="cat-icon">📊</div>
@@ -617,6 +622,7 @@ tr:last-child td { border-bottom: none; }
     <div class="cat-header-left">
       <div class="cat-total" id="sec-val-meitav">600</div>
       <div class="cat-pct pos" id="sec-pct-meitav">+13.2%</div>
+      <div class="cat-pct" id="sec-ytd-meitav" style="font-size:10px;opacity:0.8;"></div>
       <div class="chevron" id="chev-meitav">▼</div>
     </div>
   </div>
@@ -984,6 +990,27 @@ function updateDynamicStats() {
     if(el('sec-pct-'+cat)) {
       el('sec-pct-'+cat).textContent = sign + pct + '%';
       el('sec-pct-'+cat).className = 'cat-pct ' + (parseFloat(pct) >= 0 ? 'pos' : 'neg');
+    }
+    // YTD: Jan 2026 to endIdx
+    const janIdx = LABELS.indexOf('ינו׳ 26');
+    if(el('sec-ytd-'+cat) && janIdx >= 0 && endIdx > janIdx) {
+      const excl2 = EXCLUDE_FROM_PCT[cat] || [];
+      const ytdEnd = Object.entries(FUNDS)
+        .filter(([k,f]) => f.cat===cat && !excl2.includes(k) && (f.data[endIdx]||0) > 0)
+        .reduce((s,[,f]) => s+(f.data[endIdx]||0), 0);
+      const ytdStart = Object.entries(FUNDS)
+        .filter(([k,f]) => f.cat===cat && !excl2.includes(k) && (f.data[endIdx]||0) > 0)
+        .reduce((s,[,f]) => s+(f.data[janIdx]||0), 0);
+      if(ytdStart > 0) {
+        const ytd = ((ytdEnd - ytdStart) / ytdStart * 100).toFixed(1);
+        const ytdSign = parseFloat(ytd) >= 0 ? '+' : '';
+        el('sec-ytd-'+cat).textContent = ytdSign + ytd + '% YTD';
+        el('sec-ytd-'+cat).className = 'cat-pct ' + (parseFloat(ytd) >= 0 ? 'pos' : 'neg');
+      } else {
+        el('sec-ytd-'+cat).textContent = '';
+      }
+    } else if(el('sec-ytd-'+cat)) {
+      el('sec-ytd-'+cat).textContent = '';
     }
   });
 }
