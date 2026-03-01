@@ -1097,6 +1097,14 @@ function updateChartStats(data, viewCat) {
     returnLabel.textContent = 'תשואה בחלון';
     document.getElementById('chart-accum-label').textContent = 'צבירה';
     document.getElementById('chart-accum').textContent = Math.round(last).toLocaleString();
+    // If last value is 0 (sold/inactive) - don't show growth or return
+    if(last === 0) {
+      growthEl.textContent = '—';
+      growthEl.style.color = '#888';
+      returnEl.textContent = '—';
+      returnEl.style.color = '#888';
+      return;
+    }
     growthEl.textContent = (growth < 0 ? '-' : '') + Math.abs(Math.round(growth)).toLocaleString();
     growthEl.style.color = growth >= 0 ? '#16a34a' : '#ef4444';
     // Use dynamic base for return% - only when viewing full category (not single fund)
