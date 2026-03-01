@@ -994,7 +994,7 @@ function updateDynamicStats() {
     el('hdr-change-val').textContent = (v<0?'-':'') + Math.abs(v).toLocaleString();
     el('hdr-change-val').style.color = v<0 ? '#ef4444' : '#4ade80';
   }
-  const knownDeposits = 1682; // 81k גמל + 414k פניקס + 286k הראל כללי + 901k קרן כספית
+  const knownDeposits = 1855; // 81k גמל + 414k פניקס + 286k הראל כללי + 901k קרן כספית + 173k הכרה במזומן
   const returnsAmt = Math.round(grandDiff) - knownDeposits;
   if(el('hdr-returns-val')) {
     el('hdr-returns-val').textContent = (returnsAmt<0?'-':'') + Math.abs(returnsAmt).toLocaleString();
