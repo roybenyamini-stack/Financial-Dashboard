@@ -992,7 +992,7 @@ function updateDynamicStats() {
       el('sec-pct-'+cat).className = 'cat-pct ' + (parseFloat(pct) >= 0 ? 'pos' : 'neg');
     }
     // YTD: Jan 2026 to endIdx
-    const janIdx = LABELS.indexOf('ינו׳ 26');
+    const janIdx = LABELS.findIndex(l => l.includes('ינו') && l.includes('26'));
     if(el('sec-ytd-'+cat) && janIdx >= 0 && endIdx > janIdx) {
       const excl2 = EXCLUDE_FROM_PCT[cat] || [];
       const ytdEnd = Object.entries(FUNDS)
