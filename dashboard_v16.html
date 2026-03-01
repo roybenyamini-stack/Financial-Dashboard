@@ -153,7 +153,8 @@ body {
 .cat-name { font-size: 14px; font-weight: 700; }
 .cat-count { font-size: 11px; color: #aaa; margin-top: 1px; }
 .cat-header-left { display: flex; align-items: center; gap: 16px; }
-.cat-total { font-size: 17px; font-weight: 800; min-width: 60px; }
+.cat-total { font-size: 17px; font-weight: 800; min-width: 60px; text-align: left; }
+.cat-pct-spacer { min-width: 120px; display: inline-block; }
 .cat-pct { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
 .cat-pct.pos { background: #dcfce7; color: #16a34a; }
 .chevron { font-size: 11px; color: #ccc; transition: transform 0.25s; }
@@ -395,11 +396,11 @@ tr:last-child td { border-bottom: none; }
       </div>
     </div>
     <div class="cat-header-left">
-      <div class="cat-total" id="sec-val-mezuman">1,105</div>
+      <div class="cat-pct-spacer"></div><div class="cat-total" id="sec-val-mezuman">1,105</div>
       <div class="cat-pct" id="sec-pct-mezuman"></div>
       <div class="cat-pct" id="sec-ytd-mezuman" style="font-size:10px;opacity:0.8;"></div>
       
-    </div><div class="chevron" id="chev-mezuman">▼</div>
+    <div class="chevron" id="chev-mezuman">▼</div></div>
   </div>
   <div class="category-body" id="body-mezuman">
     <table>
@@ -443,7 +444,7 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-pct pos" id="sec-pct-hishtalmut">+16.9%</div>
       <div class="cat-pct" id="sec-ytd-hishtalmut" style="font-size:10px;opacity:0.8;"></div>
       
-    </div><div class="chevron" id="chev-hishtalmut">▼</div>
+    <div class="chevron" id="chev-hishtalmut">▼</div></div>
   </div>
   <div class="category-body" id="body-hishtalmut">
     <table>
@@ -492,7 +493,7 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-pct pos" id="sec-pct-gemel">+17.6%</div>
       <div class="cat-pct" id="sec-ytd-gemel" style="font-size:10px;opacity:0.8;"></div>
       
-    </div><div class="chevron" id="chev-gemel">▼</div>
+    <div class="chevron" id="chev-gemel">▼</div></div>
   </div>
   <div class="category-body" id="body-gemel">
     <table>
@@ -545,7 +546,7 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-pct pos" id="sec-pct-gemel_invest">+21.8%</div>
       <div class="cat-pct" id="sec-ytd-gemel_invest" style="font-size:10px;opacity:0.8;"></div>
       
-    </div><div class="chevron" id="chev-gemel_invest">▼</div>
+    <div class="chevron" id="chev-gemel_invest">▼</div></div>
   </div>
   <div class="category-body" id="body-gemel_invest">
     <table>
@@ -586,7 +587,7 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-pct pos" id="sec-pct-harel">+11.4%</div>
       <div class="cat-pct" id="sec-ytd-harel" style="font-size:10px;opacity:0.8;"></div>
       
-    </div><div class="chevron" id="chev-harel">▼</div>
+    <div class="chevron" id="chev-harel">▼</div></div>
   </div>
   <div class="category-body" id="body-harel">
     <table>
@@ -632,7 +633,7 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-pct pos" id="sec-pct-meitav">+13.2%</div>
       <div class="cat-pct" id="sec-ytd-meitav" style="font-size:10px;opacity:0.8;"></div>
       
-    </div><div class="chevron" id="chev-meitav">▼</div>
+    <div class="chevron" id="chev-meitav">▼</div></div>
   </div>
   <div class="category-body" id="body-meitav">
     <table>
@@ -665,10 +666,10 @@ tr:last-child td { border-bottom: none; }
       </div>
     </div>
     <div class="cat-header-left">
-      <div class="cat-total" id="sec-val-arbitrage">0</div>
+      <div class="cat-pct-spacer"></div><div class="cat-total" id="sec-val-arbitrage">0</div>
       <div class="cat-pct" id="sec-pct-arbitrage"></div>
       
-    </div><div class="chevron" id="chev-arbitrage">▼</div>
+    <div class="chevron" id="chev-arbitrage">▼</div></div>
   </div>
   <div class="category-body" id="body-arbitrage">
     <table>
@@ -696,7 +697,7 @@ tr:last-child td { border-bottom: none; }
       </div>
     </div>
     <div class="cat-header-left">
-      <div class="cat-total" id="sec-val-dira">1,200</div>
+      <div class="cat-pct-spacer"></div><div class="cat-total" id="sec-val-dira">1,200</div>
       <div class="cat-pct" id="sec-pct-dira"></div>
     </div>
   </div>
@@ -713,10 +714,10 @@ tr:last-child td { border-bottom: none; }
       </div>
     </div>
     <div class="cat-header-left">
-      <div class="cat-total" id="sec-val-chov" style="color:#ef4444;">1,768 </div>
+      <div class="cat-pct-spacer"></div><div class="cat-total" id="sec-val-chov" style="color:#ef4444;">1,768 </div>
       <div class="cat-pct" id="sec-pct-chov"></div>
       
-    </div><div class="chevron" id="chev-chov">▼</div>
+    <div class="chevron" id="chev-chov">▼</div></div>
   </div>
   <div class="category-body" id="body-chov">
     <table>
