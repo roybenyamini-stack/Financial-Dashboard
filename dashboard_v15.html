@@ -1099,8 +1099,8 @@ function updateChartStats(data, viewCat) {
     document.getElementById('chart-accum').textContent = Math.round(last).toLocaleString();
     growthEl.textContent = (growth < 0 ? '-' : '') + Math.abs(Math.round(growth)).toLocaleString();
     growthEl.style.color = growth >= 0 ? '#16a34a' : '#ef4444';
-    // Use dynamic base for return% - only active funds at end of window
-    if(viewCat && viewCat !== 'all') {
+    // Use dynamic base for return% - only when viewing full category (not single fund)
+    if(viewCat && viewCat !== 'all' && !currentFund) {
       const endIdx = winStart + w.data.length - 1;
       const startIdx = winStart;
       const excl = EXCLUDE_FROM_PCT[viewCat] || [];
