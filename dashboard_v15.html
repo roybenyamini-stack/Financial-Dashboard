@@ -1099,9 +1099,25 @@ function updateChartStats(data, viewCat) {
     document.getElementById('chart-accum').textContent = Math.round(last).toLocaleString();
     growthEl.textContent = (growth < 0 ? '-' : '') + Math.abs(Math.round(growth)).toLocaleString();
     growthEl.style.color = growth >= 0 ? '#16a34a' : '#ef4444';
-    if(first > 0) {
+    // Use dynamic base for return% - only active funds at end of window
+    if(viewCat && viewCat !== 'all') {
+      const endIdx = winStart + w.data.length - 1;
+      const startIdx = winStart;
+      const excl = EXCLUDE_FROM_PCT[viewCat] || [];
+      const measuredEnd = Object.entries(FUNDS)
+        .filter(([k,f]) => f.cat===viewCat && !excl.includes(k) && (f.data[endIdx]||0) > 0)
+        .reduce((s,[,f]) => s+(f.data[endIdx]||0), 0);
+      const measuredStart = Object.entries(FUNDS)
+        .filter(([k,f]) => f.cat===viewCat && !excl.includes(k) && (f.data[endIdx]||0) > 0)
+        .reduce((s,[,f]) => s+(f.data[startIdx]||0), 0);
+      if(measuredStart > 0) {
+        const ret = ((measuredEnd - measuredStart) / measuredStart * 100).toFixed(1);
+        returnEl.textContent = (ret >= 0 ? '+' : '') + ret + '%';
+        returnEl.style.color = ret >= 0 ? '#16a34a' : '#ef4444';
+      } else { returnEl.textContent = '—'; }
+    } else if(first > 0) {
       const ret = ((last - first) / first * 100).toFixed(1);
-      returnEl.textContent = (ret < 0 ? '-' : '') + Math.abs(ret) + '%';
+      returnEl.textContent = (ret >= 0 ? '+' : '') + ret + '%';
       returnEl.style.color = ret >= 0 ? '#16a34a' : '#ef4444';
     } else { returnEl.textContent = '—'; }
   }
