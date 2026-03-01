@@ -153,7 +153,7 @@ body {
 .cat-name { font-size: 14px; font-weight: 700; }
 .cat-count { font-size: 11px; color: #aaa; margin-top: 1px; }
 .cat-header-left { display: flex; align-items: center; gap: 16px; }
-.cat-total { font-size: 17px; font-weight: 800; min-width: 65px; text-align: right; order: -1; }
+.cat-total { font-size: 17px; font-weight: 800; min-width: 60px; }
 .cat-pct { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
 .cat-pct.pos { background: #dcfce7; color: #16a34a; }
 .chevron { font-size: 11px; color: #ccc; transition: transform 0.25s; }
@@ -188,7 +188,11 @@ tr:last-child td { border-bottom: none; }
 .dash { color: #ddd; }
 
 .total-row td { font-weight: 700 !important; background: #f8f9ff !important; border-top: 2px solid #e8eaf6; }
-.note { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 6px; background: #fff3cd; color: #856404; margin-right: 3px; vertical-align: middle; }
+.note { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 6px; margin-right: 3px; vertical-align: middle; font-weight: 600; }
+.note-active    { background: #dcfce7; color: #15803d; }
+.note-equity    { background: #dbeafe; color: #1d4ed8; }
+.note-equity-sold { background: #f1f5f9; color: #94a3b8; }
+.note-cash-fund { background: #f3e8ff; color: #7e22ce; }
 .delta-row { display: none; background: #f8faff; }
 .delta-row.visible { display: table-row; }
 .delta-row td { font-size: 11px; padding: 3px 12px; border-bottom: 1px solid #f0f0f0; color: #888; }
@@ -394,8 +398,8 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-total" id="sec-val-mezuman">1,105</div>
       <div class="cat-pct" id="sec-pct-mezuman"></div>
       <div class="cat-pct" id="sec-ytd-mezuman" style="font-size:10px;opacity:0.8;"></div>
-      <div class="chevron" id="chev-mezuman">▼</div>
-    </div>
+      
+    </div><div class="chevron" id="chev-mezuman">▼</div>
   </div>
   <div class="category-body" id="body-mezuman">
     <table>
@@ -413,7 +417,7 @@ tr:last-child td { border-bottom: none; }
           <td data-col="0" class="val">119</td><td data-col="1" class="val">106</td><td data-col="2" class="val">39</td><td data-col="3" class="val">22</td><td data-col="4" class="val">47</td><td data-col="5" class="val">50</td><td data-col="6" class="val">50</td><td data-col="7" class="val">53</td><td data-col="8" class="val">60</td><td data-col="9" class="val">161</td><td data-col="10" class="val">99</td><td data-col="11" class="val">102</td><td data-col="12" class="val">107</td><td data-col="13" class="val">104</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('מיטבשקלית','#0891b2')" data-fund="מיטבשקלית">
-          <td>מיטב קרן כספית</td>
+          <td>מיטב קרן כספית <span class="note note-cash-fund">כספית</span></td>
           <td data-col="0" class="dash">—</td><td data-col="1" class="dash">—</td><td data-col="2" class="dash">—</td><td data-col="3" class="dash">—</td><td data-col="4" class="dash">—</td><td data-col="5" class="dash">—</td><td data-col="6" class="dash">—</td><td data-col="7" class="dash">—</td><td data-col="8" class="dash">—</td><td data-col="9" class="dash">—</td><td data-col="10" class="dash">—</td><td data-col="11" class="dash">—</td><td data-col="12" class="dash">—</td><td data-col="13" class="val">901</td><td data-col="14" class="val">—</td>
         </tr>
         <tr class="total-row" onclick="selectView('mezuman')">
@@ -438,8 +442,8 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-total" id="sec-val-hishtalmut">4,606</div>
       <div class="cat-pct pos" id="sec-pct-hishtalmut">+16.9%</div>
       <div class="cat-pct" id="sec-ytd-hishtalmut" style="font-size:10px;opacity:0.8;"></div>
-      <div class="chevron" id="chev-hishtalmut">▼</div>
-    </div>
+      
+    </div><div class="chevron" id="chev-hishtalmut">▼</div>
   </div>
   <div class="category-body" id="body-hishtalmut">
     <table>
@@ -453,7 +457,7 @@ tr:last-child td { border-bottom: none; }
           <td data-col="0" class="val">2,406</td><td data-col="1" class="val">2,437</td><td data-col="2" class="val">2,416</td><td data-col="3" class="val">2,386</td><td data-col="4" class="val">2,401</td><td data-col="5" class="val">2,469</td><td data-col="6" class="val">2,548</td><td data-col="7" class="val">2,567</td><td data-col="8" class="val">2,595</td><td data-col="9" class="val">2,654</td><td data-col="10" class="val">2,685</td><td data-col="11" class="val">2,700</td><td data-col="12" class="val">2,700</td><td data-col="13" class="val">2,743</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('אשקהש6730513','#dc2626')" data-fund="אשקהש6730513">
-          <td>א״ש ק״הש 6730513 ← מיטב 917-442504</td>
+          <td>א״ש ק״הש 6730513 ← מיטב 917-442504 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">772</td><td data-col="1" class="val">792</td><td data-col="2" class="val">770</td><td data-col="3" class="val">747</td><td data-col="4" class="val">754</td><td data-col="5" class="val">802</td><td data-col="6" class="val">846</td><td data-col="7" class="val">860</td><td data-col="8" class="val">869</td><td data-col="9" class="val">905</td><td data-col="10" class="val">919</td><td data-col="11" class="val">921</td><td data-col="12" class="val">941</td><td data-col="13" class="val">981</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('אשקהש40035706','#dc2626')" data-fund="אשקהש40035706">
@@ -461,7 +465,7 @@ tr:last-child td { border-bottom: none; }
           <td data-col="0" class="val">281</td><td data-col="1" class="val">285</td><td data-col="2" class="val">283</td><td data-col="3" class="val">279</td><td data-col="4" class="val">281</td><td data-col="5" class="val">289</td><td data-col="6" class="val">298</td><td data-col="7" class="val">300</td><td data-col="8" class="val">304</td><td data-col="9" class="val">310</td><td data-col="10" class="val">314</td><td data-col="11" class="val">316</td><td data-col="12" class="val">316</td><td data-col="13" class="val">321</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('מורקהש499293','#dc2626')" data-fund="מורקהש499293">
-          <td>מור קה״ש 499293 ← מיטב 917-443195 <span class="note">פעילה</span></td>
+          <td>מור קה״ש 499293 ← מיטב 917-443195 <span class="note note-active">פעילה</span><span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">320</td><td data-col="1" class="val">339</td><td data-col="2" class="val">348</td><td data-col="3" class="val">350</td><td data-col="4" class="val">362</td><td data-col="5" class="val">391</td><td data-col="6" class="val">418</td><td data-col="7" class="val">435</td><td data-col="8" class="val">448</td><td data-col="9" class="val">473</td><td data-col="10" class="val">493</td><td data-col="11" class="val">508</td><td data-col="12" class="val">529</td><td data-col="13" class="val">561</td><td data-col="14" class="val">—</td>
         </tr>
         <tr class="total-row" onclick="selectView('hishtalmut')">
@@ -487,8 +491,8 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-total" id="sec-val-gemel">1,730</div>
       <div class="cat-pct pos" id="sec-pct-gemel">+17.6%</div>
       <div class="cat-pct" id="sec-ytd-gemel" style="font-size:10px;opacity:0.8;"></div>
-      <div class="chevron" id="chev-gemel">▼</div>
-    </div>
+      
+    </div><div class="chevron" id="chev-gemel">▼</div>
   </div>
   <div class="category-body" id="body-gemel">
     <table>
@@ -498,7 +502,7 @@ tr:last-child td { border-bottom: none; }
       </tr></thead>
       <tbody>
         <tr onclick="selectFund('6730511אשגמל','#b45309')" data-fund="6730511אשגמל">
-          <td>א״ש גמל 6730511 ← מור 1428298</td>
+          <td>א״ש גמל 6730511 ← מור 1428298 <span class="note note-active">פעילה</span><span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">402</td><td data-col="1" class="val">413</td><td data-col="2" class="val">402</td><td data-col="3" class="val">391</td><td data-col="4" class="val">395</td><td data-col="5" class="val">421</td><td data-col="6" class="val">444</td><td data-col="7" class="val">452</td><td data-col="8" class="val">457</td><td data-col="9" class="val">476</td><td data-col="10" class="val">484</td><td data-col="11" class="val">490</td><td data-col="12" class="val">495</td><td data-col="13" class="val">517</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('אשגמל39774495','#b45309')" data-fund="אשגמל39774495">
@@ -510,11 +514,11 @@ tr:last-child td { border-bottom: none; }
           <td data-col="0" class="val">218</td><td data-col="1" class="val">220</td><td data-col="2" class="val">220</td><td data-col="3" class="val">220</td><td data-col="4" class="val">222</td><td data-col="5" class="val">224</td><td data-col="6" class="val">230</td><td data-col="7" class="val">231</td><td data-col="8" class="val">233</td><td data-col="9" class="val">237</td><td data-col="10" class="val">240</td><td data-col="11" class="val">242</td><td data-col="12" class="val">242</td><td data-col="13" class="val">245</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('6899425אשגמל','#b45309')" data-fund="6899425אשגמל">
-          <td>א״ש גמל 6899425 ← מור 1375911</td>
+          <td>א״ש גמל 6899425 ← מור 1375911 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">176</td><td data-col="1" class="val">180</td><td data-col="2" class="val">176</td><td data-col="3" class="val">170</td><td data-col="4" class="val">172</td><td data-col="5" class="val">183</td><td data-col="6" class="val">193</td><td data-col="7" class="val">196</td><td data-col="8" class="val">198</td><td data-col="9" class="val">206</td><td data-col="10" class="val">209</td><td data-col="11" class="val">209</td><td data-col="12" class="val">213</td><td data-col="13" class="val">223</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('הפניקסגמל926-084678','#be185d')" data-fund="הפניקסגמל926-084678" style="background:#fff0f6;">
-          <td>הפניקס גמל 926-084678 <span class="note">חיצוני</span></td>
+          <td>הפניקס גמל 926-084678 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="dash">—</td><td data-col="1" class="dash">—</td><td data-col="2" class="dash">—</td><td data-col="3" class="dash">—</td><td data-col="4" class="dash">—</td><td data-col="5" class="dash">—</td><td data-col="6" class="dash">—</td><td data-col="7" class="dash">—</td><td data-col="8" class="dash">—</td><td data-col="9" class="dash">—</td><td data-col="10" class="val">414</td><td data-col="11" class="val">414</td><td data-col="12" class="val">437</td><td data-col="13" class="val">445</td><td data-col="14" class="val">—</td>
         </tr>
         <tr class="total-row" onclick="selectView('gemel')">
@@ -540,8 +544,8 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-total" id="sec-val-gemel_invest">902</div>
       <div class="cat-pct pos" id="sec-pct-gemel_invest">+21.8%</div>
       <div class="cat-pct" id="sec-ytd-gemel_invest" style="font-size:10px;opacity:0.8;"></div>
-      <div class="chevron" id="chev-gemel_invest">▼</div>
-    </div>
+      
+    </div><div class="chevron" id="chev-gemel_invest">▼</div>
   </div>
   <div class="category-body" id="body-gemel_invest">
     <table>
@@ -555,7 +559,7 @@ tr:last-child td { border-bottom: none; }
           <td data-col="0" class="val">286</td><td data-col="1" class="val">371</td><td data-col="2" class="val">368</td><td data-col="3" class="val">364</td><td data-col="4" class="val">366</td><td data-col="5" class="val">376</td><td data-col="6" class="val">389</td><td data-col="7" class="val">391</td><td data-col="8" class="val">396</td><td data-col="9" class="val">405</td><td data-col="10" class="val">410</td><td data-col="11" class="val">411</td><td data-col="12" class="val">415</td><td data-col="13" class="val">424</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('מורגמללהשקעה','#9f1239')" data-fund="מורגמללהשקעה">
-          <td>מור גמל להשקעה ← מיטב 912-443197</td>
+          <td>מור גמל להשקעה ← מיטב 912-443197 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">364</td><td data-col="1" class="val">376</td><td data-col="2" class="val">377</td><td data-col="3" class="val">370</td><td data-col="4" class="val">373</td><td data-col="5" class="val">393</td><td data-col="6" class="val">411</td><td data-col="7" class="val">419</td><td data-col="8" class="val">422</td><td data-col="9" class="val">436</td><td data-col="10" class="val">446</td><td data-col="11" class="val">449</td><td data-col="12" class="val">458</td><td data-col="13" class="val">478</td><td data-col="14" class="val">—</td>
         </tr>
         <tr class="total-row" onclick="selectView('gemel_invest')">
@@ -581,8 +585,8 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-total" id="sec-val-harel">7,726</div>
       <div class="cat-pct pos" id="sec-pct-harel">+11.4%</div>
       <div class="cat-pct" id="sec-ytd-harel" style="font-size:10px;opacity:0.8;"></div>
-      <div class="chevron" id="chev-harel">▼</div>
-    </div>
+      
+    </div><div class="chevron" id="chev-harel">▼</div>
   </div>
   <div class="category-body" id="body-harel">
     <table>
@@ -596,11 +600,11 @@ tr:last-child td { border-bottom: none; }
           <td data-col="0" class="val">4,469</td><td data-col="1" class="val">4,473</td><td data-col="2" class="val">4,440</td><td data-col="3" class="val">4,444</td><td data-col="4" class="val">4,536</td><td data-col="5" class="val">4,630</td><td data-col="6" class="val">4,704</td><td data-col="7" class="val">4,758</td><td data-col="8" class="val">4,810</td><td data-col="9" class="val">4,927</td><td data-col="10" class="val">4,949</td><td data-col="11" class="val">5,019</td><td data-col="12" class="val">5,119</td><td data-col="13" class="val">5,174</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('הראלמניות106863031','#a16207')" data-fund="הראלמניות106863031">
-          <td>הראל מניות 106863031</td>
+          <td>הראל מניות 106863031 <span class="note note-equity-sold">מנייתית</span></td>
           <td data-col="0" class="val">1,680</td><td data-col="1" class="val">1,631</td><td data-col="2" class="val">1,572</td><td data-col="3" class="val">1,515</td><td data-col="4" class="val">1,620</td><td data-col="5" class="val">1,655</td><td data-col="6" class="val">1,703</td><td data-col="7" class="val">1,732</td><td data-col="8" class="val">1,799</td><td data-col="9" class="val">1,828</td><td data-col="10" class="val">1,775</td><td data-col="11" class="val">1,768</td><td data-col="12" class="val">1,766</td><td data-col="13" class="val">1,664</td><td data-col="14" class="val">—</td>
         </tr>
         <tr onclick="selectFund('הראלכללי109062745','#a16207')" data-fund="הראלכללי109062745">
-          <td>הראל כללי 109062745 <span class="note">חיצוני</span></td>
+          <td>הראל כללי 109062745</td>
           <td data-col="0" class="dash">—</td><td data-col="1" class="dash">—</td><td data-col="2" class="dash">—</td><td data-col="3" class="dash">—</td><td data-col="4" class="val">252</td><td data-col="5" class="val">258</td><td data-col="6" class="val">262</td><td data-col="7" class="val">265</td><td data-col="8" class="val">268</td><td data-col="9" class="val">274</td><td data-col="10" class="val">275</td><td data-col="11" class="val">279</td><td data-col="12" class="val">285</td><td data-col="13" class="val">288</td><td data-col="14" class="val">—</td>
         </tr>
 
@@ -627,8 +631,8 @@ tr:last-child td { border-bottom: none; }
       <div class="cat-total" id="sec-val-meitav">600</div>
       <div class="cat-pct pos" id="sec-pct-meitav">+13.2%</div>
       <div class="cat-pct" id="sec-ytd-meitav" style="font-size:10px;opacity:0.8;"></div>
-      <div class="chevron" id="chev-meitav">▼</div>
-    </div>
+      
+    </div><div class="chevron" id="chev-meitav">▼</div>
   </div>
   <div class="category-body" id="body-meitav">
     <table>
@@ -663,8 +667,8 @@ tr:last-child td { border-bottom: none; }
     <div class="cat-header-left">
       <div class="cat-total" id="sec-val-arbitrage">0</div>
       <div class="cat-pct" id="sec-pct-arbitrage"></div>
-      <div class="chevron" id="chev-arbitrage">▼</div>
-    </div>
+      
+    </div><div class="chevron" id="chev-arbitrage">▼</div>
   </div>
   <div class="category-body" id="body-arbitrage">
     <table>
@@ -711,8 +715,8 @@ tr:last-child td { border-bottom: none; }
     <div class="cat-header-left">
       <div class="cat-total" id="sec-val-chov" style="color:#ef4444;">1,768 </div>
       <div class="cat-pct" id="sec-pct-chov"></div>
-      <div class="chevron" id="chev-chov">▼</div>
-    </div>
+      
+    </div><div class="chevron" id="chev-chov">▼</div>
   </div>
   <div class="category-body" id="body-chov">
     <table>
