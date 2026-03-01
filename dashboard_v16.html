@@ -230,9 +230,8 @@ tr:last-child td { border-bottom: none; }
     <div class="stat-item" style="padding-top: 18px;">
       <div class="stat-label">שינוי כולל</div>
       <div class="stat-value green" id="hdr-change-val">4,036</div>
-      <div class="stat-change" style="display:flex; flex-direction:column; gap:2px; font-size:11px; color:white;">
-        <span style="color:white;">📈 תשואה: <span id="hdr-returns-val" style="color:#4ade80; font-weight:600;">+2,354</span></span>
-        <span style="color:white;">💰 הפקדות: <span id="hdr-deposits-val" style="color:white; font-weight:600;">1,682</span></span>
+      <div id="hdr-external-wrap" style="display:none; flex-direction:column; gap:2px; font-size:11px; color:white;">
+        <span style="color:white;">🔄 הכרות/העברות: <span id="hdr-external-val" style="color:#fbbf24; font-weight:600;"></span></span>
       </div>
     </div>
     <div class="divider"></div>
@@ -994,22 +993,25 @@ function updateDynamicStats() {
     el('hdr-change-val').textContent = (v<0?'-':'') + Math.abs(v).toLocaleString();
     el('hdr-change-val').style.color = v<0 ? '#ef4444' : '#4ade80';
   }
-  // הפקדות ידועות לפי חודש (index ב-LABELS) - רק הפקדות אמיתיות
-  const DEPOSIT_EVENTS = [
-    { col: 1,  amt: 81,  desc: 'גמל להשקעה' },
-    { col: 13, amt: 901, desc: 'קרן כספית' },
+  // אירועים חיצוניים (הכרות/העברות) לפי חודש
+  const EXTERNAL_EVENTS = [
+    { col: 0,  amt: 286, desc: 'הראל כללי' },
+    { col: 10, amt: 414, desc: 'פניקס' },
+    { col: 14, amt: 173, desc: 'הכרה במזומן' },
   ];
-  const depositStart = winStart;
-  const depositEnd = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
-  const knownDeposits = DEPOSIT_EVENTS
-    .filter(e => e.col > depositStart && e.col <= depositEnd)
+  const extEnd = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
+  const externalAmt = EXTERNAL_EVENTS
+    .filter(e => e.col > winStart && e.col <= extEnd)
     .reduce((s, e) => s + e.amt, 0);
-  const returnsAmt = Math.round(grandDiff) - knownDeposits;
-  if(el('hdr-returns-val')) {
-    el('hdr-returns-val').textContent = (returnsAmt<0?'-':'') + Math.abs(returnsAmt).toLocaleString();
-    el('hdr-returns-val').style.color = returnsAmt<0 ? '#ef4444' : 'white';
+  const extWrap = el('hdr-external-wrap');
+  if (extWrap) {
+    if (externalAmt > 0) {
+      extWrap.style.display = 'flex';
+      el('hdr-external-val').textContent = '+' + externalAmt.toLocaleString();
+    } else {
+      extWrap.style.display = 'none';
+    }
   }
-  if(el('hdr-deposits-val')) el('hdr-deposits-val').textContent = knownDeposits.toLocaleString();
   // Right stat: measured return %
   if(el('hdr-ret-val')) {
     el('hdr-ret-val').textContent = (parseFloat(grandPct)<0?'-':'') + Math.abs(parseFloat(grandPct)).toFixed(1) + '%';
