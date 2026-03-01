@@ -14,23 +14,18 @@ body {
   font-family: 'Heebo', sans-serif;
   background: #f0f2f5;
   color: #1a1a2e;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   padding: 0;
-  display: flex;
-  flex-direction: column;
 }
 #top-fixed {
   padding: 20px 20px 0 20px;
-  flex-shrink: 0;
-  max-height: 72vh;
-  overflow: visible;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #f0f2f5;
 }
 #categories-scroll {
-  flex: 1;
-  overflow-y: scroll;
-  padding: 0 20px 100px 20px;
-  min-height: 0;
+  padding: 0 20px 40px 20px;
 }
 
 /* HEADER */
@@ -1882,7 +1877,16 @@ async function sendChat() {
     });
     var data = await res.json();
     thinking.remove();
-    var answer = (data.content && data.content[0]) ? data.content[0].text : JSON.stringify(data);
+    var answer;
+    if (data.content && data.content[0] && data.content[0].text) {
+      answer = data.content[0].text;
+    } else if (data.error) {
+      var errType = data.error.type || '';
+      if (errType === 'overloaded_error') answer = 'המערכת עמוסה כרגע, נסה שוב בעוד כמה שניות.';
+      else answer = 'שגיאה: ' + (data.error.message || errType);
+    } else {
+      answer = 'תגובה לא צפויה, נסה שוב.';
+    }
     chatHistory.push({role:'assistant', content: answer});
     addMsg(answer, false);
   } catch(e) {
