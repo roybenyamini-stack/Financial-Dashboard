@@ -1273,9 +1273,18 @@ function getSoldAnnotations(viewCat) {
   return annotations;
 }
 
+function forwardFill(data) {
+  let last = null;
+  return data.map(v => {
+    if (v !== null && !isNaN(v)) { last = v; return v; }
+    return last !== null ? last : NaN;
+  });
+}
+
 function updateChart(data, color, label) {
   currentData = data;
-  const w = getWindow(data);
+  const filled = forwardFill(data);
+  const w = getWindow(filled);
   chart.data.labels = w.labels;
   chart.data.datasets[0].data = w.data;
   chart.data.datasets[0].borderColor = color;
