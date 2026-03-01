@@ -23,7 +23,8 @@ body {
 #top-fixed {
   padding: 20px 20px 0 20px;
   flex-shrink: 0;
-  overflow: hidden;
+  max-height: 72vh;
+  overflow: visible;
 }
 #categories-scroll {
   flex: 1;
@@ -253,6 +254,7 @@ tr:last-child td { border-bottom: none; }
     </label>
     <span id="excel-status" style="color:rgba(255,255,255,0.7); font-size:11px; margin-right:10px;"></span>
     <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
+    <button onclick="toggleChat()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">💬 צ׳אט</button>
   </div>
 </div>
 
@@ -1813,9 +1815,8 @@ markNoteMonths();
 
 <!-- CHAT -->
 </div><!-- /categories-scroll -->
-<div id="cb" onclick="toggleChat()" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);width:56px;height:56px;background:#1a1a2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:9999;">💬</div>
-<div id="cp" style="display:none;position:fixed;bottom:96px;left:50%;transform:translateX(-50%);width:520px;max-height:600px;background:#1a1a2e;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);flex-direction:column;z-index:9999;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
-  <div style="padding:12px 16px;background:#0f0f23;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);">
+
+<div id="cp" style="display:none;position:fixed;top:90px;right:20px;width:520px;max-height:600px;background:#1a1a2e;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);flex-direction:column;z-index:9999;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">\n  <div style="padding:12px 16px;background:#0f0f23;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);">
     <span style="color:white;font-family:Heebo,sans-serif;font-size:17px;font-weight:700;">🤖 שאל את הדשבורד</span>
     <span onclick="toggleChat()" style="color:#888;cursor:pointer;font-size:18px;">✕</span>
   </div>
