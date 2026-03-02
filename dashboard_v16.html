@@ -326,7 +326,7 @@ tr:last-child td { border-bottom: none; }
       <div class="stat-change">אלפי ש״ח</div>
     </div>
     <div class="divider"></div>
-    <div class="stat-item" style="padding-top: 18px;">
+    <div class="stat-item">
       <div class="stat-label">שינוי כולל</div>
       <div class="stat-value green" id="hdr-change-val">4,036</div>
       <div id="hdr-external-wrap" style="display:none; flex-direction:row; align-items:center; gap:4px; font-size:10px; color:rgba(255,255,255,0.45);">
@@ -1514,13 +1514,16 @@ function saveToLocalStorage() {
       funds: {}
     };
     Object.entries(FUNDS).forEach(([k, f]) => { payload.funds[k] = f.data; });
-    localStorage.setItem('dashboard_v15_data', JSON.stringify(payload));
+    const json = JSON.stringify(payload);
+    localStorage.setItem('dashboard_v15_data', json);
+    try { sessionStorage.setItem('dashboard_v15_data', json); } catch(e2) {}
   } catch(e) { console.warn('שמירה נכשלה:', e); }
 }
 
 function loadFromLocalStorage() {
   try {
-    const raw = localStorage.getItem('dashboard_v15_data');
+    const raw = localStorage.getItem('dashboard_v15_data') 
+              || sessionStorage.getItem('dashboard_v15_data');
     if (!raw) return false;
     const payload = JSON.parse(raw);
     if (!payload.labels || !payload.funds) return false;
@@ -1904,22 +1907,6 @@ function markNoteMonths() {
 
 // ===== END NOTES SYSTEM =====
 
-// Init – clear stale localStorage if it doesn't match current LABELS
-(function() {
-  try {
-    const raw = localStorage.getItem('dashboard_v15_data');
-    if (raw) {
-      const saved = JSON.parse(raw);
-      const lastSavedLabel = saved.labels && saved.labels[saved.labels.length - 1];
-      const lastCurrentLabel = LABELS[LABELS.length - 1];
-      if (lastSavedLabel !== lastCurrentLabel) {
-        localStorage.removeItem('dashboard_v15_data');
-        console.log('Cleared stale localStorage:', lastSavedLabel, '→', lastCurrentLabel);
-      }
-    }
-  } catch(e) {}
-})();
-
 // Init – load last saved data if available
 if (loadFromLocalStorage()) {
   winStart = Math.max(0, LABELS.length - WINDOW);
@@ -1935,6 +1922,7 @@ if (loadFromLocalStorage()) {
   chart.data.labels = w.labels;
   chart.data.datasets[0].data = w.data;
   chart.update();
+  updateNavButtons(); // updates header stats + YTD
 }
 loadNotesFromStorage();
 document.getElementById('card-all').classList.add('active');
