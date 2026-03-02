@@ -27,10 +27,7 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 .stat-value.red   { color: #f87171; }
 .stat-change { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 2px; }
 .divider { display: none; }
-#hdr-external-wrap {
-  display: none; align-items: center; gap: 4px; font-size: 10px;
-  color: rgba(255,255,255,0.45);
-}
+#hdr-external-wrap { display: none; align-items: center; gap: 4px; font-size: 10px; color: rgba(255,255,255,0.5); }
 #upload-status { font-size: 11px; color: #94a3b8; }
 
 /* CARDS */
@@ -66,7 +63,7 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 .chart-nav-row button:disabled { opacity: 0.3; cursor: default; }
 #winRange { font-size: 13px; color: #555; font-family: Heebo,sans-serif; font-weight: 700; min-width: 160px; text-align: center; }
 #sold-fund-notice { display: none; font-size: 11px; color: #b45309; font-family: Heebo; font-weight: 600; }
-#hdr-external-wrap { display: none; }
+#hdr-external-wrap { display: none; align-items: center; gap: 4px; font-size: 10px; color: rgba(255,255,255,0.5); }
 
 /* chart stat labels */
 #chart-return-label,#chart-growth-label,#chart-accum-label { font-size: 10px; color: #94a3b8; }
@@ -154,11 +151,11 @@ tr:last-child td { border-bottom: none; }
       <div class="stat-change">אלפי ש״ח</div>
     </div>
     <div class="divider"></div>
-    <div class="stat-item" style="padding-top: 18px;">
+    <div class="stat-item">
       <div class="stat-label">שינוי כולל</div>
       <div class="stat-value green" id="hdr-change-val">4,036</div>
-      <div id="hdr-external-wrap" style="display:none; flex-direction:column; gap:2px; font-size:11px; color:white;">
-        <span style="color:white;">🔄 הכרות/העברות: <span id="hdr-external-val" style="color:#fbbf24; font-weight:600;"></span></span>
+      <div id="hdr-external-wrap" style="display:none; align-items:center; gap:4px; font-size:10px; color:rgba(255,255,255,0.5);">
+        <span>הכרות/העברות: <span id="hdr-external-val" style="color:rgba(255,255,255,0.7); font-weight:600;"></span></span>
       </div>
     </div>
     <div class="divider"></div>
