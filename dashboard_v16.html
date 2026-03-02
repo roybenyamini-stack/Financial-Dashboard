@@ -171,6 +171,7 @@ body {
 .cat-pct-spacer { min-width: 120px; display: inline-block; }
 .cat-pct { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
 .cat-pct.pos { background: #dcfce7; color: #16a34a; }
+.cat-pct.neg { background: #fee2e2; color: #dc2626; }
 .chevron { font-size: 11px; color: #ccc; transition: transform 0.25s; }
 .chevron.open { transform: rotate(180deg); }
 
@@ -1059,7 +1060,7 @@ function updateDynamicStats() {
     }
     // YTD: Jan 2026 to endIdx
     const janIdx = LABELS.findIndex(l => l.includes('ינו') && l.includes('26'));
-    if(el('sec-ytd-'+cat) && janIdx >= 0 && endIdx > janIdx) {
+    if(el('sec-ytd-'+cat) && janIdx >= 0 && endIdx >= janIdx) {
       const excl2 = EXCLUDE_FROM_PCT[cat] || [];
       const ytdEnd = Object.entries(FUNDS)
         .filter(([k,f]) => f.cat===cat && !excl2.includes(k) && (f.data[endIdx]||0) > 0)
@@ -1227,7 +1228,7 @@ function updateChartStats(data, viewCat) {
   const ytdEl = document.getElementById('chart-ytd');
   const janIdx = LABELS.findIndex(l => l.includes('ינו') && l.includes('26'));
   const endIdx2 = winStart + w.data.length - 1;
-  if(ytdWrap && ytdEl && janIdx >= 0 && endIdx2 > janIdx && !isMezuman && !isChov) {
+  if(ytdWrap && ytdEl && janIdx >= 0 && endIdx2 >= janIdx && !isMezuman && !isChov) {
     ytdWrap.style.display = '';
     let ytdEndVal, ytdStartVal;
     if(viewCat && viewCat !== 'all' && !currentFund) {
