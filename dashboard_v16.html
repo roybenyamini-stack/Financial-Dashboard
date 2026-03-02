@@ -244,12 +244,7 @@ tr:last-child td { border-bottom: none; }
           <div style="font-size:11px;color:#888;font-family:Heebo,sans-serif;">YTD 2026</div>
           <div id="chart-ytd" style="font-size:15px;font-weight:700;font-family:Heebo,sans-serif;color:#16a34a;">—</div>
         </div>
-        <div style="display:flex; align-items:center; gap:8px; margin-left: auto;">
-          <button id="btnNext" onclick="slideWindow(1)" style="background:#f0f2f5;border:none;border-radius:8px;width:30px;height:30px;font-size:14px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8594;</button>
-          <span id="winRange" style="font-size:12px;color:#555;font-family:Heebo;font-weight:700;min-width:120px;text-align:center;"></span>
-          <div id="sold-fund-notice" style="display:none;font-size:11px;color:#b45309;font-family:Heebo;font-weight:600;"></div>
-          <button id="btnPrev" onclick="slideWindow(-1)" style="background:#f0f2f5;border:none;border-radius:8px;width:30px;height:30px;font-size:14px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8592;</button>
-        </div>
+
       </div>
     </div>
     <div class="active-label" id="activeLabel" style="--active-color:#1a1a2e">
@@ -260,6 +255,13 @@ tr:last-child td { border-bottom: none; }
       </div>
     </div>
   </div>
+  <div style="position:relative;">
+    <div style="position:absolute; top:-36px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:10px; z-index:10;">
+      <button id="btnNext" onclick="slideWindow(1)" style="background:#f0f2f5;border:1px solid #e2e8f0;border-radius:8px;width:30px;height:30px;font-size:14px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8594;</button>
+      <span id="winRange" style="font-size:12px;color:#555;font-family:Heebo;font-weight:700;min-width:120px;text-align:center;direction:rtl;"></span>
+      <div id="sold-fund-notice" style="display:none;font-size:11px;color:#b45309;font-family:Heebo;font-weight:600;"></div>
+      <button id="btnPrev" onclick="slideWindow(-1)" style="background:#f0f2f5;border:1px solid #e2e8f0;border-radius:8px;width:30px;height:30px;font-size:14px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+    </div>
   <div class="chart-container" dir="ltr">
     <canvas id="mainChart"></canvas>
   </div>
