@@ -192,20 +192,18 @@ body.t-navy {
     </div>
   </div>
   <div style="margin-top:12px;">
-    <div style="display:flex; align-items:center; gap:8px;">
+    <div style="display:flex; align-items:center; gap:8px; flex-wrap:nowrap;">
+      <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-flex; align-items:center;">
+        📂 עדכן נתונים מאקסל
+        <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
+      </label>
+      <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif;">📝 הערות</button>
       <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer;background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:7px 13px;font-size:12px;font-family:Heebo,sans-serif;">🎨 Slate Pro</button>
-    <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
-      📂 עדכן נתונים מאקסל
-      <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
-    </label>
+      <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; opacity:0.85;" title="צ׳אט">💬</span>
     </div>
-    <div style="margin-top:4px;"><span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; display:block;"></span></div>
-    <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
-    <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; margin-right:8px; opacity:0.85;" title="צ׳אט">💬</span>
     <div style="margin-top:4px;"><span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; display:block;"></span></div>
   </div>
 </div>
-
 <!-- CARDS -->
 <div class="cards-row">
   <div class="card-total active" id="card-all" onclick="selectView('all')">
