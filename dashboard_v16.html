@@ -872,13 +872,13 @@ let chart = new Chart(ctx, {
     datasets: [{
       label: 'סה״כ',
       data: getWindow(ALL_TOTALS).data,
-      borderColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-line').trim() || '#1a1a2e',
-      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-fill').trim() || 'rgba(26,26,46,0.07)',
+      borderColor: '#1a1a2e',
+      backgroundColor: 'rgba(26,26,46,0.07)',
       borderWidth: 2,
       pointRadius: 0,
       pointHoverRadius: 6,
       pointHoverBorderWidth: 2,
-      pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-line').trim() || '#1a1a2e',
+      pointBackgroundColor: '#1a1a2e',
       tension: 0.4,
       fill: true,
     }]
