@@ -4,19 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>תיק השקעות</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js">
+// ── THEME TOGGLE ──────────────────────────────────
+function toggleTheme() {
+  const isSlate = document.body.classList.toggle('theme-slate');
+  const btn = document.getElementById('theme-btn');
+  btn.textContent = isSlate ? '🎨 Classic' : '🎨 Slate';
+  localStorage.setItem('dashboard_theme', isSlate ? 'slate' : 'classic');
+}
+(function initTheme() {
+  const saved = localStorage.getItem('dashboard_theme');
+  if (saved === 'slate') {
+    document.body.classList.add('theme-slate');
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = '🎨 Classic';
+  }
+})();
+// ── END THEME TOGGLE ──────────────────────────────
+
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; margin: 0; }
-body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; display: flex; flex-direction: column; }
+body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text-main); display: flex; flex-direction: column; }
 
 #top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: #f0f2f5; width: 100%; box-sizing: border-box; }
 #categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; flex: 1; overflow-y: auto; }
 
 /* HEADER */
-.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 18px; padding: 14px 24px; margin-bottom: 10px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(15,52,96,0.25); }
+.header { background: var(--header-bg); border-radius: var(--header-r); padding: 14px 24px; margin-bottom: 10px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(15,52,96,0.25); }
 .header-title h1 { font-size: 15px; font-weight: 800; color: #fff; }
 .header-title p   { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
 .header-stats { display: flex; align-items: flex-start; gap: 0; }
@@ -33,13 +51,13 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; di
 
 /* CARDS */
 .cards-row { display: grid; grid-template-columns: auto repeat(9, 1fr); gap: 10px; margin-bottom: 10px; }
-.card-total { background: #1a1a2e; border-radius: 14px; padding: 10px 16px; color: white; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; justify-content: center; min-width: 120px; border: 2px solid transparent; }
+.card-total { background: var(--card-total-bg); border-radius: 14px; padding: 10px 16px; color: white; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; justify-content: center; min-width: 120px; border: 2px solid transparent; }
 .card-total:hover  { background: #0f3460; transform: translateY(-1px); }
 .card-total.active { background: #0f3460; border-color: #7dd3fc; }
 .card-total .label  { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.6px; }
 .card-total .value  { font-size: 15px; font-weight: 800; color: #fff; margin-top: 3px; }
 .card-total .change { font-size: 11px; color: #4ade80; margin-top: 3px; }
-.card { background: #fff; border-radius: 14px; padding: 10px 12px; border: 2px solid transparent; border-right: 4px solid var(--cat-color); box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.18s; }
+.card { background: var(--card-bg); border-radius: 14px; padding: 10px 12px; border: 1px solid var(--border-clr); border-right: 4px solid var(--cat-color); box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.18s; }
 .card:hover  { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
 .card.active { border: 2px solid var(--cat-color); border-right: 4px solid var(--cat-color); box-shadow: 0 0 0 3px var(--cat-color-alpha); }
 .card .card-label  { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
@@ -49,7 +67,7 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; di
 .card .card-change.neg { color: #dc2626; }
 
 /* CHART */
-.chart-section { background: #fff; border-radius: 18px; padding: 14px 20px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; box-sizing: border-box; }
+.chart-section { background: var(--chart-bg); border-radius: 18px; padding: 14px 20px; margin-bottom: 14px; box-shadow: var(--chart-shadow); border: 1px solid var(--border-clr); width: 100%; box-sizing: border-box; }
 .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
 .chart-title    { font-size: 14px; font-weight: 700; color: #1a1a2e; }
 .chart-subtitle { font-size: 11px; color: #94a3b8; margin-top: 2px; }
@@ -74,7 +92,7 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; di
 #activeLabelTags { display: flex; gap: 4px; align-items: center; }
 
 /* CATEGORY SECTIONS */
-.category-section { border-radius: 14px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; background: var(--cat-color-ultralight, #f8faff); }
+.category-section { border-radius: 14px; margin-bottom: 10px; box-shadow: var(--cat-shadow); border: 1px solid var(--border-clr); overflow: hidden; background: var(--cat-color-ultralight, #f8faff); }
 .category-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; cursor: pointer; border-right: 4px solid var(--cat-color); transition: background 0.15s; user-select: none; background: var(--cat-color-ultralight, #f8faff); }
 .category-header:hover  { filter: brightness(0.97); }
 .category-header.active { filter: brightness(0.95); }
@@ -129,6 +147,41 @@ tr:last-child td { border-bottom: none; }
 .notes-panel { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
 .notes-panel.open { display: flex; }
 .notes-box { background: #fff; border-radius: 16px; padding: 28px; max-width: 560px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+
+/* ══ THEME SYSTEM ══════════════════════════════════ */
+:root {
+  --bg:          #f0f2f5;
+  --header-bg:   linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  --header-r:    18px;
+  --card-bg:     #fff;
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --chart-bg:    #fff;
+  --chart-shadow:0 2px 10px rgba(0,0,0,0.06);
+  --cat-bg:      #fff;
+  --cat-shadow:  0 2px 10px rgba(0,0,0,0.05);
+  --cat-hdr-bg:  #fff;
+  --text-main:   #1a1a2e;
+  --text-sub:    #94a3b8;
+  --border-clr:  transparent;
+  --card-total-bg: #1a1a2e;
+}
+body.theme-slate {
+  --bg:          #f8f9fb;
+  --header-bg:   #1e2433;
+  --header-r:    12px;
+  --card-bg:     #fff;
+  --card-shadow: none;
+  --chart-bg:    #fff;
+  --chart-shadow:none;
+  --cat-bg:      #fff;
+  --cat-shadow:  none;
+  --cat-hdr-bg:  #fff;
+  --text-main:   #1e2433;
+  --text-sub:    #64748b;
+  --border-clr:  #e2e8f0;
+  --card-total-bg: #1e2433;
+}
+/* ══ END THEME ══════════════════════════════════════ */
 </style>
 </head>
 <body>
@@ -163,6 +216,7 @@ tr:last-child td { border-bottom: none; }
   </div>
   <div style="margin-top:12px;">
     <div style="display:flex; align-items:center; gap:8px;">
+      <button onclick="toggleTheme()" id="theme-btn" style="cursor:pointer;background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:5px 11px;font-size:11px;font-family:Heebo,sans-serif;white-space:nowrap;">🎨 Slate</button>
       <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
         📂 עדכן נתונים מאקסל
         <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
