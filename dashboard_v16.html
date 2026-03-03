@@ -9,10 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; min-height: 100vh; }
+html, body { height: 100%; margin: 0; }
+body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; display: flex; flex-direction: column; }
 
 #top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: #f0f2f5; width: 100%; box-sizing: border-box; }
-#categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; }
+#categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; flex: 1; overflow-y: auto; }
 
 /* HEADER */
 .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 18px; padding: 14px 24px; margin-bottom: 10px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(15,52,96,0.25); }
