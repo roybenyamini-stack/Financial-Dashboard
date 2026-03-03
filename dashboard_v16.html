@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; margin: 0; }
+html, body { height: 100%; margin: 0; background: var(--bg); }
 body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text-main); display: flex; flex-direction: column; }
 
 #top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: var(--bg); width: 100%; box-sizing: border-box; }
@@ -177,7 +177,7 @@ body.theme-slate {
 
 /* ── Warm Pro ── */
 body.theme-warm {
-  --bg:            #faf8f5;
+  --bg:            #f5f0e8;
   --header-bg:     #1c1917;
   --header-r:      0px;
   --card-bg:       #fff;
@@ -199,7 +199,7 @@ body.theme-warm {
 
 /* ── Navy ── */
 body.theme-navy {
-  --bg:            #faf9f7;
+  --bg:            #f7f5f0;
   --header-bg:     #1a2744;
   --header-r:      14px;
   --card-bg:       #fff;
@@ -2254,18 +2254,22 @@ function applyTheme(idx) {
   var style = getComputedStyle(document.body);
   var lineColor = style.getPropertyValue('--chart-line').trim() || '#1a1a2e';
   var fillColor = style.getPropertyValue('--chart-fill').trim() || 'rgba(26,26,46,0.07)';
-  if (window.chart) {
-    var ds = chart.data.datasets[0];
-    // שמור צבע קטגוריה/קרן רק כשמציגים total (all)
-    if (currentView === 'all') {
-      ds.borderColor = lineColor;
-      ds.backgroundColor = fillColor;
-      ds.pointBackgroundColor = lineColor;
+  // setTimeout כדי לאפשר ל-CSS להתעדכן לפני קריאת getComputedStyle
+  setTimeout(function() {
+    var style2 = getComputedStyle(document.body);
+    var lineColor2 = style2.getPropertyValue('--chart-line').trim() || '#1a1a2e';
+    var fillColor2 = style2.getPropertyValue('--chart-fill').trim() || 'rgba(26,26,46,0.07)';
+    if (window.chart) {
+      var ds = chart.data.datasets[0];
+      if (currentView === 'all') {
+        ds.borderColor = lineColor2;
+        ds.backgroundColor = fillColor2;
+        ds.pointBackgroundColor = lineColor2;
+      }
+      chart.options.scales.y.grid.color = style2.getPropertyValue('--grid-line').trim() || 'rgba(0,0,0,0.06)';
+      chart.update('none');
     }
-    // עדכן gridlines
-    chart.options.scales.y.grid.color = style.getPropertyValue('--grid-line').trim() || 'rgba(0,0,0,0.06)';
-    chart.update('none');
-  }
+  }, 30);
 }
 function toggleTheme() {
   var cur = parseInt(localStorage.getItem('dashboard_theme_idx') || '0');
