@@ -5,19 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>תיק השקעות</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; margin: 0; background: var(--bg); }
-body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text-main); display: flex; flex-direction: column; }
+body { font-family: 'Heebo', sans-serif; background: var(--bg); color: #1a1a2e; }
 
-#top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: var(--bg); width: 100%; box-sizing: border-box; }
-#categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; flex: 1; overflow-y: auto; background: var(--bg); }
+#top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: #f0f2f5; width: 100%; box-sizing: border-box; }
+#categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; flex: 1; overflow-y: auto; }
 
 /* HEADER */
-.header { background: var(--header-bg); border-radius: var(--header-r); padding: 14px 24px; margin-bottom: 10px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(15,52,96,0.25); }
+.header { background: var(--hdr); border-radius: var(--hdr-r); padding: 14px 24px; margin-bottom: 10px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(15,52,96,0.25); }
 .header-title h1 { font-size: 15px; font-weight: 800; color: #fff; }
 .header-title p   { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
 .header-stats { display: flex; align-items: flex-start; gap: 0; }
@@ -34,13 +32,13 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 
 /* CARDS */
 .cards-row { display: grid; grid-template-columns: auto repeat(9, 1fr); gap: 10px; margin-bottom: 10px; }
-.card-total { background: var(--card-total-bg); border-radius: 14px; padding: 10px 16px; color: white; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; justify-content: center; min-width: 120px; border: 2px solid transparent; }
+.card-total { background: #1a1a2e; border-radius: 14px; padding: 10px 16px; color: white; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; justify-content: center; min-width: 120px; border: 2px solid transparent; }
 .card-total:hover  { background: #0f3460; transform: translateY(-1px); }
 .card-total.active { background: #0f3460; border-color: #7dd3fc; }
 .card-total .label  { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.6px; }
 .card-total .value  { font-size: 15px; font-weight: 800; color: #fff; margin-top: 3px; }
 .card-total .change { font-size: 11px; color: #4ade80; margin-top: 3px; }
-.card { background: var(--card-bg); border-radius: 14px; padding: 10px 12px; border: 1px solid var(--cat-border, transparent); border-right: 4px solid var(--cat-color); border-top: var(--card-border-t); border-bottom: var(--card-border-b); box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.18s; }
+.card { background: #fff; border-radius: 14px; padding: 10px 12px; border: 2px solid transparent; border-right: 4px solid var(--cat-color); box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.18s; }
 .card:hover  { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
 .card.active { border: 2px solid var(--cat-color); border-right: 4px solid var(--cat-color); box-shadow: 0 0 0 3px var(--cat-color-alpha); }
 .card .card-label  { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
@@ -50,7 +48,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 .card .card-change.neg { color: #dc2626; }
 
 /* CHART */
-.chart-section { background: var(--chart-bg); border-radius: 18px; padding: 14px 20px; margin-bottom: 14px; box-shadow: var(--chart-shadow); border: 1px solid var(--chart-border, transparent); width: 100%; box-sizing: border-box; }
+.chart-section { background: #fff; border-radius: 18px; padding: 14px 20px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; box-sizing: border-box; }
 .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
 .chart-title    { font-size: 14px; font-weight: 700; color: #1a1a2e; }
 .chart-subtitle { font-size: 11px; color: #94a3b8; margin-top: 2px; }
@@ -75,7 +73,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 #activeLabelTags { display: flex; gap: 4px; align-items: center; }
 
 /* CATEGORY SECTIONS */
-.category-section { border-radius: 14px; margin-bottom: 10px; box-shadow: var(--cat-shadow); border: 1px solid var(--cat-border, transparent); overflow: hidden; background: var(--cat-color-ultralight, #f8faff); }
+.category-section { border-radius: 14px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; background: var(--cat-color-ultralight, #f8faff); }
 .category-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; cursor: pointer; border-right: 4px solid var(--cat-color); transition: background 0.15s; user-select: none; background: var(--cat-color-ultralight, #f8faff); }
 .category-header:hover  { filter: brightness(0.97); }
 .category-header.active { filter: brightness(0.95); }
@@ -131,94 +129,36 @@ tr:last-child td { border-bottom: none; }
 .notes-panel.open { display: flex; }
 .notes-box { background: #fff; border-radius: 16px; padding: 28px; max-width: 560px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
 
-/* ══ THEME SYSTEM ══════════════════════════════════ */
+/* ══ THEMES ══════════════════════════════════════ */
 :root {
-  --bg:            #f0f2f5;
-  --header-bg:     linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-  --header-r:      18px;
-  --card-bg:       #fff;
-  --card-shadow:   0 2px 8px rgba(0,0,0,0.06);
-  --card-border-t: transparent;
-  --card-border-b: transparent;
-  --chart-bg:      #fff;
-  --chart-shadow:  0 2px 10px rgba(0,0,0,0.06);
-  --chart-border:  transparent;
-  --cat-shadow:    0 2px 10px rgba(0,0,0,0.05);
-  --cat-border:    transparent;
-  --text-main:     #1a1a2e;
-  --text-sub:      #94a3b8;
-  --card-total-bg: #1a1a2e;
-  --chart-line:    #1a1a2e;
-  --chart-fill:    rgba(26,26,46,0.07);
-  --grid-line:     rgba(0,0,0,0.06);
+  --bg: #f0f2f5;
+  --hdr: linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  --hdr-r: 18px;
+  --chart-line: #1a1a2e;
+  --chart-fill: rgba(26,26,46,0.07);
 }
-
-/* ── Slate Pro ── */
-body.theme-slate {
-  --bg:            #f1f5f9;
-  --header-bg:     #0f172a;
-  --header-r:      0px;
-  --card-bg:       #fff;
-  --card-shadow:   none;
-  --card-border-t: 2px solid var(--cat-color, #94a3b8);
-  --card-border-b: transparent;
-  --chart-bg:      #fff;
-  --chart-shadow:  none;
-  --chart-border:  #e2e8f0;
-  --cat-shadow:    none;
-  --cat-border:    #e2e8f0;
-  --text-main:     #0f172a;
-  --text-sub:      #64748b;
-  --card-total-bg: #0f172a;
-  --chart-line:    #38bdf8;
-  --chart-fill:    rgba(56,189,248,0.08);
-  --grid-line:     rgba(226,232,240,0.8);
+body.t-slate {
+  --bg: #f1f5f9;
+  --hdr: #0f172a;
+  --hdr-r: 0px;
+  --chart-line: #38bdf8;
+  --chart-fill: rgba(56,189,248,0.08);
 }
-
-/* ── Warm Pro ── */
-body.theme-warm {
-  --bg:            #f5f0e8;
-  --header-bg:     #1c1917;
-  --header-r:      0px;
-  --card-bg:       #fff;
-  --card-shadow:   0 1px 3px rgba(0,0,0,0.05);
-  --card-border-t: transparent;
-  --card-border-b: 2px solid var(--cat-color, #a8a29e);
-  --chart-bg:      #fff;
-  --chart-shadow:  0 1px 4px rgba(0,0,0,0.06);
-  --chart-border:  transparent;
-  --cat-shadow:    0 1px 3px rgba(0,0,0,0.05);
-  --cat-border:    transparent;
-  --text-main:     #1c1917;
-  --text-sub:      #a8a29e;
-  --card-total-bg: #1c1917;
-  --chart-line:    #d97706;
-  --chart-fill:    rgba(217,119,6,0.07);
-  --grid-line:     rgba(231,226,219,0.9);
+body.t-warm {
+  --bg: #f5f0e8;
+  --hdr: #1c1917;
+  --hdr-r: 0px;
+  --chart-line: #d97706;
+  --chart-fill: rgba(217,119,6,0.07);
 }
-
-/* ── Navy ── */
-body.theme-navy {
-  --bg:            #f7f5f0;
-  --header-bg:     #1a2744;
-  --header-r:      14px;
-  --card-bg:       #fff;
-  --card-shadow:   0 1px 4px rgba(26,39,68,0.07);
-  --card-border-t: transparent;
-  --card-border-b: 3px solid var(--cat-color, #94a3b8);
-  --chart-bg:      #fff;
-  --chart-shadow:  0 1px 4px rgba(26,39,68,0.06);
-  --chart-border:  transparent;
-  --cat-shadow:    0 1px 4px rgba(26,39,68,0.06);
-  --cat-border:    transparent;
-  --text-main:     #1a2744;
-  --text-sub:      #9b8f7a;
-  --card-total-bg: #1a2744;
-  --chart-line:    #1a2744;
-  --chart-fill:    rgba(26,39,68,0.06);
-  --grid-line:     rgba(232,227,216,0.9);
+body.t-navy {
+  --bg: #f0eee8;
+  --hdr: #1a2744;
+  --hdr-r: 14px;
+  --chart-line: #1a2744;
+  --chart-fill: rgba(26,39,68,0.06);
 }
-/* ══ END THEME ══════════════════════════════════════ */
+/* ══ END THEMES ══════════════════════════════════ */
 </style>
 </head>
 <body>
@@ -237,10 +177,10 @@ body.theme-navy {
       <div class="stat-change">אלפי ש״ח</div>
     </div>
     <div class="divider"></div>
-    <div class="stat-item">
+    <div class="stat-item" style="padding-top: 18px;">
       <div class="stat-label">שינוי כולל</div>
       <div class="stat-value green" id="hdr-change-val">4,036</div>
-      <div id="hdr-external-wrap" style="display:none; flex-direction:row; align-items:center; gap:4px; font-size:10px; color:rgba(255,255,255,0.55);">
+      <div id="hdr-external-wrap" style="display:none; flex-direction:column; gap:2px; font-size:11px; color:white;">
         <span style="color:white;">🔄 הכרות/העברות: <span id="hdr-external-val" style="color:#fbbf24; font-weight:600;"></span></span>
       </div>
     </div>
@@ -253,15 +193,15 @@ body.theme-navy {
   </div>
   <div style="margin-top:12px;">
     <div style="display:flex; align-items:center; gap:8px;">
-      <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
-        📂 עדכן נתונים מאקסל
-        <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
-      </label>
-      <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif;">📝 הערות</button>
-      <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; opacity:0.85;" title="צ׳אט">💬</span>
-      <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer;background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:7px 13px;font-size:12px;font-family:Heebo,sans-serif;">🎨 Slate</button>
+      <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer;background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:7px 13px;font-size:12px;font-family:Heebo,sans-serif;">🎨 Slate Pro</button>
+    <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
+      📂 עדכן נתונים מאקסל
+      <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
+    </label>
     </div>
-    <div style="margin-top:4px; padding-right:0;"><span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; display:block;"></span></div>
+    <div style="margin-top:4px;"><span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; display:block;"></span></div>
+    <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
+    <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; margin-right:8px; opacity:0.85;" title="צ׳אט">💬</span>
   </div>
 </div>
 
@@ -310,7 +250,7 @@ body.theme-navy {
     <div>
       <div class="chart-title">הצטברות נכסים</div>
       <div class="chart-subtitle">ינואר 2025 – פברואר 2026 · באלפי  · לחץ על קטגוריה או קרן לסינון</div>
-      <div style="display:flex;gap:20px;margin-top:8px;align-items:flex-end;">
+      <div style="display:flex;gap:20px;margin-top:8px;">
         <div>
           <div id="chart-accum-label" style="font-size:11px;color:#888;font-family:Heebo,sans-serif;">צבירה</div>
           <div id="chart-accum" style="font-size:15px;font-weight:700;font-family:Heebo,sans-serif;color:#1a1a2e;">—</div>
@@ -327,14 +267,6 @@ body.theme-navy {
           <div style="font-size:11px;color:#888;font-family:Heebo,sans-serif;">YTD 2026</div>
           <div id="chart-ytd" style="font-size:15px;font-weight:700;font-family:Heebo,sans-serif;color:#16a34a;">—</div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-right:auto;align-self:flex-end;">
-          <button id="btnNext" onclick="slideWindow(1)" style="background:#f0f2f5;border:1px solid #e2e8f0;border-radius:8px;width:28px;height:28px;font-size:13px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8594;</button>
-          <div style="text-align:center;">
-            <div id="sold-fund-notice" style="display:none;font-size:11px;color:#b45309;font-family:Heebo;font-weight:600;margin-bottom:2px;"></div>
-            <span id="winRange" style="font-size:12px;color:#555;font-family:Heebo;font-weight:700;min-width:130px;text-align:center;direction:rtl;display:block;"></span>
-          </div>
-          <button id="btnPrev" onclick="slideWindow(-1)" style="background:#f0f2f5;border:1px solid #e2e8f0;border-radius:8px;width:28px;height:28px;font-size:13px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8592;</button>
-        </div>
       </div>
     </div>
     <div class="active-label" id="activeLabel" style="--active-color:#1a1a2e">
@@ -344,6 +276,14 @@ body.theme-navy {
         <div id="activeLabelTags" style="display:flex;gap:4px;"></div>
       </div>
     </div>
+  </div>
+  <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
+    <button id="btnNext" onclick="slideWindow(1)" title="תקופה הבאה" style="background:#f0f2f5;border:none;border-radius:8px;width:32px;height:32px;font-size:15px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8594;</button>
+    <div style="text-align:center;">
+      <div id="sold-fund-notice" style="display:none;font-size:11px;color:#b45309;font-family:Heebo;font-weight:600;margin-bottom:2px;"></div>
+      <span id="winRange" style="font-size:13px;color:#555;font-family:Heebo;font-weight:700;min-width:160px;text-align:center;"></span>
+    </div>
+    <button id="btnPrev" onclick="slideWindow(-1)" title="תקופה קודמת" style="background:#f0f2f5;border:none;border-radius:8px;width:32px;height:32px;font-size:15px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8592;</button>
   </div>
   <div class="chart-container" dir="ltr">
     <canvas id="mainChart"></canvas>
@@ -681,6 +621,8 @@ body.theme-navy {
     </table>
   </div>
 </div>
+
+</div>
 <!-- CATEGORY: ארביטראז׳ ואליו -->
 <div class="category-section" id="sec-arbitrage" style="--cat-color:#0d9488;--cat-color-light:#ccfbf1;--cat-color-ultralight:#f0fdfa">
   <div class="category-header" id="hdr-arbitrage" onclick="toggleCat('arbitrage'); selectView('arbitrage')">
@@ -875,7 +817,7 @@ let chart = new Chart(ctx, {
       data: getWindow(ALL_TOTALS).data,
       borderColor: '#1a1a2e',
       backgroundColor: 'rgba(26,26,46,0.07)',
-      borderWidth: 2,
+      borderWidth: 2.5,
       pointRadius: 0,
       pointHoverRadius: 6,
       pointHoverBorderWidth: 2,
@@ -2240,52 +2182,37 @@ function loadExcelFile(input) {
 
 // ── THEME TOGGLE ─────────────────────────────────
 var THEMES = [
-  { cls: '',            label: '🎨 Classic'  },
-  { cls: 'theme-slate', label: '🎨 Slate Pro' },
-  { cls: 'theme-warm',  label: '🎨 Warm Pro'  },
-  { cls: 'theme-navy',  label: '🎨 Navy'      },
+  { cls: '',       btn: '🎨 Slate Pro', line: '#1a1a2e',  fill: 'rgba(26,26,46,0.07)' },
+  { cls: 't-slate', btn: '🎨 Warm Pro',  line: '#38bdf8',  fill: 'rgba(56,189,248,0.08)' },
+  { cls: 't-warm',  btn: '🎨 Navy',      line: '#d97706',  fill: 'rgba(217,119,6,0.07)' },
+  { cls: 't-navy',  btn: '🎨 Classic',   line: '#1a2744',  fill: 'rgba(26,39,68,0.06)' },
 ];
-function applyTheme(idx) {
-  THEMES.forEach(function(t) { document.body.classList.remove(t.cls); });
-  if (THEMES[idx].cls) document.body.classList.add(THEMES[idx].cls);
+function toggleTheme() {
+  var cur = parseInt(localStorage.getItem('t') || '0');
+  var next = (cur + 1) % 4;
+  THEMES.forEach(function(t) { if (t.cls) document.body.classList.remove(t.cls); });
+  if (THEMES[next].cls) document.body.classList.add(THEMES[next].cls);
   var btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = THEMES[(idx+1) % THEMES.length].label;
-  localStorage.setItem('dashboard_theme_idx', idx);
-  // עדכן צבע גרף לפי theme החדש
-  var style = getComputedStyle(document.body);
-  var lineColor = style.getPropertyValue('--chart-line').trim() || '#1a1a2e';
-  var fillColor = style.getPropertyValue('--chart-fill').trim() || 'rgba(26,26,46,0.07)';
-  // setTimeout כדי לאפשר ל-CSS להתעדכן לפני קריאת getComputedStyle
+  if (btn) btn.textContent = THEMES[next].btn;
+  localStorage.setItem('t', next);
   setTimeout(function() {
-    var style2 = getComputedStyle(document.body);
-    var lineColor2 = style2.getPropertyValue('--chart-line').trim() || '#1a1a2e';
-    var fillColor2 = style2.getPropertyValue('--chart-fill').trim() || 'rgba(26,26,46,0.07)';
-    if (window.chart) {
-      var ds = chart.data.datasets[0];
-      if (currentView === 'all') {
-        ds.borderColor = lineColor2;
-        ds.backgroundColor = fillColor2;
-        ds.pointBackgroundColor = lineColor2;
-      }
-      chart.options.scales.y.grid.color = style2.getPropertyValue('--grid-line').trim() || 'rgba(0,0,0,0.06)';
+    if (window.chart && currentView === 'all') {
+      chart.data.datasets[0].borderColor = THEMES[next].line;
+      chart.data.datasets[0].backgroundColor = THEMES[next].fill;
+      chart.data.datasets[0].pointBackgroundColor = THEMES[next].line;
       chart.update('none');
     }
-  }, 30);
+  }, 20);
 }
-function toggleTheme() {
-  var cur = parseInt(localStorage.getItem('dashboard_theme_idx') || '0');
-  applyTheme((cur + 1) % THEMES.length);
-}
-// restore on load
 (function() {
-  var saved = parseInt(localStorage.getItem('dashboard_theme_idx') || '0');
-  if (saved > 0) applyTheme(saved);
-  else {
+  var saved = parseInt(localStorage.getItem('t') || '0');
+  if (saved > 0) {
+    THEMES.forEach(function(t) { if (t.cls) document.body.classList.remove(t.cls); });
+    if (THEMES[saved].cls) document.body.classList.add(THEMES[saved].cls);
     var btn = document.getElementById('theme-btn');
-    if (btn) btn.textContent = THEMES[1].label;
+    if (btn) btn.textContent = THEMES[saved].btn;
   }
 })();
 // ── END THEME TOGGLE ─────────────────────────────
+
 </script>
-</body>
-</html>
