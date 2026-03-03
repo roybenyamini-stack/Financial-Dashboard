@@ -5,24 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>תיק השקעות</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script>
-// ── THEME TOGGLE ──────────────────────────────────
-function toggleTheme() {
-  const isSlate = document.body.classList.toggle('theme-slate');
-  const btn = document.getElementById('theme-btn');
-  btn.textContent = isSlate ? '🎨 Classic' : '🎨 Slate';
-  localStorage.setItem('dashboard_theme', isSlate ? 'slate' : 'classic');
-}
-window.addEventListener('DOMContentLoaded', function() {
-  const saved = localStorage.getItem('dashboard_theme');
-  if (saved === 'slate') {
-    document.body.classList.add('theme-slate');
-    const btn = document.getElementById('theme-btn');
-    if (btn) btn.textContent = '🎨 Classic';
-  }
-});
-// ── END THEME TOGGLE ──────────────────────────────
-</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -190,10 +173,7 @@ body.theme-slate {
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <h1>📊 תיק השקעות</h1>
-      <button onclick="toggleTheme()" id="theme-btn" style="cursor:pointer;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:3px 9px;font-size:10px;font-family:Heebo,sans-serif;white-space:nowrap;">🎨 Slate</button>
-    </div>
+    <h1>📊 תיק השקעות</h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -219,6 +199,7 @@ body.theme-slate {
   </div>
   <div style="margin-top:12px;">
     <div style="display:flex; align-items:center; gap:8px;">
+      <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer;background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:7px 13px;font-size:12px;font-family:Heebo,sans-serif;">🎨 Slate</button>
       <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
         📂 עדכן נתונים מאקסל
         <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
@@ -2201,4 +2182,18 @@ function loadExcelFile(input) {
   reader.readAsArrayBuffer(file);
 }
 
+
+// ── THEME TOGGLE ─────────────────────────────────
+function toggleTheme() {
+  var isSlate = document.body.classList.toggle('theme-slate');
+  var btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = isSlate ? '🎨 Classic' : '🎨 Slate';
+  localStorage.setItem('dashboard_theme', isSlate ? 'slate' : 'classic');
+}
+if (localStorage.getItem('dashboard_theme') === 'slate') {
+  document.body.classList.add('theme-slate');
+  var _b = document.getElementById('theme-btn');
+  if (_b) _b.textContent = '🎨 Classic';
+}
+// ── END THEME TOGGLE ─────────────────────────────
 </script>
