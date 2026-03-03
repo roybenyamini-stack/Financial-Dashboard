@@ -150,7 +150,7 @@ tr:last-child td { border-bottom: none; }
     <div class="stat-item">
       <div class="stat-label">שינוי כולל</div>
       <div class="stat-value green" id="hdr-change-val">4,036</div>
-      <div id="hdr-external-wrap" style="display:none; flex-direction:column; gap:2px; font-size:11px; color:white;">
+      <div id="hdr-external-wrap" style="display:none; flex-direction:row; align-items:center; gap:4px; font-size:10px; color:rgba(255,255,255,0.55);">
         <span style="color:white;">🔄 הכרות/העברות: <span id="hdr-external-val" style="color:#fbbf24; font-weight:600;"></span></span>
       </div>
     </div>
@@ -161,14 +161,16 @@ tr:last-child td { border-bottom: none; }
       <div class="stat-change" id="hdr-ret-range">ינו׳ 2025 – פבר׳ 26</div>
     </div>
   </div>
-  <div style="margin-top:12px; text-align:left;">
-    <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
-      📂 עדכן נתונים מאקסל
-      <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
-    </label>
-    <span id="excel-status" style="color:rgba(255,255,255,0.7); font-size:11px; margin-right:10px;"></span>
-    <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
-    <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; margin-right:8px; opacity:0.85;" title="צ׳אט">💬</span>
+  <div style="margin-top:12px; display:flex; flex-direction:column; align-items:flex-start; gap:5px;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
+        📂 עדכן נתונים מאקסל
+        <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
+      </label>
+      <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif;">📝 הערות</button>
+      <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; opacity:0.85;" title="צ׳אט">💬</span>
+    </div>
+    <span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; min-height:15px;"></span>
   </div>
 </div>
 
@@ -234,7 +236,7 @@ tr:last-child td { border-bottom: none; }
           <div style="font-size:11px;color:#888;font-family:Heebo,sans-serif;">YTD 2026</div>
           <div id="chart-ytd" style="font-size:15px;font-weight:700;font-family:Heebo,sans-serif;color:#16a34a;">—</div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-right:auto;padding-bottom:2px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-right:auto;align-self:flex-end;">
           <button id="btnNext" onclick="slideWindow(1)" style="background:#f0f2f5;border:1px solid #e2e8f0;border-radius:8px;width:28px;height:28px;font-size:13px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;">&#8594;</button>
           <div style="text-align:center;">
             <div id="sold-fund-notice" style="display:none;font-size:11px;color:#b45309;font-family:Heebo;font-weight:600;margin-bottom:2px;"></div>
