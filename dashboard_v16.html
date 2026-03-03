@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>תיק השקעות</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
 // ── THEME TOGGLE ──────────────────────────────────
 function toggleTheme() {
   const isSlate = document.body.classList.toggle('theme-slate');
@@ -21,7 +22,6 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 // ── END THEME TOGGLE ──────────────────────────────
-
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -226,7 +226,7 @@ body.theme-slate {
       <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif;">📝 הערות</button>
       <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; opacity:0.85;" title="צ׳אט">💬</span>
     </div>
-    <div style="margin-top:4px;"><span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px;"></span></div>
+    <div style="margin-top:4px; padding-right:0;"><span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; display:block;"></span></div>
   </div>
 </div>
 
