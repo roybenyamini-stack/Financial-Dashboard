@@ -40,7 +40,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 .card-total .label  { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.6px; }
 .card-total .value  { font-size: 15px; font-weight: 800; color: #fff; margin-top: 3px; }
 .card-total .change { font-size: 11px; color: #4ade80; margin-top: 3px; }
-.card { background: var(--card-bg); border-radius: 14px; padding: 10px 12px; border: 1px solid var(--border-clr); border-right: 4px solid var(--cat-color); box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.18s; }
+.card { background: var(--card-bg); border-radius: 14px; padding: 10px 12px; border: 1px solid var(--cat-border, transparent); border-right: 4px solid var(--cat-color); border-top: var(--card-border-t); border-bottom: var(--card-border-b); box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.18s; }
 .card:hover  { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
 .card.active { border: 2px solid var(--cat-color); border-right: 4px solid var(--cat-color); box-shadow: 0 0 0 3px var(--cat-color-alpha); }
 .card .card-label  { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
@@ -50,7 +50,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 .card .card-change.neg { color: #dc2626; }
 
 /* CHART */
-.chart-section { background: var(--chart-bg); border-radius: 18px; padding: 14px 20px; margin-bottom: 14px; box-shadow: var(--chart-shadow); border: 1px solid var(--border-clr); width: 100%; box-sizing: border-box; }
+.chart-section { background: var(--chart-bg); border-radius: 18px; padding: 14px 20px; margin-bottom: 14px; box-shadow: var(--chart-shadow); border: 1px solid var(--chart-border, transparent); width: 100%; box-sizing: border-box; }
 .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
 .chart-title    { font-size: 14px; font-weight: 700; color: #1a1a2e; }
 .chart-subtitle { font-size: 11px; color: #94a3b8; margin-top: 2px; }
@@ -75,7 +75,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 #activeLabelTags { display: flex; gap: 4px; align-items: center; }
 
 /* CATEGORY SECTIONS */
-.category-section { border-radius: 14px; margin-bottom: 10px; box-shadow: var(--cat-shadow); border: 1px solid var(--border-clr); overflow: hidden; background: var(--cat-color-ultralight, #f8faff); }
+.category-section { border-radius: 14px; margin-bottom: 10px; box-shadow: var(--cat-shadow); border: 1px solid var(--cat-border, transparent); overflow: hidden; background: var(--cat-color-ultralight, #f8faff); }
 .category-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; cursor: pointer; border-right: 4px solid var(--cat-color); transition: background 0.15s; user-select: none; background: var(--cat-color-ultralight, #f8faff); }
 .category-header:hover  { filter: brightness(0.97); }
 .category-header.active { filter: brightness(0.95); }
@@ -133,39 +133,92 @@ tr:last-child td { border-bottom: none; }
 
 /* ══ THEME SYSTEM ══════════════════════════════════ */
 :root {
-  --bg:          #f0f2f5;
-  --header-bg:   linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-  --header-r:    18px;
-  --card-bg:     #fff;
-  --card-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  --chart-bg:    #fff;
-  --chart-shadow:0 2px 10px rgba(0,0,0,0.06);
-  --cat-bg:      #fff;
-  --cat-shadow:  0 2px 10px rgba(0,0,0,0.05);
-  --cat-hdr-bg:  #fff;
-  --text-main:   #1a1a2e;
-  --text-sub:    #94a3b8;
-  --border-clr:  transparent;
+  --bg:            #f0f2f5;
+  --header-bg:     linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  --header-r:      18px;
+  --card-bg:       #fff;
+  --card-shadow:   0 2px 8px rgba(0,0,0,0.06);
+  --card-border-t: transparent;
+  --card-border-b: transparent;
+  --chart-bg:      #fff;
+  --chart-shadow:  0 2px 10px rgba(0,0,0,0.06);
+  --chart-border:  transparent;
+  --cat-shadow:    0 2px 10px rgba(0,0,0,0.05);
+  --cat-border:    transparent;
+  --text-main:     #1a1a2e;
+  --text-sub:      #94a3b8;
   --card-total-bg: #1a1a2e;
+  --chart-line:    #1a1a2e;
+  --chart-fill:    rgba(26,26,46,0.07);
+  --grid-line:     rgba(0,0,0,0.06);
 }
+
+/* ── Slate Pro ── */
 body.theme-slate {
-  --bg:          #f8f9fb;
-  --header-bg:   #1e2433;
-  --header-r:    12px;
-  --card-bg:     #fff;
-  --card-shadow: none;
-  --chart-bg:    #fff;
-  --chart-shadow:none;
-  --cat-bg:      #fff;
-  --cat-shadow:  none;
-  --cat-hdr-bg:  #fff;
-  --text-main:   #1e2433;
-  --text-sub:    #64748b;
-  --border-clr:  #e2e8f0;
-  --card-total-bg: #1e2433;
+  --bg:            #f1f5f9;
+  --header-bg:     #0f172a;
+  --header-r:      0px;
+  --card-bg:       #fff;
+  --card-shadow:   none;
+  --card-border-t: 2px solid var(--cat-color, #94a3b8);
+  --card-border-b: transparent;
+  --chart-bg:      #fff;
+  --chart-shadow:  none;
+  --chart-border:  #e2e8f0;
+  --cat-shadow:    none;
+  --cat-border:    #e2e8f0;
+  --text-main:     #0f172a;
+  --text-sub:      #64748b;
+  --card-total-bg: #0f172a;
+  --chart-line:    #38bdf8;
+  --chart-fill:    rgba(56,189,248,0.08);
+  --grid-line:     rgba(226,232,240,0.8);
 }
-/* ══ END THEME ══════════════════════════════════════ */
-</style>
+
+/* ── Warm Pro ── */
+body.theme-warm {
+  --bg:            #faf8f5;
+  --header-bg:     #1c1917;
+  --header-r:      0px;
+  --card-bg:       #fff;
+  --card-shadow:   0 1px 3px rgba(0,0,0,0.05);
+  --card-border-t: transparent;
+  --card-border-b: 2px solid var(--cat-color, #a8a29e);
+  --chart-bg:      #fff;
+  --chart-shadow:  0 1px 4px rgba(0,0,0,0.06);
+  --chart-border:  transparent;
+  --cat-shadow:    0 1px 3px rgba(0,0,0,0.05);
+  --cat-border:    transparent;
+  --text-main:     #1c1917;
+  --text-sub:      #a8a29e;
+  --card-total-bg: #1c1917;
+  --chart-line:    #d97706;
+  --chart-fill:    rgba(217,119,6,0.07);
+  --grid-line:     rgba(231,226,219,0.9);
+}
+
+/* ── Navy ── */
+body.theme-navy {
+  --bg:            #faf9f7;
+  --header-bg:     #1a2744;
+  --header-r:      14px;
+  --card-bg:       #fff;
+  --card-shadow:   0 1px 4px rgba(26,39,68,0.07);
+  --card-border-t: transparent;
+  --card-border-b: 3px solid var(--cat-color, #94a3b8);
+  --chart-bg:      #fff;
+  --chart-shadow:  0 1px 4px rgba(26,39,68,0.06);
+  --chart-border:  transparent;
+  --cat-shadow:    0 1px 4px rgba(26,39,68,0.06);
+  --cat-border:    transparent;
+  --text-main:     #1a2744;
+  --text-sub:      #9b8f7a;
+  --card-total-bg: #1a2744;
+  --chart-line:    #1a2744;
+  --chart-fill:    rgba(26,39,68,0.06);
+  --grid-line:     rgba(232,227,216,0.9);
+}
+/* ══ END THEME ══════════════════════════════════════ */style>
 </head>
 <body>
 
@@ -819,12 +872,13 @@ let chart = new Chart(ctx, {
     datasets: [{
       label: 'סה״כ',
       data: getWindow(ALL_TOTALS).data,
-      borderColor: '#1a1a2e',
-      backgroundColor: 'rgba(26,26,46,0.07)',
-      borderWidth: 2.5,
-      pointRadius: 5,
-      pointHoverRadius: 7,
-      pointBackgroundColor: '#1a1a2e',
+      borderColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-line').trim() || '#1a1a2e',
+      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-fill').trim() || 'rgba(26,26,46,0.07)',
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 6,
+      pointHoverBorderWidth: 2,
+      pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-line').trim() || '#1a1a2e',
       tension: 0.4,
       fill: true,
     }]
@@ -2184,16 +2238,47 @@ function loadExcelFile(input) {
 
 
 // ── THEME TOGGLE ─────────────────────────────────
-function toggleTheme() {
-  var isSlate = document.body.classList.toggle('theme-slate');
+var THEMES = [
+  { cls: '',            label: '🎨 Classic'  },
+  { cls: 'theme-slate', label: '🎨 Slate Pro' },
+  { cls: 'theme-warm',  label: '🎨 Warm Pro'  },
+  { cls: 'theme-navy',  label: '🎨 Navy'      },
+];
+function applyTheme(idx) {
+  THEMES.forEach(function(t) { document.body.classList.remove(t.cls); });
+  if (THEMES[idx].cls) document.body.classList.add(THEMES[idx].cls);
   var btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = isSlate ? '🎨 Classic' : '🎨 Slate';
-  localStorage.setItem('dashboard_theme', isSlate ? 'slate' : 'classic');
+  if (btn) btn.textContent = THEMES[(idx+1) % THEMES.length].label;
+  localStorage.setItem('dashboard_theme_idx', idx);
+  // עדכן צבע גרף לפי theme החדש
+  var style = getComputedStyle(document.body);
+  var lineColor = style.getPropertyValue('--chart-line').trim() || '#1a1a2e';
+  var fillColor = style.getPropertyValue('--chart-fill').trim() || 'rgba(26,26,46,0.07)';
+  if (window.chart) {
+    var ds = chart.data.datasets[0];
+    // שמור צבע קטגוריה/קרן רק כשמציגים total (all)
+    if (currentView === 'all') {
+      ds.borderColor = lineColor;
+      ds.backgroundColor = fillColor;
+      ds.pointBackgroundColor = lineColor;
+    }
+    // עדכן gridlines
+    chart.options.scales.y.grid.color = style.getPropertyValue('--grid-line').trim() || 'rgba(0,0,0,0.06)';
+    chart.update('none');
+  }
 }
-if (localStorage.getItem('dashboard_theme') === 'slate') {
-  document.body.classList.add('theme-slate');
-  var _b = document.getElementById('theme-btn');
-  if (_b) _b.textContent = '🎨 Classic';
+function toggleTheme() {
+  var cur = parseInt(localStorage.getItem('dashboard_theme_idx') || '0');
+  applyTheme((cur + 1) % THEMES.length);
 }
+// restore on load
+(function() {
+  var saved = parseInt(localStorage.getItem('dashboard_theme_idx') || '0');
+  if (saved > 0) applyTheme(saved);
+  else {
+    var btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = THEMES[1].label;
+  }
+})();
 // ── END THEME TOGGLE ─────────────────────────────
 </script>
