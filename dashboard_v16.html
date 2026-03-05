@@ -138,6 +138,25 @@ body{background:var(--bg,#f0f2f5);}
 .header{background:var(--hdr,#1a1a2e)!important;border-radius:var(--hdr-r,18px)!important;}
 #top-fixed{background:var(--bg,#f0f2f5)!important;}
 /* END THEMES */
+
+/* KPI Cards animation */
+@keyframes kpiSlideIn {
+  from { opacity:0; transform:translateY(-12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.kpi-card {
+  animation: kpiSlideIn 0.45s ease both;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.kpi-card:nth-child(1) { animation-delay: 0.05s; }
+.kpi-card:nth-child(2) { animation-delay: 0.13s; }
+.kpi-card:nth-child(3) { animation-delay: 0.21s; }
+.kpi-card:hover {
+  box-shadow: 0 8px 32px rgba(26,26,46,0.18) !important;
+  transform: translateY(-2px);
+}
+#kpi-row { animation: kpiSlideIn 0.35s ease both; }
+
 </style>
 </head>
 <body>
@@ -179,6 +198,35 @@ body{background:var(--bg,#f0f2f5);}
     <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.3); border-radius:8px; padding:7px 13px; font-size:12px; font-family:Heebo,sans-serif;">🎨 Slate Pro</button>
     <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
     <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; margin-right:8px; opacity:0.85;" title="צ׳אט">💬</span>
+  </div>
+</div>
+
+
+<!-- KPI GLASSMORPHISM CARDS -->
+<div id="kpi-row" style="display:flex;gap:14px;padding:0 0 12px 0;direction:rtl;">
+  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
+    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;">סך כל הנכסים</div>
+    <div style="display:flex;align-items:baseline;gap:6px;">
+      <div id="kpi-total" style="font-family:Heebo,sans-serif;font-size:26px;font-weight:800;color:#0f172a;line-height:1;">—</div>
+      <div style="font-family:Heebo,sans-serif;font-size:13px;color:#94a3b8;">אלף״ש</div>
+    </div>
+    <div style="margin-top:6px;height:3px;border-radius:2px;background:linear-gradient(90deg,#6366f1,#818cf8 60%,#c7d2fe);"></div>
+  </div>
+  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
+    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;">שינוי חודשי אחרון</div>
+    <div style="display:flex;align-items:baseline;gap:6px;">
+      <div id="kpi-monthly" style="font-family:Heebo,sans-serif;font-size:26px;font-weight:800;color:#0f172a;line-height:1;">—</div>
+      <div id="kpi-monthly-pct" style="font-family:Heebo,sans-serif;font-size:14px;font-weight:700;color:#16a34a;"></div>
+    </div>
+    <div style="margin-top:6px;height:3px;border-radius:2px;background:linear-gradient(90deg,#10b981,#34d399 60%,#a7f3d0);"></div>
+  </div>
+  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
+    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;">YTD 2026</div>
+    <div style="display:flex;align-items:baseline;gap:6px;">
+      <div id="kpi-ytd" style="font-family:Heebo,sans-serif;font-size:26px;font-weight:800;color:#0f172a;line-height:1;">—</div>
+      <div style="font-family:Heebo,sans-serif;font-size:13px;color:#94a3b8;">%</div>
+    </div>
+    <div style="margin-top:6px;height:3px;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#fbbf24 60%,#fde68a);"></div>
   </div>
 </div>
 
@@ -785,21 +833,34 @@ function getWindow(data) {
 const ctx = document.getElementById('mainChart').getContext('2d');
 let currentData = ALL_TOTALS;
 
+// Gradient fill helper
+function makeGradient(chartCtx, colorStr) {
+  var gradient = chartCtx.createLinearGradient(0, 0, 0, 320);
+  var m = colorStr.match(/([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})/);
+  var r=26,g=26,b=46;
+  if(m){r=parseInt(m[1],16);g=parseInt(m[2],16);b=parseInt(m[3],16);}
+  gradient.addColorStop(0,   'rgba('+r+','+g+','+b+',0.32)');
+  gradient.addColorStop(0.5, 'rgba('+r+','+g+','+b+',0.10)');
+  gradient.addColorStop(1,   'rgba('+r+','+g+','+b+',0.0)');
+  return gradient;
+}
+
 let chart = new Chart(ctx, {
   type: 'line',
   data: {
     labels: getWindow(ALL_TOTALS).labels,
     datasets: [{
-      label: 'סה״כ',
+      label: 'סה׳׳כ',
       data: getWindow(ALL_TOTALS).data,
       borderColor: '#1a1a2e',
-      backgroundColor: 'rgba(26,26,46,0.07)',
+      backgroundColor: makeGradient(ctx, '1a1a2e'),
       borderWidth: 2.5,
       pointRadius: 0,
-      pointHoverRadius: 6,
-      pointHoverBorderWidth: 2,
+      pointHoverRadius: 7,
+      pointHoverBorderWidth: 2.5,
+      pointHoverBackgroundColor: '#fff',
       pointBackgroundColor: '#1a1a2e',
-      tension: 0.4,
+      tension: 0.42,
       fill: true,
     }]
   },
@@ -809,35 +870,54 @@ let chart = new Chart(ctx, {
       legend: { display: false },
       tooltip: {
         rtl: true, textDirection: 'rtl',
+        backgroundColor: 'rgba(15,20,40,0.93)',
+        titleColor: '#a5b4fc',
+        bodyColor: '#e2e8f0',
+        borderColor: 'rgba(165,180,252,0.22)',
+        borderWidth: 1,
+        padding: { top:11, bottom:11, left:15, right:15 },
+        titleFont: { family:'Heebo', size:12, weight:'600' },
+        bodyFont: { family:'Heebo', size:14, weight:'700' },
+        cornerRadius: 10,
+        displayColors: false,
         callbacks: {
-          label: c => {
-            const val = ` ${Math.round(c.parsed.y).toLocaleString()} אלף`;
-            // Check if any fund in current category was sold at this point
+          title: function(items) { return items[0].label; },
+          label: function(c) {
+            var val = Math.round(c.parsed.y).toLocaleString();
+            var idx = c.dataIndex;
+            var raw = currentData.slice(winStart, winStart + WINDOW);
+            var pctStr = '';
+            if (idx > 0 && raw[idx] != null && raw[idx-1] != null && raw[idx-1] > 0) {
+              var pct = ((raw[idx] - raw[idx-1]) / raw[idx-1] * 100).toFixed(1);
+              pctStr = (parseFloat(pct) >= 0 ? ' ↗ +' : ' ↘ ') + pct + '%';
+            }
+            var lines = [' סך הכל: ' + val + ' אלף״ש'];
+            if (pctStr) lines.push(' שינוי חודשי:' + pctStr);
             if (currentView && currentView !== 'all') {
-              const colIdx = c.dataIndex;
-              const soldFunds = Object.values(FUNDS).filter(f => {
+              var colIdx = c.dataIndex;
+              var soldFunds = Object.values(FUNDS).filter(function(f) {
                 if (f.cat !== currentView) return false;
-                let wasActive = false;
-                for (let i = 0; i < f.data.length; i++) {
+                var wasActive = false;
+                for (var i = 0; i < f.data.length; i++) {
                   if ((f.data[i]||0) > 0) wasActive = true;
                   else if (wasActive && i === colIdx) return true;
                 }
                 return false;
               });
               if (soldFunds.length > 0) {
-                return [val, '⚠️ כולל מכירת: ' + soldFunds.map(f=>f.name).join(', ')];
+                lines.push('⚠️ כולל מכירת: ' + soldFunds.map(function(f){return f.name;}).join(', '));
               }
             }
-            return val;
+            return lines;
           }
         }
       }
     },
     scales: {
-      x: { grid: { display: true, color:'#f0f0f0' }, ticks: { font: { family:'Heebo', size:11 } } },
-      y: { grid: { color:'#f0f0f0' }, ticks: { callback: v=>v.toLocaleString(), font:{ family:'Heebo', size:11 } }, grace: '15%', beginAtZero: false }
+      x: { grid: { display: true, color:'rgba(0,0,0,0.045)' }, ticks: { font: { family:'Heebo', size:11 } } },
+      y: { grid: { color:'rgba(0,0,0,0.045)' }, ticks: { callback: function(v){return v.toLocaleString();}, font:{ family:'Heebo', size:11 } }, grace: '15%', beginAtZero: false }
     },
-    animation: { duration: 300 }
+    animation: { duration: 700, easing: 'easeInOutQuart' }
   }
 })
 window.addEventListener('resize', () => { if(chart) chart.resize(); });
@@ -1009,6 +1089,7 @@ function updateDynamicStats() {
       el('sec-ytd-'+cat).textContent = '';
     }
   });
+  if(typeof updateKPICards==='function') updateKPICards();
 }
 function updateNavButtons() {
   document.getElementById('btnPrev').disabled = winStart <= 0;
@@ -1234,7 +1315,7 @@ function updateChart(data, color, label) {
   chart.data.labels = w.labels;
   chart.data.datasets[0].data = w.data;
   chart.data.datasets[0].borderColor = color;
-  chart.data.datasets[0].backgroundColor = color.replace(')', ',0.08)').replace('rgb','rgba');
+  chart.data.datasets[0].backgroundColor = makeGradient(ctx, color.replace('#',''));
   chart.data.datasets[0].pointBackgroundColor = color;
   chart.data.datasets[0].label = label;
 
@@ -1755,6 +1836,51 @@ document.getElementById('card-all').classList.add('active');
 updateNavButtons();
 updateChartStats(currentData, currentView);
 markNoteMonths();
+
+// ── KPI Cards update ────────────────────────────────────────────
+function updateKPICards() {
+  var n = LABELS.length;
+  if (n === 0) return;
+  // Total assets (last month)
+  var endIdx = Math.min(winStart + WINDOW - 1, n - 1);
+  var total = ALL_TOTALS[endIdx];
+  var kpiTotalEl = document.getElementById('kpi-total');
+  if (kpiTotalEl) kpiTotalEl.textContent = Math.round(total).toLocaleString();
+  // Monthly change
+  var kpiMonthlyEl = document.getElementById('kpi-monthly');
+  var kpiMonthlyPctEl = document.getElementById('kpi-monthly-pct');
+  if (kpiMonthlyEl && endIdx > 0 && ALL_TOTALS[endIdx-1] > 0) {
+    var diff = ALL_TOTALS[endIdx] - ALL_TOTALS[endIdx-1];
+    var pct = (diff / ALL_TOTALS[endIdx-1] * 100).toFixed(1);
+    kpiMonthlyEl.textContent = (diff >= 0 ? '+' : '') + Math.round(diff).toLocaleString();
+    kpiMonthlyEl.style.color = diff >= 0 ? '#16a34a' : '#dc2626';
+    if (kpiMonthlyPctEl) {
+      kpiMonthlyPctEl.textContent = (diff >= 0 ? '+' : '') + pct + '%';
+      kpiMonthlyPctEl.style.color = diff >= 0 ? '#16a34a' : '#dc2626';
+    }
+  }
+  // YTD 2026
+  var kpiYtdEl = document.getElementById('kpi-ytd');
+  if (kpiYtdEl) {
+    var janIdx = LABELS.findIndex(function(l){return l.includes('ינו') && l.includes('26');});
+    if (janIdx >= 0 && endIdx >= janIdx) {
+      var excl = Object.keys(EXCLUDE_FROM_PCT).reduce(function(a,k){return a.concat(EXCLUDE_FROM_PCT[k]);}, []);
+      var ytdStart = Object.entries(FUNDS)
+        .filter(function(e){return !excl.includes(e[0]) && (e[1].data[endIdx]||0) > 0;})
+        .reduce(function(s,e){return s+(e[1].data[janIdx]||0);}, 0);
+      var ytdEnd = Object.entries(FUNDS)
+        .filter(function(e){return !excl.includes(e[0]) && (e[1].data[endIdx]||0) > 0;})
+        .reduce(function(s,e){return s+(e[1].data[endIdx]||0);}, 0);
+      if (ytdStart > 0) {
+        var ytd = ((ytdEnd - ytdStart) / ytdStart * 100).toFixed(1);
+        kpiYtdEl.textContent = (parseFloat(ytd) >= 0 ? '+' : '') + ytd;
+        kpiYtdEl.style.color = parseFloat(ytd) >= 0 ? '#16a34a' : '#dc2626';
+      }
+    }
+  }
+}
+updateKPICards();
+
 </script>
 
 <style>
@@ -2176,7 +2302,7 @@ function toggleTheme(){
     if(window.chart&&currentView==='all'){
       var ds=chart.data.datasets[0];
       ds.borderColor=THEMES[nxt].line;
-      ds.backgroundColor=THEMES[nxt].fill;
+      ds.backgroundColor=makeGradient(ctx, THEMES[nxt].line.replace('#',''));
       ds.pointBackgroundColor=THEMES[nxt].line;
       chart.update('none');
     }
