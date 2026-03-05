@@ -730,36 +730,34 @@ LABELS.forEach((_, i) => {
   });
 });
 
-// Category chart totals – uses per-fund forward-fill so null months don't drop to 0
+// Forward-fill helper per fund for chart totals
+function ffVal(fundData) {
+  var last = null;
+  return fundData.map(function(v) {
+    if (v !== null && v !== undefined) { last = v; return v; }
+    return last !== null ? last : 0;
+  });
+}
+
+// CAT_CHART_TOTALS: per-fund forward-fill so null months don't drop the category sum
 function buildCatChartTotals() {
-  const totals = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
+  var totals = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
   Object.entries(totals).forEach(function([cat, arr]) {
     var funds = Object.values(FUNDS).filter(function(f){return f.cat===cat;});
-    // forward-fill each fund's data individually
-    var ffFunds = funds.map(function(f) {
-      var last = null;
-      return f.data.map(function(v) {
-        if (v !== null && v !== undefined) { last = v; return v; }
-        return last !== null ? last : 0;
-      });
-    });
+    var ffFunds = funds.map(function(f){return ffVal(f.data);});
     LABELS.forEach(function(_, i) {
-      arr.push(ffFunds.reduce(function(s, fd){ return s + (fd[i]||0); }, 0));
+      arr.push(ffFunds.reduce(function(s,fd){return s+(fd[i]||0);},0));
     });
   });
   return totals;
 }
 let CAT_CHART_TOTALS = buildCatChartTotals();
-// ALL_TOTALS uses forward-fill per fund so null months don't drop sums
-const _ffFundsAll = Object.values(FUNDS).map(function(f) {
-  var last = null;
-  return { cat: f.cat, ff: f.data.map(function(v){
-    if(v!==null&&v!==undefined){last=v;return v;} return last!==null?last:0;
-  })};
-});
+
+// ALL_TOTALS: also uses per-fund forward-fill
 const ALL_TOTALS = LABELS.map(function(_,i) {
-  return _ffFundsAll.reduce(function(t,f){
-    return t + (f.cat==='chov' ? -(f.ff[i]||0) : (f.ff[i]||0));
+  return Object.values(FUNDS).reduce(function(t,f) {
+    var ff = ffVal(f.data);
+    return t + (f.cat==='chov' ? -(ff[i]||0) : (ff[i]||0));
   }, 0);
 });
 
