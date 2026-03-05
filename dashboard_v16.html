@@ -692,7 +692,7 @@ body{background:var(--bg,#f0f2f5);}
 const LABELS = ['ינו׳ 25','פבר׳ 25','מרץ 25','אפר׳ 25','מאי 25','יוני 25','יולי 25','אוג׳ 25','ספט׳ 25','אוק׳ 25','נוב׳ 25','דצמ׳ 25','ינו׳ 26','פבר׳ 26','מרץ 26'];
 
 const FUNDS = {
-  'אשקהש39905556':       { name:'א״ש ק״הש 39905556',      cat:'hishtalmut', data:[2406,2437,2416,2386,2401,2469,2548,2567,2595,2654,2685,2700,2700,2743,null] },
+  'אשקהש39905556':       { name:'א״ש ק״הש 39905556',      cat:'hishtalmut', data:[2406,2437,2416,2386,2401,2469,2548,2567,2595,2654,2685,2700,2700,2743,0] },
   'אשקהש6730513':        { name:'א״ש ק״הש 6730513 ← מיטב 442504', cat:'hishtalmut', data:[772,792,770,747,754,802,846,860,869,905,919,921,941,981,981] },
   'אשקהש40035706':       { name:'א״ש קה״ש 40035706',       cat:'hishtalmut', data:[281,285,283,279,281,289,298,300,304,310,314,316,316,321,321] },
   'מורקהש499293':        { name:'מור קה״ש 499293 ← מיטב 443195', cat:'hishtalmut', data:[320,339,348,350,362,391,418,435,448,473,493,508,529,561,561] },
@@ -730,23 +730,37 @@ LABELS.forEach((_, i) => {
   });
 });
 
-// Category chart totals (for chart - excludes fund value after it reaches 0)
+// Category chart totals – uses per-fund forward-fill so null months don't drop to 0
 function buildCatChartTotals() {
-  // Same as CAT_TOTALS - show actual values including sold funds as 0
   const totals = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
-  LABELS.forEach((_, i) => {
-    Object.entries(totals).forEach(([cat, arr]) => {
-      const vals = Object.values(FUNDS).filter(f => f.cat===cat).map(f => f.data[i]||0);
-      arr.push(vals.reduce((a,b)=>a+b,0));
+  Object.entries(totals).forEach(function([cat, arr]) {
+    var funds = Object.values(FUNDS).filter(function(f){return f.cat===cat;});
+    // forward-fill each fund's data individually
+    var ffFunds = funds.map(function(f) {
+      var last = null;
+      return f.data.map(function(v) {
+        if (v !== null && v !== undefined) { last = v; return v; }
+        return last !== null ? last : 0;
+      });
+    });
+    LABELS.forEach(function(_, i) {
+      arr.push(ffFunds.reduce(function(s, fd){ return s + (fd[i]||0); }, 0));
     });
   });
   return totals;
 }
 let CAT_CHART_TOTALS = buildCatChartTotals();
-const ALL_TOTALS = LABELS.map((_,i) => {
-  let t = 0;
-  Object.entries(CAT_TOTALS).forEach(([cat, arr]) => { t += cat === 'chov' ? -(arr[i]||0) : (arr[i]||0); });
-  return t;
+// ALL_TOTALS uses forward-fill per fund so null months don't drop sums
+const _ffFundsAll = Object.values(FUNDS).map(function(f) {
+  var last = null;
+  return { cat: f.cat, ff: f.data.map(function(v){
+    if(v!==null&&v!==undefined){last=v;return v;} return last!==null?last:0;
+  })};
+});
+const ALL_TOTALS = LABELS.map(function(_,i) {
+  return _ffFundsAll.reduce(function(t,f){
+    return t + (f.cat==='chov' ? -(f.ff[i]||0) : (f.ff[i]||0));
+  }, 0);
 });
 
 
