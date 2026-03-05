@@ -692,7 +692,7 @@ body{background:var(--bg,#f0f2f5);}
 const LABELS = ['ינו׳ 25','פבר׳ 25','מרץ 25','אפר׳ 25','מאי 25','יוני 25','יולי 25','אוג׳ 25','ספט׳ 25','אוק׳ 25','נוב׳ 25','דצמ׳ 25','ינו׳ 26','פבר׳ 26','מרץ 26'];
 
 const FUNDS = {
-  'אשקהש39905556':       { name:'א״ש ק״הש 39905556',      cat:'hishtalmut', data:[2406,2437,2416,2386,2401,2469,2548,2567,2595,2654,2685,2700,2700,2743,0] },
+  'אשקהש39905556':       { name:'א״ש ק״הש 39905556',      cat:'hishtalmut', data:[2406,2437,2416,2386,2401,2469,2548,2567,2595,2654,2685,2700,2700,2743,null] },
   'אשקהש6730513':        { name:'א״ש ק״הש 6730513 ← מיטב 442504', cat:'hishtalmut', data:[772,792,770,747,754,802,846,860,869,905,919,921,941,981,981] },
   'אשקהש40035706':       { name:'א״ש קה״ש 40035706',       cat:'hishtalmut', data:[281,285,283,279,281,289,298,300,304,310,314,316,316,321,321] },
   'מורקהש499293':        { name:'מור קה״ש 499293 ← מיטב 443195', cat:'hishtalmut', data:[320,339,348,350,362,391,418,435,448,473,493,508,529,561,561] },
@@ -881,10 +881,7 @@ function getCatBase(cat, idx) {
 }
 
 function updateDynamicStats() {
-  // Use last month with real data, not just last label
-  const rawEndIdx = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
-  let endIdx = rawEndIdx;
-  while (endIdx > 0 && Object.values(FUNDS).every(f => f.data[endIdx] === null || f.data[endIdx] === undefined)) endIdx--;
+  const endIdx = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
   const cats = ['mezuman','hishtalmut','gemel','gemel_invest','harel','meitav','arbitrage','dira','chov'];
   const el = id => document.getElementById(id);
   const endLabel = LABELS[endIdx];
