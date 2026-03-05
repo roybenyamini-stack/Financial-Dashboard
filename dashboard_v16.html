@@ -139,24 +139,13 @@ body{background:var(--bg,#f0f2f5);}
 #top-fixed{background:var(--bg,#f0f2f5)!important;}
 /* END THEMES */
 
-/* KPI Cards animation */
-@keyframes kpiSlideIn {
-  from { opacity:0; transform:translateY(-12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-.kpi-card {
-  animation: kpiSlideIn 0.45s ease both;
-  transition: box-shadow 0.2s, transform 0.2s;
-}
-.kpi-card:nth-child(1) { animation-delay: 0.05s; }
-.kpi-card:nth-child(2) { animation-delay: 0.13s; }
-.kpi-card:nth-child(3) { animation-delay: 0.21s; }
-.kpi-card:hover {
-  box-shadow: 0 8px 32px rgba(26,26,46,0.18) !important;
-  transform: translateY(-2px);
-}
-#kpi-row { animation: kpiSlideIn 0.35s ease both; }
-
+/* KPI Cards */
+@keyframes kpiIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.kpi-card{animation:kpiIn 0.45s ease both;transition:box-shadow 0.2s,transform 0.2s;}
+.kpi-card:nth-child(1){animation-delay:0.05s}
+.kpi-card:nth-child(2){animation-delay:0.13s}
+.kpi-card:nth-child(3){animation-delay:0.21s}
+.kpi-card:hover{box-shadow:0 8px 32px rgba(26,26,46,0.18)!important;transform:translateY(-2px)}
 </style>
 </head>
 <body>
@@ -202,31 +191,31 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 
 
-<!-- KPI GLASSMORPHISM CARDS -->
+<!-- KPI CARDS -->
 <div id="kpi-row" style="display:flex;gap:14px;padding:0 0 12px 0;direction:rtl;">
-  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
-    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;">סך כל הנכסים</div>
+  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
+    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;margin-bottom:6px;">סך כל הנכסים</div>
     <div style="display:flex;align-items:baseline;gap:6px;">
       <div id="kpi-total" style="font-family:Heebo,sans-serif;font-size:26px;font-weight:800;color:#0f172a;line-height:1;">—</div>
       <div style="font-family:Heebo,sans-serif;font-size:13px;color:#94a3b8;">אלף״ש</div>
     </div>
-    <div style="margin-top:6px;height:3px;border-radius:2px;background:linear-gradient(90deg,#6366f1,#818cf8 60%,#c7d2fe);"></div>
+    <div style="margin-top:8px;height:3px;border-radius:2px;background:linear-gradient(90deg,#6366f1,#818cf8,#c7d2fe);"></div>
   </div>
-  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
-    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;">שינוי חודשי אחרון</div>
-    <div style="display:flex;align-items:baseline;gap:6px;">
+  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
+    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;margin-bottom:6px;">שינוי חודשי אחרון</div>
+    <div style="display:flex;align-items:baseline;gap:8px;">
       <div id="kpi-monthly" style="font-family:Heebo,sans-serif;font-size:26px;font-weight:800;color:#0f172a;line-height:1;">—</div>
       <div id="kpi-monthly-pct" style="font-family:Heebo,sans-serif;font-size:14px;font-weight:700;color:#16a34a;"></div>
     </div>
-    <div style="margin-top:6px;height:3px;border-radius:2px;background:linear-gradient(90deg,#10b981,#34d399 60%,#a7f3d0);"></div>
+    <div style="margin-top:8px;height:3px;border-radius:2px;background:linear-gradient(90deg,#10b981,#34d399,#a7f3d0);"></div>
   </div>
-  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
-    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;">YTD 2026</div>
+  <div class="kpi-card" style="flex:1;background:rgba(255,255,255,0.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;padding:16px 20px;box-shadow:0 4px 24px rgba(26,26,46,0.10);">
+    <div style="font-family:Heebo,sans-serif;font-size:11px;color:#64748b;font-weight:600;letter-spacing:0.04em;margin-bottom:6px;">YTD 2026</div>
     <div style="display:flex;align-items:baseline;gap:6px;">
       <div id="kpi-ytd" style="font-family:Heebo,sans-serif;font-size:26px;font-weight:800;color:#0f172a;line-height:1;">—</div>
       <div style="font-family:Heebo,sans-serif;font-size:13px;color:#94a3b8;">%</div>
     </div>
-    <div style="margin-top:6px;height:3px;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#fbbf24 60%,#fde68a);"></div>
+    <div style="margin-top:8px;height:3px;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#fbbf24,#fde68a);"></div>
   </div>
 </div>
 
@@ -836,9 +825,9 @@ let currentData = ALL_TOTALS;
 // Gradient fill helper
 function makeGradient(chartCtx, colorStr) {
   var gradient = chartCtx.createLinearGradient(0, 0, 0, 320);
-  var m = colorStr.match(/([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})/);
+  var m = colorStr.replace('#','').match(/.{2}/g);
   var r=26,g=26,b=46;
-  if(m){r=parseInt(m[1],16);g=parseInt(m[2],16);b=parseInt(m[3],16);}
+  if(m&&m.length>=3){r=parseInt(m[0],16);g=parseInt(m[1],16);b=parseInt(m[2],16);}
   gradient.addColorStop(0,   'rgba('+r+','+g+','+b+',0.32)');
   gradient.addColorStop(0.5, 'rgba('+r+','+g+','+b+',0.10)');
   gradient.addColorStop(1,   'rgba('+r+','+g+','+b+',0.0)');
@@ -853,7 +842,7 @@ let chart = new Chart(ctx, {
       label: 'סה׳׳כ',
       data: getWindow(ALL_TOTALS).data,
       borderColor: '#1a1a2e',
-      backgroundColor: makeGradient(ctx, '1a1a2e'),
+      backgroundColor: makeGradient(ctx, '#1a1a2e'),
       borderWidth: 2.5,
       pointRadius: 0,
       pointHoverRadius: 7,
@@ -891,24 +880,24 @@ let chart = new Chart(ctx, {
               var pct = ((raw[idx] - raw[idx-1]) / raw[idx-1] * 100).toFixed(1);
               pctStr = (parseFloat(pct) >= 0 ? ' ↗ +' : ' ↘ ') + pct + '%';
             }
-            var lines = [' סך הכל: ' + val + ' אלף״ש'];
-            if (pctStr) lines.push(' שינוי חודשי:' + pctStr);
+            var lines2 = [' סך הכל: ' + val + ' אלף״ש'];
+            if (pctStr) lines2.push(' שינוי חודשי:' + pctStr);
             if (currentView && currentView !== 'all') {
-              var colIdx = c.dataIndex;
+              var colIdx2 = c.dataIndex;
               var soldFunds = Object.values(FUNDS).filter(function(f) {
                 if (f.cat !== currentView) return false;
                 var wasActive = false;
-                for (var i = 0; i < f.data.length; i++) {
-                  if ((f.data[i]||0) > 0) wasActive = true;
-                  else if (wasActive && i === colIdx) return true;
+                for (var i2 = 0; i2 < f.data.length; i2++) {
+                  if ((f.data[i2]||0) > 0) wasActive = true;
+                  else if (wasActive && i2 === colIdx2) return true;
                 }
                 return false;
               });
               if (soldFunds.length > 0) {
-                lines.push('⚠️ כולל מכירת: ' + soldFunds.map(function(f){return f.name;}).join(', '));
+                lines2.push('⚠️ כולל מכירת: ' + soldFunds.map(function(f){return f.name;}).join(', '));
               }
             }
-            return lines;
+            return lines2;
           }
         }
       }
@@ -1315,7 +1304,7 @@ function updateChart(data, color, label) {
   chart.data.labels = w.labels;
   chart.data.datasets[0].data = w.data;
   chart.data.datasets[0].borderColor = color;
-  chart.data.datasets[0].backgroundColor = makeGradient(ctx, color.replace('#',''));
+  chart.data.datasets[0].backgroundColor = makeGradient(ctx, color);
   chart.data.datasets[0].pointBackgroundColor = color;
   chart.data.datasets[0].label = label;
 
@@ -1836,51 +1825,6 @@ document.getElementById('card-all').classList.add('active');
 updateNavButtons();
 updateChartStats(currentData, currentView);
 markNoteMonths();
-
-// ── KPI Cards update ────────────────────────────────────────────
-function updateKPICards() {
-  var n = LABELS.length;
-  if (n === 0) return;
-  // Total assets (last month)
-  var endIdx = Math.min(winStart + WINDOW - 1, n - 1);
-  var total = ALL_TOTALS[endIdx];
-  var kpiTotalEl = document.getElementById('kpi-total');
-  if (kpiTotalEl) kpiTotalEl.textContent = Math.round(total).toLocaleString();
-  // Monthly change
-  var kpiMonthlyEl = document.getElementById('kpi-monthly');
-  var kpiMonthlyPctEl = document.getElementById('kpi-monthly-pct');
-  if (kpiMonthlyEl && endIdx > 0 && ALL_TOTALS[endIdx-1] > 0) {
-    var diff = ALL_TOTALS[endIdx] - ALL_TOTALS[endIdx-1];
-    var pct = (diff / ALL_TOTALS[endIdx-1] * 100).toFixed(1);
-    kpiMonthlyEl.textContent = (diff >= 0 ? '+' : '') + Math.round(diff).toLocaleString();
-    kpiMonthlyEl.style.color = diff >= 0 ? '#16a34a' : '#dc2626';
-    if (kpiMonthlyPctEl) {
-      kpiMonthlyPctEl.textContent = (diff >= 0 ? '+' : '') + pct + '%';
-      kpiMonthlyPctEl.style.color = diff >= 0 ? '#16a34a' : '#dc2626';
-    }
-  }
-  // YTD 2026
-  var kpiYtdEl = document.getElementById('kpi-ytd');
-  if (kpiYtdEl) {
-    var janIdx = LABELS.findIndex(function(l){return l.includes('ינו') && l.includes('26');});
-    if (janIdx >= 0 && endIdx >= janIdx) {
-      var excl = Object.keys(EXCLUDE_FROM_PCT).reduce(function(a,k){return a.concat(EXCLUDE_FROM_PCT[k]);}, []);
-      var ytdStart = Object.entries(FUNDS)
-        .filter(function(e){return !excl.includes(e[0]) && (e[1].data[endIdx]||0) > 0;})
-        .reduce(function(s,e){return s+(e[1].data[janIdx]||0);}, 0);
-      var ytdEnd = Object.entries(FUNDS)
-        .filter(function(e){return !excl.includes(e[0]) && (e[1].data[endIdx]||0) > 0;})
-        .reduce(function(s,e){return s+(e[1].data[endIdx]||0);}, 0);
-      if (ytdStart > 0) {
-        var ytd = ((ytdEnd - ytdStart) / ytdStart * 100).toFixed(1);
-        kpiYtdEl.textContent = (parseFloat(ytd) >= 0 ? '+' : '') + ytd;
-        kpiYtdEl.style.color = parseFloat(ytd) >= 0 ? '#16a34a' : '#dc2626';
-      }
-    }
-  }
-}
-updateKPICards();
-
 </script>
 
 <style>
@@ -2302,7 +2246,7 @@ function toggleTheme(){
     if(window.chart&&currentView==='all'){
       var ds=chart.data.datasets[0];
       ds.borderColor=THEMES[nxt].line;
-      ds.backgroundColor=makeGradient(ctx, THEMES[nxt].line.replace('#',''));
+      ds.backgroundColor=makeGradient(ctx, THEMES[nxt].line);
       ds.pointBackgroundColor=THEMES[nxt].line;
       chart.update('none');
     }
@@ -2318,4 +2262,32 @@ function toggleTheme(){
   }
 })();
 // END THEME TOGGLE
+
+// ── KPI Cards ────────────────────────────────────────────────────
+function updateKPICards() {
+  var n = LABELS.length; if(!n) return;
+  var endIdx = Math.min(winStart + WINDOW - 1, n - 1);
+  var el1 = document.getElementById('kpi-total');
+  if(el1) el1.textContent = Math.round(ALL_TOTALS[endIdx]).toLocaleString();
+  var el2 = document.getElementById('kpi-monthly');
+  var el2p = document.getElementById('kpi-monthly-pct');
+  if(el2 && endIdx > 0 && ALL_TOTALS[endIdx-1] > 0) {
+    var diff = ALL_TOTALS[endIdx] - ALL_TOTALS[endIdx-1];
+    var pct = (diff / ALL_TOTALS[endIdx-1] * 100).toFixed(1);
+    el2.textContent = (diff>=0?'+':'') + Math.round(diff).toLocaleString();
+    el2.style.color = diff>=0 ? '#16a34a' : '#dc2626';
+    if(el2p){el2p.textContent=(diff>=0?'+':'')+pct+'%'; el2p.style.color=diff>=0?'#16a34a':'#dc2626';}
+  }
+  var el3 = document.getElementById('kpi-ytd');
+  if(el3) {
+    var janIdx = LABELS.findIndex(function(l){return l.includes('ינו') && l.includes('26');});
+    if(janIdx>=0 && endIdx>=janIdx) {
+      var excl = Object.keys(EXCLUDE_FROM_PCT).reduce(function(a,k){return a.concat(EXCLUDE_FROM_PCT[k]);}, []);
+      var s0 = Object.entries(FUNDS).filter(function(e){return !excl.includes(e[0])&&(e[1].data[endIdx]||0)>0;}).reduce(function(s,e){return s+(e[1].data[janIdx]||0);},0);
+      var s1 = Object.entries(FUNDS).filter(function(e){return !excl.includes(e[0])&&(e[1].data[endIdx]||0)>0;}).reduce(function(s,e){return s+(e[1].data[endIdx]||0);},0);
+      if(s0>0){var ytd=((s1-s0)/s0*100).toFixed(1); el3.textContent=(parseFloat(ytd)>=0?'+':'')+ytd; el3.style.color=parseFloat(ytd)>=0?'#16a34a':'#dc2626';}
+    }
+  }
+}
+updateKPICards();
 </script>
