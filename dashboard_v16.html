@@ -9,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Heebo', sans-serif; background: var(--bg,#f0f2f5); color: #1a1a2e; }
+body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; min-height: 100vh; }
 
-#top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: var(--bg,#f0f2f5); width: 100%; box-sizing: border-box; }
+#top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: #f0f2f5; width: 100%; box-sizing: border-box; }
 #categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; }
 
 /* HEADER */
@@ -134,9 +134,9 @@ tr:last-child td { border-bottom: none; }
 body.t-slate{--bg:#f1f5f9;--hdr:#0f172a;--hdr-r:0px;}
 body.t-warm{--bg:#f5f0e8;--hdr:#1c1917;--hdr-r:0px;}
 body.t-navy{--bg:#f0eee8;--hdr:#1a2744;--hdr-r:14px;}
-body{background:var(--bg);}
-.header{background:var(--hdr)!important;border-radius:var(--hdr-r)!important;}
-#top-fixed,#categories-scroll{background:var(--bg)!important;}
+body{background:var(--bg,#f0f2f5);}
+.header{background:var(--hdr,#1a1a2e)!important;border-radius:var(--hdr-r,18px)!important;}
+#top-fixed{background:var(--bg,#f0f2f5)!important;}
 /* END THEMES */
 </style>
 </head>
@@ -170,19 +170,16 @@ body{background:var(--bg);}
       <div class="stat-change" id="hdr-ret-range">ינו׳ 2025 – פבר׳ 26</div>
     </div>
   </div>
-  <div style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
-    <div style="display:flex; align-items:center; gap:8px;">
-      <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:0 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-flex; align-items:center; height:34px; white-space:nowrap;">
-        📂 עדכן נתונים מאקסל
-        <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
-      </label>
-      <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:0 14px; font-size:12px; font-family:Heebo,sans-serif; height:34px; white-space:nowrap;">📝 הערות</button>
-      <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.3); border-radius:8px; padding:0 13px; font-size:12px; font-family:Heebo,sans-serif; height:34px; white-space:nowrap;">🎨 Slate Pro</button>
-      <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:20px; opacity:0.85; display:inline-flex; align-items:center; height:34px;">💬</span>
-    </div>
-    <span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; min-height:14px; display:block;"></span>
+  <div style="margin-top:12px; text-align:left;">
+    <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
+      📂 עדכן נתונים מאקסל
+      <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
+    </label>
+    <span id="excel-status" style="color:rgba(255,255,255,0.7); font-size:11px; margin-right:10px;"></span>
+    <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.3); border-radius:8px; padding:7px 13px; font-size:12px; font-family:Heebo,sans-serif;">🎨 Slate Pro</button>
+    <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
+    <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; margin-right:8px; opacity:0.85;" title="צ׳אט">💬</span>
   </div>
-</div>
 </div>
 
 <!-- CARDS -->
@@ -2195,5 +2192,4 @@ function toggleTheme(){
   }
 })();
 // END THEME TOGGLE
-
 </script>
