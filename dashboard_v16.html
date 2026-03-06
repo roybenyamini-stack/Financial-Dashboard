@@ -178,11 +178,9 @@ body{background:var(--bg,#f0f2f5);}
       </label>
       <span id="excel-status" style="color:#4ade80; font-size:11px; font-family:Heebo,sans-serif; display:block; line-height:1.2;"></span>
     </div>
-    <div style="display:flex; align-items:center; gap:8px;">
     <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.3); border-radius:8px; padding:7px 13px; font-size:12px; font-family:Heebo,sans-serif;">🎨 Slate Pro</button>
     <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
     <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; margin-right:8px; opacity:0.85;" title="צ׳אט">💬</span>
-    </div>
   </div>
 </div>
 
@@ -796,13 +794,13 @@ let chart = new Chart(ctx, {
     datasets: [{
       label: 'סה״כ',
       data: getWindow(ALL_TOTALS).data,
-      borderColor: '#1a1a2e',
-      backgroundColor: 'rgba(26,26,46,0.07)',
+      borderColor: (function(){var t=[{line:'#1a1a2e'},{line:'#38bdf8'},{line:'#d97706'},{line:'#1a2744'}];return(t[parseInt(localStorage.getItem('th')||'0')]||t[0]).line;})(),
+      backgroundColor: (function(){var t=[{fill:'rgba(26,26,46,0.07)'},{fill:'rgba(56,189,248,0.15)'},{fill:'rgba(217,119,6,0.13)'},{fill:'rgba(26,39,68,0.12)'}];return(t[parseInt(localStorage.getItem('th')||'0')]||t[0]).fill;})(),
       borderWidth: 2.5,
       pointRadius: 0,
       pointHoverRadius: 6,
       pointHoverBorderWidth: 2,
-      pointBackgroundColor: '#1a1a2e',
+      pointBackgroundColor: (function(){var t=[{line:'#1a1a2e'},{line:'#38bdf8'},{line:'#d97706'},{line:'#1a2744'}];return(t[parseInt(localStorage.getItem('th')||'0')]||t[0]).line;})(),
       tension: 0.4,
       fill: true,
     }]
@@ -2193,25 +2191,6 @@ function toggleTheme(){
     document.body.classList.add(THEMES[s].cls);
     var btn=document.getElementById('theme-btn');
     if(btn)btn.textContent=THEMES[s].lbl;
-  }
-  // עדכן צבע גרף לפי theme שמור
-  var t=THEMES[s]||THEMES[0];
-  if(window.chart){
-    chart.data.datasets[0].borderColor=t.line;
-    chart.data.datasets[0].backgroundColor=t.fill;
-    chart.data.datasets[0].pointBackgroundColor=t.line;
-    chart.update('none');
-  } else {
-    // גרף טרם נבנה – עדכן ברגע שנבנה
-    var _origUpdate=setInterval(function(){
-      if(window.chart){
-        chart.data.datasets[0].borderColor=t.line;
-        chart.data.datasets[0].backgroundColor=t.fill;
-        chart.data.datasets[0].pointBackgroundColor=t.line;
-        chart.update('none');
-        clearInterval(_origUpdate);
-      }
-    },50);
   }
 })();
 // END THEME TOGGLE
