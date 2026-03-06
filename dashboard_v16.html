@@ -412,6 +412,9 @@ body{background:var(--bg,#f0f2f5);}
           <td>א״ש קה״ש 40035706</td>
           <td data-col="0" class="val">281</td><td data-col="1" class="val">285</td><td data-col="2" class="val">283</td><td data-col="3" class="val">279</td><td data-col="4" class="val">281</td><td data-col="5" class="val">289</td><td data-col="6" class="val">298</td><td data-col="7" class="val">300</td><td data-col="8" class="val">304</td><td data-col="9" class="val">310</td><td data-col="10" class="val">314</td><td data-col="11" class="val">316</td><td data-col="12" class="val">316</td><td data-col="13" class="val">321</td><td data-col="14" class="val">—</td>
         </tr>
+        <tr onclick="selectFund('מיטבקהש443286','#dc2626')" data-fund="מיטבקהש443286">
+          <td>מיטב קה״ש 912-443286 <span class="note note-active">פעילה</span><span class="note note-equity">מנייתית</span></td>
+        </tr>
         <tr onclick="selectFund('מורקהש499293','#dc2626')" data-fund="מורקהש499293">
           <td>מור קה״ש 499293 ← מיטב 917-443195 <span class="note note-active">פעילה</span><span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">320</td><td data-col="1" class="val">339</td><td data-col="2" class="val">348</td><td data-col="3" class="val">350</td><td data-col="4" class="val">362</td><td data-col="5" class="val">391</td><td data-col="6" class="val">418</td><td data-col="7" class="val">435</td><td data-col="8" class="val">448</td><td data-col="9" class="val">473</td><td data-col="10" class="val">493</td><td data-col="11" class="val">508</td><td data-col="12" class="val">529</td><td data-col="13" class="val">561</td><td data-col="14" class="val">—</td>
@@ -464,6 +467,9 @@ body{background:var(--bg,#f0f2f5);}
         <tr onclick="selectFund('6899425אשגמל','#b45309')" data-fund="6899425אשגמל">
           <td>א״ש גמל 6899425 ← מור 1375911 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">176</td><td data-col="1" class="val">180</td><td data-col="2" class="val">176</td><td data-col="3" class="val">170</td><td data-col="4" class="val">172</td><td data-col="5" class="val">183</td><td data-col="6" class="val">193</td><td data-col="7" class="val">196</td><td data-col="8" class="val">198</td><td data-col="9" class="val">206</td><td data-col="10" class="val">209</td><td data-col="11" class="val">209</td><td data-col="12" class="val">213</td><td data-col="13" class="val">223</td><td data-col="14" class="val">—</td>
+        </tr>
+        <tr onclick="selectFund('מורגמל1375900','#b45309')" data-fund="מורגמל1375900">
+          <td>מור גמל 1375900 <span class="note note-equity">מנייתית</span></td>
         </tr>
         <tr onclick="selectFund('הפניקסגמל926-084678','#be185d')" data-fund="הפניקסגמל926-084678" style="background:#fff0f6;">
           <td>הפניקס גמל 926-084678 <span class="note note-equity">מנייתית</span></td>
@@ -697,12 +703,14 @@ const FUNDS = {
   'אשקהש39905556':       { name:'א״ש ק״הש 39905556',      cat:'hishtalmut', data:[2406,2437,2416,2386,2401,2469,2548,2567,2595,2654,2685,2700,2700,2743,0] },
   'אשקהש6730513':        { name:'א״ש ק״הש 6730513 ← מיטב 442504', cat:'hishtalmut', data:[772,792,770,747,754,802,846,860,869,905,919,921,941,981,981] },
   'אשקהש40035706':       { name:'א״ש קה״ש 40035706',       cat:'hishtalmut', data:[281,285,283,279,281,289,298,300,304,310,314,316,316,321,321] },
+  'מיטבקהש443286':      { name:'מיטב קה״ש 912-443286', cat:'hishtalmut', data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null] },
   'מורקהש499293':        { name:'מור קה״ש 499293 ← מיטב 443195', cat:'hishtalmut', data:[320,339,348,350,362,391,418,435,448,473,493,508,529,561,561] },
 
   '6730511אשגמל':        { name:'א״ש גמל 6730511 ← מור 1428298', cat:'gemel', data:[402,413,402,391,395,421,444,452,457,476,484,490,495,517,null] },
   'אשגמל39774495':       { name:'א״ש גמל 39774495 ← מור 1375688', cat:'gemel', data:[262,266,263,260,262,269,277,277,283,289,292,293,294,300,null] },
   '6730512אשגמל':        { name:'א״ש גמל 6730512 ← מור 1375888', cat:'gemel', data:[218,220,220,220,222,224,230,231,233,237,240,242,242,245,null] },
   '6899425אשגמל':        { name:'א״ש גמל 6899425 ← מור 1375911', cat:'gemel', data:[176,180,176,170,172,183,193,196,198,206,209,209,213,223,223] },
+  'מורגמל1375900':       { name:'מור גמל 1375900', cat:'gemel', data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null] },
   'הפניקסגמל926-084678': { name:'הפניקס גמל 926-084678',   cat:'gemel', data:[null,null,null,null,null,null,null,null,null,null,414,414,437,445,444] },
   'אשגמללהשקעה2016-1738':{ name:'א״ש גמל להשקעה ← מיטב 917-443197', cat:'gemel_invest', data:[286,371,368,364,366,376,389,391,396,405,410,411,415,424,424] },
   'מורגמללהשקעה':        { name:'מור גמל להשקעה ← מיטב 912-443197', cat:'gemel_invest', data:[364,376,377,370,373,393,411,419,422,436,446,449,458,478,478] },
@@ -754,10 +762,12 @@ const ALL_TOTALS = LABELS.map((_,i) => {
 
 // Fund tags for chart label
 const FUND_TAGS = {
+  'מיטבקהש443286':      [{text:'פעילה', cls:'note-active'},{text:'מנייתית', cls:'note-equity'}],
   'מורקהש499293':        [{text:'פעילה', cls:'note-active'},{text:'מנייתית', cls:'note-equity'}],
   'אשקהש6730513':        [{text:'מנייתית', cls:'note-equity'}],
   '6730511אשגמל':        [{text:'פעילה', cls:'note-active'},{text:'מנייתית', cls:'note-equity'}],
   '6899425אשגמל':        [{text:'מנייתית', cls:'note-equity'}],
+  'מורגמל1375900':       [{text:'מנייתית', cls:'note-equity'}],
   'הפניקסגמל926-084678': [{text:'מנייתית', cls:'note-equity'}],
   'מורגמללהשקעה':        [{text:'מנייתית', cls:'note-equity'}],
   'הראלמניות106863031':  [{text:'מנייתית', cls:'note-equity-sold'}],
@@ -1972,6 +1982,7 @@ function loadExcelFile(input) {
         'מור קה״ש 499293': 'PENS_SH_MEITAV_443195',
         'מיטב ק״הש 917-442504': 'PENS_SH_MEITAV_442504',
         'מיטב קה״ש 917-443195': 'PENS_SH_MEITAV_443195',
+        'מיטב קה״ש 912-443286': 'PENS_SH_MEITAV_443286',
         // קופות גמל
         '6730511 א״ש גמל': 'PENS_GEMEL_MOR_1428298',
         'מור גמל 1428298': 'PENS_GEMEL_MOR_1428298',
@@ -1981,6 +1992,7 @@ function loadExcelFile(input) {
         '1375888 מור גמל': 'PENS_GEMEL_MOR_1375888',
         '6899425 א״ש גמל': 'PENS_GEMEL_MOR_1375911',
         '1375911 מור גמל': 'PENS_GEMEL_MOR_1375911',
+        'מור גמל 1375900': 'PENS_GEMEL_MOR_1375900',
         'הפניקס גמל 926-084678': 'PENS_GEMEL_PHX_084678',
         // גמל להשקעה
         'א״ש גמל להשקעה 2016-17 38009022': 'INV_GEMEL_MEITAV_917_443197',
@@ -2011,10 +2023,12 @@ function loadExcelFile(input) {
         'PENS_SH_ALT_40035706': 'אשקהש40035706',
         'PENS_SH_MEITAV_442504': 'אשקהש6730513',
         'PENS_SH_MEITAV_443195': 'מורקהש499293',
+        'PENS_SH_MEITAV_443286': 'מיטבקהש443286',
         'PENS_GEMEL_MOR_1428298': '6730511אשגמל',
         'PENS_GEMEL_MOR_1375688': 'אשגמל39774495',
         'PENS_GEMEL_MOR_1375888': '6730512אשגמל',
         'PENS_GEMEL_MOR_1375911': '6899425אשגמל',
+        'PENS_GEMEL_MOR_1375900': 'מורגמל1375900',
         'PENS_GEMEL_PHX_084678': 'הפניקסגמל926-084678',
         'INV_GEMEL_MEITAV_917_443197': 'אשגמללהשקעה2016-1738',
         'INV_GEMEL_MEITAV_912_443197': 'מורגמללהשקעה',
