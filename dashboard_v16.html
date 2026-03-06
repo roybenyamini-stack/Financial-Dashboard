@@ -170,12 +170,14 @@ body{background:var(--bg,#f0f2f5);}
       <div class="stat-change" id="hdr-ret-range">ינו׳ 2025 – פבר׳ 26</div>
     </div>
   </div>
-  <div style="margin-top:12px; text-align:left;">
-    <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
-      📂 עדכן נתונים מאקסל
-      <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
-    </label>
-    <span id="excel-status" style="color:rgba(255,255,255,0.7); font-size:11px; margin-right:10px;"></span>
+  <div style="margin-top:12px; text-align:left; display:flex; align-items:flex-start; gap:8px;">
+    <div style="display:flex; flex-direction:column; align-items:flex-start; gap:3px;">
+      <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-flex; align-items:center; height:34px;">
+        📂 עדכן נתונים מאקסל
+        <input type="file" id="excel-file-input" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display:none;" onchange="loadExcelFile(this)">
+      </label>
+      <span id="excel-status" style="color:#4ade80; font-size:11px; font-family:Heebo,sans-serif; min-height:14px; display:block;"></span>
+    </div>
     <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.3); border-radius:8px; padding:7px 13px; font-size:12px; font-family:Heebo,sans-serif;">🎨 Slate Pro</button>
     <button onclick="openNotes()" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; margin-right:8px;">📝 הערות</button>
     <span onclick="toggleChat()" style="cursor:pointer; color:white; font-size:22px; margin-right:8px; opacity:0.85;" title="צ׳אט">💬</span>
@@ -692,7 +694,7 @@ body{background:var(--bg,#f0f2f5);}
 const LABELS = ['ינו׳ 25','פבר׳ 25','מרץ 25','אפר׳ 25','מאי 25','יוני 25','יולי 25','אוג׳ 25','ספט׳ 25','אוק׳ 25','נוב׳ 25','דצמ׳ 25','ינו׳ 26','פבר׳ 26','מרץ 26'];
 
 const FUNDS = {
-  'אשקהש39905556':       { name:'א״ש ק״הש 39905556',      cat:'hishtalmut', data:[2406,2437,2416,2386,2401,2469,2548,2567,2595,2654,2685,2700,2700,2743,null] },
+  'אשקהש39905556':       { name:'א״ש ק״הש 39905556',      cat:'hishtalmut', data:[2406,2437,2416,2386,2401,2469,2548,2567,2595,2654,2685,2700,2700,2743,0] },
   'אשקהש6730513':        { name:'א״ש ק״הש 6730513 ← מיטב 442504', cat:'hishtalmut', data:[772,792,770,747,754,802,846,860,869,905,919,921,941,981,981] },
   'אשקהש40035706':       { name:'א״ש קה״ש 40035706',       cat:'hishtalmut', data:[281,285,283,279,281,289,298,300,304,310,314,316,316,321,321] },
   'מורקהש499293':        { name:'מור קה״ש 499293 ← מיטב 443195', cat:'hishtalmut', data:[320,339,348,350,362,391,418,435,448,473,493,508,529,561,561] },
@@ -718,7 +720,7 @@ const FUNDS = {
   'מיטבשקלית':   { name:'מיטב קרן כספית', cat:'mezuman', data:[0,0,0,0,0,0,0,0,0,0,0,0,0,901,901] },
 };
 
-const CAT_COLORS = { mezuman:'#0891b2', chov:'#94a3b8', arbitrage:'#0d9488', dira:'#a8a29e', hishtalmut:'#fca5a5', gemel:'#fcd34d', gemel_invest:'#6ee7b7', harel:'#fde68a', meitav:'#c4b5fd', all:'#2563eb' };
+const CAT_COLORS = { mezuman:'#0891b2', chov:'#94a3b8', arbitrage:'#0d9488', dira:'#a8a29e', hishtalmut:'#fca5a5', gemel:'#fcd34d', gemel_invest:'#6ee7b7', harel:'#fde68a', meitav:'#c4b5fd', all:'#1a1a2e' };
 const CAT_NAMES  = { mezuman:'מזומן', chov:'חוב', arbitrage:'ארביטראז׳ ואליו', dira:'דירה', hishtalmut:'קרנות השתלמות', gemel:'קופות גמל', gemel_invest:'גמל להשקעה', harel:'הראל', meitav:'מיטב', all:'סה״כ כל הקטגוריות' };
 
 // Category totals (for table display - includes all funds)
@@ -730,30 +732,23 @@ LABELS.forEach((_, i) => {
   });
 });
 
-// Per-fund forward-fill: keeps last known value instead of dropping to 0
-function ffFundData(data) {
-  let last = null;
-  return data.map(v => { if (v !== null && v !== undefined) { last = v; return v; } return last !== null ? last : 0; });
-}
-
-// CAT_CHART_TOTALS: forward-fill each fund BEFORE summing category
+// Category chart totals (for chart - excludes fund value after it reaches 0)
 function buildCatChartTotals() {
+  // Same as CAT_TOTALS - show actual values including sold funds as 0
   const totals = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
-  Object.entries(totals).forEach(([cat, arr]) => {
-    const funds = Object.values(FUNDS).filter(f => f.cat===cat);
-    const ffed = funds.map(f => ffFundData(f.data));
-    LABELS.forEach((_, i) => { arr.push(ffed.reduce((s,fd) => s+(fd[i]||0), 0)); });
+  LABELS.forEach((_, i) => {
+    Object.entries(totals).forEach(([cat, arr]) => {
+      const vals = Object.values(FUNDS).filter(f => f.cat===cat).map(f => f.data[i]||0);
+      arr.push(vals.reduce((a,b)=>a+b,0));
+    });
   });
   return totals;
 }
 let CAT_CHART_TOTALS = buildCatChartTotals();
-
-// ALL_TOTALS: forward-fill per fund before summing
 const ALL_TOTALS = LABELS.map((_,i) => {
-  return Object.values(FUNDS).reduce((t,f) => {
-    const ff = ffFundData(f.data);
-    return t + (f.cat==='chov' ? -(ff[i]||0) : (ff[i]||0));
-  }, 0);
+  let t = 0;
+  Object.entries(CAT_TOTALS).forEach(([cat, arr]) => { t += cat === 'chov' ? -(arr[i]||0) : (arr[i]||0); });
+  return t;
 });
 
 
@@ -792,35 +787,21 @@ function getWindow(data) {
 const ctx = document.getElementById('mainChart').getContext('2d');
 let currentData = ALL_TOTALS;
 
-// Gradient fill helper
-function makeGradient(chartCtx, colorStr) {
-  var gradient = chartCtx.createLinearGradient(0, 0, 0, 320);
-  var m = colorStr.replace('#','').match(/.{2}/g);
-  var r=37,g=99,b=235;
-  if(m&&m.length>=3){r=parseInt(m[0],16);g=parseInt(m[1],16);b=parseInt(m[2],16);}
-  gradient.addColorStop(0,   'rgba('+r+','+g+','+b+',0.18)');
-  gradient.addColorStop(0.5, 'rgba('+r+','+g+','+b+',0.06)');
-  gradient.addColorStop(1,   'rgba('+r+','+g+','+b+',0.0)');
-  return gradient;
-}
-
 let chart = new Chart(ctx, {
   type: 'line',
   data: {
     labels: getWindow(ALL_TOTALS).labels,
     datasets: [{
-      label: 'סה״״כ',
+      label: 'סה״כ',
       data: getWindow(ALL_TOTALS).data,
-      borderColor: '#2563eb',
-      backgroundColor: makeGradient(ctx, '#2563eb'),
-      borderWidth: 2,
+      borderColor: '#1a1a2e',
+      backgroundColor: 'rgba(26,26,46,0.07)',
+      borderWidth: 2.5,
       pointRadius: 0,
       pointHoverRadius: 6,
       pointHoverBorderWidth: 2,
-      pointHoverBackgroundColor: '#2563eb',
-      pointHoverBorderColor: '#fff',
-      pointBackgroundColor: '#2563eb',
-      tension: 0.42,
+      pointBackgroundColor: '#1a1a2e',
+      tension: 0.4,
       fill: true,
     }]
   },
@@ -830,49 +811,35 @@ let chart = new Chart(ctx, {
       legend: { display: false },
       tooltip: {
         rtl: true, textDirection: 'rtl',
-        backgroundColor: 'rgba(255,255,255,0.97)',
-        titleColor: '#1e3a8a',
-        bodyColor: '#374151',
-        borderColor: '#e2e8f0',
-        borderWidth: 1,
-        padding: { top:10, bottom:10, left:14, right:14 },
-        titleFont: { family:'Heebo', size:12, weight:'700' },
-        bodyFont: { family:'Heebo', size:14, weight:'600' },
-        cornerRadius: 10,
-        displayColors: false,
         callbacks: {
-          title: function(items) { return items[0].label; },
-          label: function(c) {
-            var val = Math.round(c.parsed.y).toLocaleString();
-            var idx = c.dataIndex;
-            var raw = currentData.slice(winStart, winStart + WINDOW);
-            var lines2 = ['סך הכל: ' + val + ' אלף״ש'];
-            if (idx > 0 && raw[idx] != null && raw[idx-1] != null && raw[idx-1] > 0) {
-              var pct = ((raw[idx] - raw[idx-1]) / raw[idx-1] * 100).toFixed(1);
-              lines2.push('שינוי: ' + (parseFloat(pct)>=0?'+':'')+pct+'%');
-            }
+          label: c => {
+            const val = ` ${Math.round(c.parsed.y).toLocaleString()} אלף`;
+            // Check if any fund in current category was sold at this point
             if (currentView && currentView !== 'all') {
-              var soldFunds = Object.values(FUNDS).filter(function(f) {
+              const colIdx = c.dataIndex;
+              const soldFunds = Object.values(FUNDS).filter(f => {
                 if (f.cat !== currentView) return false;
-                var wasActive = false;
-                for (var i2 = 0; i2 < f.data.length; i2++) {
-                  if ((f.data[i2]||0) > 0) wasActive = true;
-                  else if (wasActive && i2 === c.dataIndex) return true;
+                let wasActive = false;
+                for (let i = 0; i < f.data.length; i++) {
+                  if ((f.data[i]||0) > 0) wasActive = true;
+                  else if (wasActive && i === colIdx) return true;
                 }
                 return false;
               });
-              if (soldFunds.length > 0) lines2.push('⚠️ כולל מכירת: ' + soldFunds.map(function(f){return f.name;}).join(', '));
+              if (soldFunds.length > 0) {
+                return [val, '⚠️ כולל מכירת: ' + soldFunds.map(f=>f.name).join(', ')];
+              }
             }
-            return lines2;
+            return val;
           }
         }
       }
     },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { family:'Heebo', size:11 }, color:'#94a3b8' } },
-      y: { grid: { color:'rgba(0,0,0,0.04)' }, ticks: { callback: function(v){return v.toLocaleString();}, font:{ family:'Heebo', size:11 }, color:'#94a3b8' }, grace: '15%', beginAtZero: false }
+      x: { grid: { display: true, color:'#f0f0f0' }, ticks: { font: { family:'Heebo', size:11 } } },
+      y: { grid: { color:'#f0f0f0' }, ticks: { callback: v=>v.toLocaleString(), font:{ family:'Heebo', size:11 } }, grace: '15%', beginAtZero: false }
     },
-    animation: { duration: 700, easing: 'easeInOutQuart' }
+    animation: { duration: 300 }
   }
 })
 window.addEventListener('resize', () => { if(chart) chart.resize(); });
@@ -916,9 +883,7 @@ function getCatBase(cat, idx) {
 }
 
 function updateDynamicStats() {
-  const rawEndIdx = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
-  let endIdx = rawEndIdx;
-  while (endIdx > 0 && Object.values(FUNDS).every(f => f.data[endIdx] === null || f.data[endIdx] === undefined)) endIdx--;
+  const endIdx = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
   const cats = ['mezuman','hishtalmut','gemel','gemel_invest','harel','meitav','arbitrage','dira','chov'];
   const el = id => document.getElementById(id);
   const endLabel = LABELS[endIdx];
@@ -1271,7 +1236,7 @@ function updateChart(data, color, label) {
   chart.data.labels = w.labels;
   chart.data.datasets[0].data = w.data;
   chart.data.datasets[0].borderColor = color;
-  chart.data.datasets[0].backgroundColor = makeGradient(ctx, color);
+  chart.data.datasets[0].backgroundColor = color.replace(')', ',0.08)').replace('rgb','rgba');
   chart.data.datasets[0].pointBackgroundColor = color;
   chart.data.datasets[0].label = label;
 
@@ -1296,7 +1261,7 @@ function selectView(cat) {
   if (cat !== 'all') document.getElementById('hdr-'+cat)?.classList.add('active');
 
   if (cat === 'all') {
-    updateChart(ALL_TOTALS, '#2563eb', CAT_NAMES.all);
+    updateChart(ALL_TOTALS, '#1a1a2e', CAT_NAMES.all);
   } else {
     updateChart(CAT_CHART_TOTALS[cat] || CAT_TOTALS[cat], CAT_COLORS[cat], CAT_NAMES[cat]);
   }
@@ -2196,7 +2161,7 @@ function loadExcelFile(input) {
 
 // THEME TOGGLE
 var THEMES=[
-  {cls:'',       lbl:'🎨 Slate Pro',line:'#2563eb',fill:'rgba(37,99,235,0.12)'},
+  {cls:'',       lbl:'🎨 Slate Pro',line:'#1a1a2e',fill:'rgba(26,26,46,0.12)'},
   {cls:'t-slate',lbl:'🎨 Warm Pro', line:'#38bdf8',fill:'rgba(56,189,248,0.15)'},
   {cls:'t-warm', lbl:'🎨 Navy',     line:'#d97706',fill:'rgba(217,119,6,0.13)'},
   {cls:'t-navy', lbl:'🎨 Classic',  line:'#1a2744',fill:'rgba(26,39,68,0.12)'},
