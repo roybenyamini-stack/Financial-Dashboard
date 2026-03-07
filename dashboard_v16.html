@@ -83,9 +83,9 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 .cat-count { font-size: 11px; color: #aaa; margin-top: 1px; }
 
 /* FIX: fixed widths so all categories are identical */
-.cat-header-left { display: flex; align-items: center; direction: ltr; gap: 0; min-width: 280px; justify-content: flex-end; }
-.cat-total { font-size: 17px; font-weight: 800; color: #1a1a2e; width: 80px; text-align: right; flex-shrink: 0; margin-right: 8px; }
-.cat-pct { font-size: 12px; font-weight: 600; border-radius: 20px; width: 96px; min-width: 96px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cat-header-left { display: flex; align-items: center; direction: ltr; gap: 8px; min-width: 280px; justify-content: flex-end; }
+.cat-total { font-size: 17px; font-weight: 800; color: #1a1a2e; min-width: 70px; text-align: right; flex-shrink: 0; }
+.cat-pct { font-size: 12px; font-weight: 600; border-radius: 20px; width: 88px; height: 24px; display: flex; align-items: center; justify-content: center; }
 .cat-pct:not(:empty) { padding: 3px 10px; }
 .cat-pct.pos { background: #dcfce7; color: #16a34a; }
 .cat-pct.neg { background: #fee2e2; color: #dc2626; }
@@ -1956,9 +1956,25 @@ async function sendChat() {
     var ctx = buildContext();
     var isExplore = chatMode === 'explore';
     // במוד חקור – סיכום קצר בלבד כדי לא לחרוג ממגבלת טוקנים
-    var briefCtx = 'תיק השקעות ישראלי. סה״כ נכסים: ' + Math.round(ALL_TOTALS[ALL_TOTALS.length-1]) + ' אלפי ש״ח. ' +
-      'קטגוריות: השתלמות, גמל, גמל להשקעה, הראל, מיטב, מזומן. ' +
-      'תשואה 2025: ~17.8%.';
+    var equityFunds = Object.values(FUNDS).filter(function(f){ return f.tags && f.tags.includes('equity'); });
+    var equityTotal = equityFunds.reduce(function(sum,f){
+      var last = f.data.slice().reverse().find(function(v){return v!=null;})||0;
+      return sum+last;
+    },0);
+    var totalNow = Math.round(ALL_TOTALS[ALL_TOTALS.length-1]);
+    var equityPct = totalNow>0 ? Math.round(equityTotal/totalNow*100) : 0;
+    var equityList = equityFunds.map(function(f){
+      var last = f.data.slice().reverse().find(function(v){return v!=null;})||0;
+      return f.name+': '+Math.round(last);
+    }).join(', ');
+    var catStr = Object.keys(CAT_TOTALS).map(function(k){
+      var arr=CAT_TOTALS[k]; var v=arr[arr.length-1]||0;
+      return (CAT_NAMES[k]||k)+': '+Math.round(v);
+    }).join(', ');
+    var briefCtx = 'תיק השקעות ישראלי. סה״כ נכסים: '+totalNow+' אלפי ש״ח.\n'+
+      'רכיב מנייתי: '+Math.round(equityTotal)+' אלפ״ש ('+equityPct+'% מהתיק).\n'+
+      'קרנות/קופות מנייתיות: '+(equityList||'אין')+'.\n'+
+      'קטגוריות: '+catStr+'.';
     var systemPrompt = isExplore
       ? 'אתה יועץ פיננסי שיכול לחפש מידע עדכני באינטרנט. ענה בעברית.\n' +
         briefCtx + '\n' +
