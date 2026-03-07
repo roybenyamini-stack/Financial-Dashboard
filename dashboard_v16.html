@@ -1818,17 +1818,47 @@ markNoteMonths();
 </div><!-- /categories-scroll -->
 
 <div id="cp" style="display:none;position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);width:520px;max-height:600px;background:#1a1a2e;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);flex-direction:column;z-index:9999;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">\n  <div style="padding:12px 16px;background:#0f0f23;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);">
-    <span style="color:white;font-family:Heebo,sans-serif;font-size:17px;font-weight:700;">🤖 שאל את הדשבורד</span>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="chat-title" style="color:white;font-family:Heebo,sans-serif;font-size:17px;font-weight:700;">🤖 שאל את הדשבורד</span>
+      <div style="display:flex;background:rgba(255,255,255,0.08);border-radius:20px;padding:2px;gap:2px;">
+        <button id="mode-portfolio" onclick="setChatMode('portfolio')" style="background:#4ade80;color:#0f0f23;border:none;border-radius:16px;padding:3px 10px;font-family:Heebo,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🏠 תיק</button>
+        <button id="mode-explore" onclick="setChatMode('explore')" style="background:transparent;color:#aaa;border:none;border-radius:16px;padding:3px 10px;font-family:Heebo,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🌐 חקור</button>
+      </div>
+    </div>
     <span onclick="toggleChat()" style="color:#888;cursor:pointer;font-size:18px;">✕</span>
   </div>
   <div id="cm" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:240px;max-height:420px;"></div>
   <div style="padding:10px;display:flex;gap:8px;border-top:1px solid rgba(255,255,255,0.1);">
-    <input id="ci" type="text" placeholder="רשום פה..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;background:#0f0f23;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 10px;color:white;font-family:Heebo,sans-serif;font-size:17px;direction:rtl;outline:none;"/>
+    <input id="ci" type="text" placeholder="שאל על התיק שלך..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;background:#0f0f23;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 10px;color:white;font-family:Heebo,sans-serif;font-size:17px;direction:rtl;outline:none;"/>
     <button onclick="sendChat()" style="background:#4ade80;color:#0f0f23;border:none;border-radius:8px;padding:8px 12px;font-family:Heebo,sans-serif;font-size:17px;font-weight:700;cursor:pointer;">שלח</button>
   </div>
 </div>
 <script>
 var chatOpen = false;
+var chatMode = 'portfolio';
+
+function setChatMode(mode) {
+  chatMode = mode;
+  var isExplore = mode === 'explore';
+  document.getElementById('mode-portfolio').style.background = isExplore ? 'transparent' : '#4ade80';
+  document.getElementById('mode-portfolio').style.color = isExplore ? '#aaa' : '#0f0f23';
+  document.getElementById('mode-explore').style.background = isExplore ? '#818cf8' : 'transparent';
+  document.getElementById('mode-explore').style.color = isExplore ? '#0f0f23' : '#aaa';
+  document.getElementById('chat-title').textContent = isExplore ? '🌐 חקור את השוק' : '🤖 שאל את הדשבורד';
+  document.getElementById('ci').placeholder = isExplore ? 'למשל: השווה את התיק שלי ל-S&P 500...' : 'שאל על התיק שלך...';
+  // נקה שיחה בעת מעבר מוד
+  chatHistory = [];
+  var cm = document.getElementById('cm');
+  cm.innerHTML = '';
+  var welcomeMsg = isExplore 
+    ? 'מוד חקור פעיל 🌐
+אני יכול לחפש מידע עדכני מהאינטרנט.
+למשל: השוואה ל-S&P 500, מידע על קרנות, נתוני שוק.' 
+    : 'שלום, מוזמן לשאול אותי כל שאלה על התיק שלך 😊';
+  addMsg(welcomeMsg, false);
+  setTimeout(function(){ document.getElementById('ci').focus(); }, 100);
+}
+
 function toggleChat() {
   chatOpen = !chatOpen;
   var cp = document.getElementById('cp');
@@ -1867,25 +1897,38 @@ async function sendChat() {
 
   try {
     var ctx = buildContext();
+    var isExplore = chatMode === 'explore';
+    var systemPrompt = isExplore
+      ? 'אתה יועץ פיננסי שיכול לחפש מידע עדכני באינטרנט. ענה בעברית.\n' +
+        'יש לך גישה לנתוני התיק של המשתמש:\n' + ctx + '\n' +
+        'השתמש ב-web search כדי להביא מידע עדכני על שוקי ההון, benchmark-ים, קרנות נאמנות וכו\'.'
+      : 'אתה עוזר פיננסי שמנתח תיק השקעות. ענה בעברית בתמציתיות.\n' +
+        'הנתונים הם ערכי צבירה חודשיים באלפי ש\"ח (לא תזרימים).\n' +
+        'תשואה = (ערך סוף תקופה - ערך תחילת תקופה) / ערך תחילת תקופה * 100.\n' +
+        'הנתונים לפי סדר החודשים שמופיעים בשורת "חודשים".\n' +
+        'ינו\' 25 = חודש ראשון, דצמ\' 25 = חודש 12, ינו\' 26 = חודש 13, פבר\' 26 = חודש 14.\n\n' + ctx;
+
     var res = await fetch('https://holy-poetry-claude-proxy.roy-benyamini.workers.dev', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 800,
-        system: 'אתה עוזר פיננסי שמנתח תיק השקעות. ענה בעברית בתמציתיות.\n' +
-               'הנתונים הם ערכי צבירה חודשיים באלפי ש\"ח (לא תזרימים).\n' +
-               'תשואה = (ערך סוף תקופה - ערך תחילת תקופה) / ערך תחילת תקופה * 100.\n' +
-               'הנתונים לפי סדר החודשים שמופיעים בשורת "חודשים".\n' +
-               'ינו\' 25 = חודש ראשון, דצמ\' 25 = חודש 12, ינו\' 26 = חודש 13, פבר\' 26 = חודש 14.\n\n' + ctx,
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        mode: isExplore ? 'explore' : undefined,
+        system: systemPrompt,
         messages: chatHistory
       })
     });
     var data = await res.json();
     thinking.remove();
     var answer;
-    if (data.content && data.content[0] && data.content[0].text) {
-      answer = data.content[0].text;
+    if (data.content && data.content.length > 0) {
+      // web search מחזיר בלוקים מרובים – אסוף רק text
+      answer = data.content
+        .filter(function(b){ return b.type === 'text'; })
+        .map(function(b){ return b.text; })
+        .join('\n');
+      if (!answer) answer = 'קיבלתי תגובה אך ללא טקסט. נסה שוב.';
     } else if (data.error) {
       var errType = data.error.type || '';
       if (errType === 'overloaded_error') answer = 'המערכת עמוסה כרגע, נסה שוב בעוד כמה שניות.';
