@@ -1851,9 +1851,7 @@ function setChatMode(mode) {
   var cm = document.getElementById('cm');
   cm.innerHTML = '';
   var welcomeMsg = isExplore 
-    ? 'מוד חקור פעיל 🌐
-אני יכול לחפש מידע עדכני מהאינטרנט.
-למשל: השוואה ל-S&P 500, מידע על קרנות, נתוני שוק.' 
+    ? 'מוד חקור פעיל 🌐\nאני יכול לחפש מידע עדכני מהאינטרנט.\nלמשל: השוואה ל-S&P 500, מידע על קרנות, נתוני שוק.' 
     : 'שלום, מוזמן לשאול אותי כל שאלה על התיק שלך 😊';
   addMsg(welcomeMsg, false);
   setTimeout(function(){ document.getElementById('ci').focus(); }, 100);
