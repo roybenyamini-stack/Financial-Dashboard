@@ -15,11 +15,11 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 #categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; }
 
 /* HEADER */
-.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 18px; padding: 14px 24px; margin-bottom: 10px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(15,52,96,0.25); }
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 18px; padding: 6px 24px; margin-bottom: 8px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(15,52,96,0.25); }
 .header-title h1 { font-size: 15px; font-weight: 800; color: #fff; }
 .header-title p   { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
 .header-stats { display: flex; align-items: center; gap: 0; }
-.stat-item { display: flex; flex-direction: column; align-items: center; padding: 0 26px; border-left: 1px solid rgba(255,255,255,0.1); }
+.stat-item { display: flex; flex-direction: column; align-items: center; padding: 0 18px; border-left: 1px solid rgba(255,255,255,0.1); }
 .stat-item:last-child { border-left: none; }
 .stat-label  { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 3px; }
 .stat-value  { font-size: 19px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
@@ -32,13 +32,13 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 
 /* CARDS */
 .cards-row { display: grid; grid-template-columns: auto repeat(9, 1fr); gap: 10px; margin-bottom: 10px; }
-.card-total { background: #1a1a2e; border-radius: 14px; padding: 10px 16px; color: white; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; justify-content: center; min-width: 120px; border: 2px solid transparent; }
+.card-total { background: #1a1a2e; border-radius: 14px; padding: 5px 16px; color: white; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; justify-content: center; min-width: 120px; border: 2px solid transparent; }
 .card-total:hover  { background: #0f3460; transform: translateY(-1px); }
 .card-total.active { background: #0f3460; border-color: #7dd3fc; }
 .card-total .label  { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.6px; }
 .card-total .value  { font-size: 15px; font-weight: 800; color: #fff; margin-top: 3px; }
 .card-total .change { font-size: 11px; color: #4ade80; margin-top: 3px; }
-.card { background: #fff; border-radius: 14px; padding: 10px 12px; border: 2px solid transparent; border-right: 4px solid var(--cat-color); box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.18s; }
+.card { background: #fff; border-radius: 14px; padding: 5px 12px; border: 2px solid transparent; border-right: 4px solid var(--cat-color); box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.18s; }
 .card:hover  { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
 .card.active { border: 2px solid var(--cat-color); border-right: 4px solid var(--cat-color); box-shadow: 0 0 0 3px var(--cat-color-alpha); }
 .card .card-label  { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
