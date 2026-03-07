@@ -1911,13 +1911,12 @@ async function sendChat() {
     var res = await fetch('https://holy-poetry-claude-proxy.roy-benyamini.workers.dev', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
+body: JSON.stringify(Object.assign({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1500,
-        mode: isExplore ? 'explore' : undefined,
         system: systemPrompt,
         messages: chatHistory
-      })
+      }, isExplore ? {mode: 'explore'} : {}))
     });
     var data = await res.json();
     thinking.remove();
