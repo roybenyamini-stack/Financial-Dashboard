@@ -110,6 +110,8 @@ tr:last-child td { border-bottom: none; }
 .dzer  { color: #ccc; }
 .dash  { color: #ddd; }
 .total-row td { font-weight: 700 !important; background: rgba(0,0,0,0.03) !important; border-top: 2px solid rgba(0,0,0,0.08); }
+.category-body tbody tr:not(.total-row):not(.delta-row):nth-child(even) td { background: rgba(0,0,0,0.025); }
+.category-body tbody tr:not(.total-row):not(.delta-row):hover td { background: rgba(0,0,0,0.05) !important; cursor: pointer; }
 .note { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 6px; margin-right: 3px; vertical-align: middle; font-weight: 600; }
 .note-active      { background: #dcfce7; color: #16a34a; }
 .note-equity      { background: #dbeafe; color: #2563eb; }
@@ -845,16 +847,18 @@ let chart = new Chart(ctx, {
       legend: { display: false },
       tooltip: {
         rtl: true, textDirection: 'rtl',
-        backgroundColor: 'rgba(255,255,255,0.97)',
-        titleColor: '#1e3a8a',
-        bodyColor: '#374151',
-        borderColor: '#e2e8f0',
+        backgroundColor: '#ffffff',
+        titleColor: '#6b7280',
+        bodyColor: '#111827',
+        borderColor: 'rgba(0,0,0,0.08)',
         borderWidth: 1,
-        padding: { top:10, bottom:10, left:14, right:14 },
-        titleFont: { family:'Heebo', size:12, weight:'700' },
-        bodyFont: { family:'Heebo', size:14, weight:'600' },
-        cornerRadius: 10,
+        padding: { top:10, bottom:10, left:16, right:16 },
+        titleFont: { family:'Heebo', size:11, weight:'400' },
+        bodyFont: { family:'Heebo', size:16, weight:'700' },
+        cornerRadius: 12,
         displayColors: false,
+        caretSize: 6,
+        boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
         callbacks: {
           title: function(items) { return items[0].label; },
           label: function(c) {
