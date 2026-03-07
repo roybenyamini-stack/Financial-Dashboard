@@ -1336,7 +1336,8 @@ function hoverFund(fundKey, color) {
   document.querySelectorAll('tr[data-fund]').forEach(r => r.classList.remove('fund-active'));
   const fundRow = document.querySelector(`tr[data-fund="${fundKey}"]`);
   fundRow?.classList.add('fund-active');
-  updateChart(fund.data.map(v => v ?? NaN), color || CAT_COLORS[fund.cat] || '#2563eb', fund.name);
+  const hoverFilled = ffFundData(fund.data).map(v => v ?? NaN);
+  updateChart(hoverFilled, color || CAT_COLORS[fund.cat] || '#2563eb', fund.name);
   updateActiveTags(fundKey);
   document.getElementById('activeLabelText').textContent = fund.name;
 }
