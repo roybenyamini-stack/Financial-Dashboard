@@ -109,6 +109,8 @@ tr:last-child td { border-bottom: none; }
 .dneg  { color: #dc2626; }
 .dzer  { color: #ccc; }
 .dash  { color: #ddd; }
+.fund-locked { outline: 2px solid rgba(37,99,235,0.3); outline-offset: -1px; }
+.fund-locked td { background: rgba(37,99,235,0.08) !important; }
 .total-row td { font-weight: 700 !important; background: rgba(0,0,0,0.03) !important; border-top: 2px solid rgba(0,0,0,0.08); }
 .category-body tbody tr:not(.total-row):not(.delta-row):nth-child(even) td { background: rgba(0,0,0,0.06); }
 .category-body tbody tr:not(.total-row):not(.delta-row):hover td { background: rgba(0,0,0,0.1) !important; cursor: pointer; }
@@ -359,15 +361,15 @@ body{background:var(--bg,#f0f2f5);}
         <th data-col="0">ינו׳ 25</th><th data-col="1">פבר׳ 25</th><th data-col="2">מרץ 25</th><th data-col="3">אפר׳ 25</th><th data-col="4">מאי 25</th><th data-col="5">יוני 25</th><th data-col="6">יולי 25</th><th data-col="7">אוג׳ 25</th><th data-col="8">ספט׳ 25</th><th data-col="9">אוק׳ 25</th><th data-col="10">נוב׳ 25</th><th data-col="11">דצמ׳ 25</th><th data-col="12">ינו׳ 26</th><th data-col="13">פבר׳ 26</th><th data-col="14">מרץ 26</th>
       </tr></thead>
       <tbody>
-        <tr onclick="selectFund('מזומןשקלי','#0891b2')" data-fund="מזומןשקלי">
+        <tr onclick="selectFund('מזומןשקלי','#0891b2')" data-fund="מזומןשקלי" onmouseenter="hoverFund('מזומןשקלי','#0891b2')" onmouseleave="hoverFund(null)">
           <td>מזומן שקלי</td>
           <td data-col="0" class="val">40</td><td data-col="1" class="val">40</td><td data-col="2" class="val">40</td><td data-col="3" class="val">40</td><td data-col="4" class="val">40</td><td data-col="5" class="val">40</td><td data-col="6" class="val">40</td><td data-col="7" class="val">40</td><td data-col="8" class="val">30</td><td data-col="9" class="val">20</td><td data-col="10" class="val">20</td><td data-col="11" class="val">20</td><td data-col="12" class="val">915</td><td data-col="13" class="val">100</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('מזומןדולרי','#0891b2')" data-fund="מזומןדולרי">
+        <tr onclick="selectFund('מזומןדולרי','#0891b2')" data-fund="מזומןדולרי" onmouseenter="hoverFund('מזומןדולרי','#0891b2')" onmouseleave="hoverFund(null)">
           <td>מזומן דולרי $</td>
           <td data-col="0" class="val">119</td><td data-col="1" class="val">106</td><td data-col="2" class="val">39</td><td data-col="3" class="val">22</td><td data-col="4" class="val">47</td><td data-col="5" class="val">50</td><td data-col="6" class="val">50</td><td data-col="7" class="val">53</td><td data-col="8" class="val">60</td><td data-col="9" class="val">161</td><td data-col="10" class="val">99</td><td data-col="11" class="val">102</td><td data-col="12" class="val">107</td><td data-col="13" class="val">104</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('מיטבשקלית','#0891b2')" data-fund="מיטבשקלית">
+        <tr onclick="selectFund('מיטבשקלית','#0891b2')" data-fund="מיטבשקלית" onmouseenter="hoverFund('מיטבשקלית','#0891b2')" onmouseleave="hoverFund(null)">
           <td>מיטב קרן כספית <span class="note note-cash-fund">כספית</span></td>
           <td data-col="0" class="dash">—</td><td data-col="1" class="dash">—</td><td data-col="2" class="dash">—</td><td data-col="3" class="dash">—</td><td data-col="4" class="dash">—</td><td data-col="5" class="dash">—</td><td data-col="6" class="dash">—</td><td data-col="7" class="dash">—</td><td data-col="8" class="dash">—</td><td data-col="9" class="dash">—</td><td data-col="10" class="dash">—</td><td data-col="11" class="dash">—</td><td data-col="12" class="dash">—</td><td data-col="13" class="val">901</td><td data-col="14" class="val">—</td>
         </tr>
@@ -403,23 +405,23 @@ body{background:var(--bg,#f0f2f5);}
         <th data-col="0">ינו׳ 25</th><th data-col="1">פבר׳ 25</th><th data-col="2">מרץ 25</th><th data-col="3">אפר׳ 25</th><th data-col="4">מאי 25</th><th data-col="5">יוני 25</th><th data-col="6">יולי 25</th><th data-col="7">אוג׳ 25</th><th data-col="8">ספט׳ 25</th><th data-col="9">אוק׳ 25</th><th data-col="10">נוב׳ 25</th><th data-col="11">דצמ׳ 25</th><th data-col="12">ינו׳ 26</th><th data-col="13">פבר׳ 26</th><th data-col="14">מרץ 26</th>
       </tr></thead>
       <tbody>
-        <tr onclick="selectFund('אשקהש39905556','#dc2626')" data-fund="אשקהש39905556">
+        <tr onclick="selectFund('אשקהש39905556','#dc2626')" data-fund="אשקהש39905556" onmouseenter="hoverFund('אשקהש39905556','#dc2626')" onmouseleave="hoverFund(null)">
           <td>א״ש ק״הש 39905556</td>
           <td data-col="0" class="val">2,406</td><td data-col="1" class="val">2,437</td><td data-col="2" class="val">2,416</td><td data-col="3" class="val">2,386</td><td data-col="4" class="val">2,401</td><td data-col="5" class="val">2,469</td><td data-col="6" class="val">2,548</td><td data-col="7" class="val">2,567</td><td data-col="8" class="val">2,595</td><td data-col="9" class="val">2,654</td><td data-col="10" class="val">2,685</td><td data-col="11" class="val">2,700</td><td data-col="12" class="val">2,700</td><td data-col="13" class="val">2,743</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('אשקהש6730513','#dc2626')" data-fund="אשקהש6730513">
+        <tr onclick="selectFund('אשקהש6730513','#dc2626')" data-fund="אשקהש6730513" onmouseenter="hoverFund('אשקהש6730513','#dc2626')" onmouseleave="hoverFund(null)">
           <td>א״ש ק״הש 6730513 ← מיטב 917-442504 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">772</td><td data-col="1" class="val">792</td><td data-col="2" class="val">770</td><td data-col="3" class="val">747</td><td data-col="4" class="val">754</td><td data-col="5" class="val">802</td><td data-col="6" class="val">846</td><td data-col="7" class="val">860</td><td data-col="8" class="val">869</td><td data-col="9" class="val">905</td><td data-col="10" class="val">919</td><td data-col="11" class="val">921</td><td data-col="12" class="val">941</td><td data-col="13" class="val">981</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('אשקהש40035706','#dc2626')" data-fund="אשקהש40035706">
+        <tr onclick="selectFund('אשקהש40035706','#dc2626')" data-fund="אשקהש40035706" onmouseenter="hoverFund('אשקהש40035706','#dc2626')" onmouseleave="hoverFund(null)">
           <td>א״ש קה״ש 40035706</td>
           <td data-col="0" class="val">281</td><td data-col="1" class="val">285</td><td data-col="2" class="val">283</td><td data-col="3" class="val">279</td><td data-col="4" class="val">281</td><td data-col="5" class="val">289</td><td data-col="6" class="val">298</td><td data-col="7" class="val">300</td><td data-col="8" class="val">304</td><td data-col="9" class="val">310</td><td data-col="10" class="val">314</td><td data-col="11" class="val">316</td><td data-col="12" class="val">316</td><td data-col="13" class="val">321</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('מורקהש499293','#dc2626')" data-fund="מורקהש499293">
+        <tr onclick="selectFund('מורקהש499293','#dc2626')" data-fund="מורקהש499293" onmouseenter="hoverFund('מורקהש499293','#dc2626')" onmouseleave="hoverFund(null)">
           <td>מור קה״ש 499293 ← מיטב 917-443195 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">320</td><td data-col="1" class="val">339</td><td data-col="2" class="val">348</td><td data-col="3" class="val">350</td><td data-col="4" class="val">362</td><td data-col="5" class="val">391</td><td data-col="6" class="val">418</td><td data-col="7" class="val">435</td><td data-col="8" class="val">448</td><td data-col="9" class="val">473</td><td data-col="10" class="val">493</td><td data-col="11" class="val">508</td><td data-col="12" class="val">529</td><td data-col="13" class="val">561</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('מיטבקהש912-443286','#dc2626')" data-fund="מיטבקהש912-443286">
+        <tr onclick="selectFund('מיטבקהש912-443286','#dc2626')" data-fund="מיטבקהש912-443286" onmouseenter="hoverFund('מיטבקהש912-443286','#dc2626')" onmouseleave="hoverFund(null)">
           <td>מיטב קה&quot;ש 912-443286 <span class="note note-active">פעילה</span><span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="dash">—</td><td data-col="1" class="dash">—</td><td data-col="2" class="dash">—</td><td data-col="3" class="dash">—</td><td data-col="4" class="dash">—</td><td data-col="5" class="dash">—</td><td data-col="6" class="dash">—</td><td data-col="7" class="dash">—</td><td data-col="8" class="dash">—</td><td data-col="9" class="dash">—</td><td data-col="10" class="dash">—</td><td data-col="11" class="dash">—</td><td data-col="12" class="dash">—</td><td data-col="13" class="dash">—</td><td data-col="14" class="val">9</td>
         </tr>
@@ -456,27 +458,27 @@ body{background:var(--bg,#f0f2f5);}
         <th data-col="0">ינו׳ 25</th><th data-col="1">פבר׳ 25</th><th data-col="2">מרץ 25</th><th data-col="3">אפר׳ 25</th><th data-col="4">מאי 25</th><th data-col="5">יוני 25</th><th data-col="6">יולי 25</th><th data-col="7">אוג׳ 25</th><th data-col="8">ספט׳ 25</th><th data-col="9">אוק׳ 25</th><th data-col="10">נוב׳ 25</th><th data-col="11">דצמ׳ 25</th><th data-col="12">ינו׳ 26</th><th data-col="13">פבר׳ 26</th><th data-col="14">מרץ 26</th>
       </tr></thead>
       <tbody>
-        <tr onclick="selectFund('6730511אשגמל','#b45309')" data-fund="6730511אשגמל">
+        <tr onclick="selectFund('6730511אשגמל','#b45309')" data-fund="6730511אשגמל" onmouseenter="hoverFund('6730511אשגמל','#b45309')" onmouseleave="hoverFund(null)">
           <td>א״ש גמל 6730511 ← מור 1428298 <span class="note note-active">פעילה</span><span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">402</td><td data-col="1" class="val">413</td><td data-col="2" class="val">402</td><td data-col="3" class="val">391</td><td data-col="4" class="val">395</td><td data-col="5" class="val">421</td><td data-col="6" class="val">444</td><td data-col="7" class="val">452</td><td data-col="8" class="val">457</td><td data-col="9" class="val">476</td><td data-col="10" class="val">484</td><td data-col="11" class="val">490</td><td data-col="12" class="val">495</td><td data-col="13" class="val">517</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('אשגמל39774495','#b45309')" data-fund="אשגמל39774495">
+        <tr onclick="selectFund('אשגמל39774495','#b45309')" data-fund="אשגמל39774495" onmouseenter="hoverFund('אשגמל39774495','#b45309')" onmouseleave="hoverFund(null)">
           <td>א״ש גמל 39774495 ← מור 1375688</td>
           <td data-col="0" class="val">262</td><td data-col="1" class="val">266</td><td data-col="2" class="val">263</td><td data-col="3" class="val">260</td><td data-col="4" class="val">262</td><td data-col="5" class="val">269</td><td data-col="6" class="val">277</td><td data-col="7" class="val">277</td><td data-col="8" class="val">283</td><td data-col="9" class="val">289</td><td data-col="10" class="val">292</td><td data-col="11" class="val">293</td><td data-col="12" class="val">294</td><td data-col="13" class="val">300</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('6730512אשגמל','#b45309')" data-fund="6730512אשגמל">
+        <tr onclick="selectFund('6730512אשגמל','#b45309')" data-fund="6730512אשגמל" onmouseenter="hoverFund('6730512אשגמל','#b45309')" onmouseleave="hoverFund(null)">
           <td>א״ש גמל 6730512 ← מור 1375888</td>
           <td data-col="0" class="val">218</td><td data-col="1" class="val">220</td><td data-col="2" class="val">220</td><td data-col="3" class="val">220</td><td data-col="4" class="val">222</td><td data-col="5" class="val">224</td><td data-col="6" class="val">230</td><td data-col="7" class="val">231</td><td data-col="8" class="val">233</td><td data-col="9" class="val">237</td><td data-col="10" class="val">240</td><td data-col="11" class="val">242</td><td data-col="12" class="val">242</td><td data-col="13" class="val">245</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('6899425אשגמל','#b45309')" data-fund="6899425אשגמל">
+        <tr onclick="selectFund('6899425אשגמל','#b45309')" data-fund="6899425אשגמל" onmouseenter="hoverFund('6899425אשגמל','#b45309')" onmouseleave="hoverFund(null)">
           <td>א״ש גמל 6899425 ← מור 1375911 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">176</td><td data-col="1" class="val">180</td><td data-col="2" class="val">176</td><td data-col="3" class="val">170</td><td data-col="4" class="val">172</td><td data-col="5" class="val">183</td><td data-col="6" class="val">193</td><td data-col="7" class="val">196</td><td data-col="8" class="val">198</td><td data-col="9" class="val">206</td><td data-col="10" class="val">209</td><td data-col="11" class="val">209</td><td data-col="12" class="val">213</td><td data-col="13" class="val">223</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('הפניקסגמל926-084678','#be185d')" data-fund="הפניקסגמל926-084678" style="background:#fff0f6;">
+        <tr onclick="selectFund('הפניקסגמל926-084678','#be185d')" data-fund="הפניקסגמל926-084678" onmouseenter="hoverFund('הפניקסגמל926-084678','#be185d')" onmouseleave="hoverFund(null)" style="background:#fff0f6;">
           <td>הפניקס גמל 926-084678 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="dash">—</td><td data-col="1" class="dash">—</td><td data-col="2" class="dash">—</td><td data-col="3" class="dash">—</td><td data-col="4" class="dash">—</td><td data-col="5" class="dash">—</td><td data-col="6" class="dash">—</td><td data-col="7" class="dash">—</td><td data-col="8" class="dash">—</td><td data-col="9" class="dash">—</td><td data-col="10" class="val">414</td><td data-col="11" class="val">414</td><td data-col="12" class="val">437</td><td data-col="13" class="val">445</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('מורגמל1375900','#b45309')" data-fund="מורגמל1375900">
+        <tr onclick="selectFund('מורגמל1375900','#b45309')" data-fund="מורגמל1375900" onmouseenter="hoverFund('מורגמל1375900','#b45309')" onmouseleave="hoverFund(null)">
           <td>מור גמל 1375900 <span class="note note-active">פעילה</span><span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="dash">—</td><td data-col="1" class="dash">—</td><td data-col="2" class="dash">—</td><td data-col="3" class="dash">—</td><td data-col="4" class="dash">—</td><td data-col="5" class="dash">—</td><td data-col="6" class="dash">—</td><td data-col="7" class="dash">—</td><td data-col="8" class="dash">—</td><td data-col="9" class="dash">—</td><td data-col="10" class="dash">—</td><td data-col="11" class="dash">—</td><td data-col="12" class="dash">—</td><td data-col="13" class="dash">—</td><td data-col="14" class="val">1</td>
         </tr>
@@ -513,11 +515,11 @@ body{background:var(--bg,#f0f2f5);}
         <th data-col="0">ינו׳ 25</th><th data-col="1">פבר׳ 25</th><th data-col="2">מרץ 25</th><th data-col="3">אפר׳ 25</th><th data-col="4">מאי 25</th><th data-col="5">יוני 25</th><th data-col="6">יולי 25</th><th data-col="7">אוג׳ 25</th><th data-col="8">ספט׳ 25</th><th data-col="9">אוק׳ 25</th><th data-col="10">נוב׳ 25</th><th data-col="11">דצמ׳ 25</th><th data-col="12">ינו׳ 26</th><th data-col="13">פבר׳ 26</th><th data-col="14">מרץ 26</th>
       </tr></thead>
       <tbody>
-        <tr onclick="selectFund('אשגמללהשקעה2016-1738','#9f1239')" data-fund="אשגמללהשקעה2016-1738">
+        <tr onclick="selectFund('אשגמללהשקעה2016-1738','#9f1239')" data-fund="אשגמללהשקעה2016-1738" onmouseenter="hoverFund('אשגמללהשקעה2016-1738','#9f1239')" onmouseleave="hoverFund(null)">
           <td>א״ש גמל להשקעה ← מיטב 917-443197</td>
           <td data-col="0" class="val">286</td><td data-col="1" class="val">371</td><td data-col="2" class="val">368</td><td data-col="3" class="val">364</td><td data-col="4" class="val">366</td><td data-col="5" class="val">376</td><td data-col="6" class="val">389</td><td data-col="7" class="val">391</td><td data-col="8" class="val">396</td><td data-col="9" class="val">405</td><td data-col="10" class="val">410</td><td data-col="11" class="val">411</td><td data-col="12" class="val">415</td><td data-col="13" class="val">424</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('מורגמללהשקעה','#9f1239')" data-fund="מורגמללהשקעה">
+        <tr onclick="selectFund('מורגמללהשקעה','#9f1239')" data-fund="מורגמללהשקעה" onmouseenter="hoverFund('מורגמללהשקעה','#9f1239')" onmouseleave="hoverFund(null)">
           <td>מור גמל להשקעה ← מיטב 912-443197 <span class="note note-equity">מנייתית</span></td>
           <td data-col="0" class="val">364</td><td data-col="1" class="val">376</td><td data-col="2" class="val">377</td><td data-col="3" class="val">370</td><td data-col="4" class="val">373</td><td data-col="5" class="val">393</td><td data-col="6" class="val">411</td><td data-col="7" class="val">419</td><td data-col="8" class="val">422</td><td data-col="9" class="val">436</td><td data-col="10" class="val">446</td><td data-col="11" class="val">449</td><td data-col="12" class="val">458</td><td data-col="13" class="val">478</td><td data-col="14" class="val">—</td>
         </tr>
@@ -554,15 +556,15 @@ body{background:var(--bg,#f0f2f5);}
         <th data-col="0">ינו׳ 25</th><th data-col="1">פבר׳ 25</th><th data-col="2">מרץ 25</th><th data-col="3">אפר׳ 25</th><th data-col="4">מאי 25</th><th data-col="5">יוני 25</th><th data-col="6">יולי 25</th><th data-col="7">אוג׳ 25</th><th data-col="8">ספט׳ 25</th><th data-col="9">אוק׳ 25</th><th data-col="10">נוב׳ 25</th><th data-col="11">דצמ׳ 25</th><th data-col="12">ינו׳ 26</th><th data-col="13">פבר׳ 26</th><th data-col="14">מרץ 26</th>
       </tr></thead>
       <tbody>
-        <tr onclick="selectFund('הראלמגוון-פוליסתחיסכ','#a16207')" data-fund="הראלמגוון-פוליסתחיסכ">
+        <tr onclick="selectFund('הראלמגוון-פוליסתחיסכ','#a16207')" data-fund="הראלמגוון-פוליסתחיסכ" onmouseenter="hoverFund('הראלמגוון-פוליסתחיסכ','#a16207')" onmouseleave="hoverFund(null)">
           <td>הראל מגוון - פוליסת חיסכון</td>
           <td data-col="0" class="val">4,469</td><td data-col="1" class="val">4,473</td><td data-col="2" class="val">4,440</td><td data-col="3" class="val">4,444</td><td data-col="4" class="val">4,536</td><td data-col="5" class="val">4,630</td><td data-col="6" class="val">4,704</td><td data-col="7" class="val">4,758</td><td data-col="8" class="val">4,810</td><td data-col="9" class="val">4,927</td><td data-col="10" class="val">4,949</td><td data-col="11" class="val">5,019</td><td data-col="12" class="val">5,119</td><td data-col="13" class="val">5,174</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('הראלמניות106863031','#a16207')" data-fund="הראלמניות106863031">
+        <tr onclick="selectFund('הראלמניות106863031','#a16207')" data-fund="הראלמניות106863031" onmouseenter="hoverFund('הראלמניות106863031','#a16207')" onmouseleave="hoverFund(null)">
           <td>הראל מניות 106863031 <span class="note note-equity-sold">מנייתית</span></td>
           <td data-col="0" class="val">1,680</td><td data-col="1" class="val">1,631</td><td data-col="2" class="val">1,572</td><td data-col="3" class="val">1,515</td><td data-col="4" class="val">1,620</td><td data-col="5" class="val">1,655</td><td data-col="6" class="val">1,703</td><td data-col="7" class="val">1,732</td><td data-col="8" class="val">1,799</td><td data-col="9" class="val">1,828</td><td data-col="10" class="val">1,775</td><td data-col="11" class="val">1,768</td><td data-col="12" class="val">1,766</td><td data-col="13" class="val">1,664</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('הראלכללי109062745','#a16207')" data-fund="הראלכללי109062745">
+        <tr onclick="selectFund('הראלכללי109062745','#a16207')" data-fund="הראלכללי109062745" onmouseenter="hoverFund('הראלכללי109062745','#a16207')" onmouseleave="hoverFund(null)">
           <td>הראל כללי 109062745</td>
           <td data-col="0" class="dash">—</td><td data-col="1" class="dash">—</td><td data-col="2" class="dash">—</td><td data-col="3" class="dash">—</td><td data-col="4" class="val">252</td><td data-col="5" class="val">258</td><td data-col="6" class="val">262</td><td data-col="7" class="val">265</td><td data-col="8" class="val">268</td><td data-col="9" class="val">274</td><td data-col="10" class="val">275</td><td data-col="11" class="val">279</td><td data-col="12" class="val">285</td><td data-col="13" class="val">288</td><td data-col="14" class="val">—</td>
         </tr>
@@ -600,11 +602,11 @@ body{background:var(--bg,#f0f2f5);}
         <th data-col="0">ינו׳ 25</th><th data-col="1">פבר׳ 25</th><th data-col="2">מרץ 25</th><th data-col="3">אפר׳ 25</th><th data-col="4">מאי 25</th><th data-col="5">יוני 25</th><th data-col="6">יולי 25</th><th data-col="7">אוג׳ 25</th><th data-col="8">ספט׳ 25</th><th data-col="9">אוק׳ 25</th><th data-col="10">נוב׳ 25</th><th data-col="11">דצמ׳ 25</th><th data-col="12">ינו׳ 26</th><th data-col="13">פבר׳ 26</th><th data-col="14">מרץ 26</th>
       </tr></thead>
       <tbody>
-        <tr onclick="selectFund('מיטבדשניהולקרנות1693','#7c3aed')" data-fund="מיטבדשניהולקרנות1693">
+        <tr onclick="selectFund('מיטבדשניהולקרנות1693','#7c3aed')" data-fund="מיטבדשניהולקרנות1693" onmouseenter="hoverFund('מיטבדשניהולקרנות1693','#7c3aed')" onmouseleave="hoverFund(null)">
           <td>מיטב דש ניהול קרנות 169301968</td>
           <td data-col="0" class="val">530</td><td data-col="1" class="val">530</td><td data-col="2" class="val">527</td><td data-col="3" class="val">520</td><td data-col="4" class="val">540</td><td data-col="5" class="val">550</td><td data-col="6" class="val">560</td><td data-col="7" class="val">560</td><td data-col="8" class="val">560</td><td data-col="9" class="val">560</td><td data-col="10" class="val">580</td><td data-col="11" class="val">580</td><td data-col="12" class="val">580</td><td data-col="13" class="val">600</td><td data-col="14" class="val">—</td>
         </tr>
-        <tr onclick="selectFund('מיטבדשטרייד','#7c3aed')" data-fund="מיטבדשטרייד">
+        <tr onclick="selectFund('מיטבדשטרייד','#7c3aed')" data-fund="מיטבדשטרייד" onmouseenter="hoverFund('מיטבדשטרייד','#7c3aed')" onmouseleave="hoverFund(null)">
           <td>מיטב דש טרייד</td><td data-col="0" class="val">39</td><td data-col="1" class="val">39</td><td data-col="2" class="val">39</td><td data-col="3" class="val">39</td><td data-col="4" class="val">39</td><td data-col="5" class="val">39</td><td data-col="6" class="val">39</td><td data-col="7" class="val">39</td><td data-col="8" class="val">39</td><td data-col="9" class="val">39</td><td data-col="10" class="val">39</td><td data-col="11" class="val">39</td><td data-col="12" class="val">39</td><td data-col="13" class="val">39</td><td data-col="14" class="val">—</td>
         </tr>
       </tbody>
@@ -637,7 +639,7 @@ body{background:var(--bg,#f0f2f5);}
         <th data-col="0">ינו׳ 25</th><th data-col="1">פבר׳ 25</th><th data-col="2">מרץ 25</th><th data-col="3">אפר׳ 25</th><th data-col="4">מאי 25</th><th data-col="5">יוני 25</th><th data-col="6">יולי 25</th><th data-col="7">אוג׳ 25</th><th data-col="8">ספט׳ 25</th><th data-col="9">אוק׳ 25</th><th data-col="10">נוב׳ 25</th><th data-col="11">דצמ׳ 25</th><th data-col="12">ינו׳ 26</th><th data-col="13">פבר׳ 26</th><th data-col="14">מרץ 26</th>
       </tr></thead>
       <tbody>
-        <tr onclick="selectFund('ארביטראזואליו','#7c3aed')" data-fund="ארביטראזואליו">
+        <tr onclick="selectFund('ארביטראזואליו','#7c3aed')" data-fund="ארביטראזואליו" onmouseenter="hoverFund('ארביטראזואליו','#7c3aed')" onmouseleave="hoverFund(null)">
           <td>ארביטראז׳ ואליו</td><td data-col="0" class="val">719</td><td data-col="1" class="val">822</td><td data-col="2" class="val">824</td><td data-col="3" class="val">772</td><td data-col="4" class="val">808</td><td data-col="5" class="val">846</td><td data-col="6" class="val">902</td><td data-col="7" class="val">900</td><td data-col="8" class="val">895</td><td data-col="9" class="val">895</td><td data-col="10" class="val">886</td><td data-col="11" class="val">901</td><td data-col="12">0</td><td data-col="13">0</td>
         </tr>
       </tbody>
@@ -687,10 +689,10 @@ body{background:var(--bg,#f0f2f5);}
         <th data-col="0">ינו׳ 25</th><th data-col="1">פבר׳ 25</th><th data-col="2">מרץ 25</th><th data-col="3">אפר׳ 25</th><th data-col="4">מאי 25</th><th data-col="5">יוני 25</th><th data-col="6">יולי 25</th><th data-col="7">אוג׳ 25</th><th data-col="8">ספט׳ 25</th><th data-col="9">אוק׳ 25</th><th data-col="10">נוב׳ 25</th><th data-col="11">דצמ׳ 25</th><th data-col="12">ינו׳ 26</th><th data-col="13">פבר׳ 26</th><th data-col="14">מרץ 26</th>
       </tr></thead>
       <tbody>
-        <tr onclick="selectFund('חובהראל','#64748b')" data-fund="חובהראל">
+        <tr onclick="selectFund('חובהראל','#64748b')" data-fund="חובהראל" onmouseenter="hoverFund('חובהראל','#64748b')" onmouseleave="hoverFund(null)">
           <td>חוב הראל</td><td data-col="0" class="val">195 </td><td data-col="1" class="val">179 </td><td data-col="2" class="val">165 </td><td data-col="3" class="val">150 </td><td data-col="4" class="val">135 </td><td data-col="5" class="val">120 </td><td data-col="6" class="val">105 </td><td data-col="7" class="val">90 </td><td data-col="8" class="val">75 </td><td data-col="9" class="val">60 </td><td data-col="10" class="val">45 </td><td data-col="11" class="val">30 </td><td data-col="12" class="val">15 </td><td data-col="13" class="dzer">0</td>
         </tr>
-        <tr onclick="selectFund('חובאלטשולר','#64748b')" data-fund="חובאלטשולר">
+        <tr onclick="selectFund('חובאלטשולר','#64748b')" data-fund="חובאלטשולר" onmouseenter="hoverFund('חובאלטשולר','#64748b')" onmouseleave="hoverFund(null)">
           <td>חוב אלטשולר</td><td data-col="0" class="val">1,667 </td><td data-col="1" class="val">1,674 </td><td data-col="2" class="val">1,681 </td><td data-col="3" class="val">1,681 </td><td data-col="4" class="val">1,696 </td><td data-col="5" class="val">1,708 </td><td data-col="6" class="val">1,718 </td><td data-col="7" class="val">1,727 </td><td data-col="8" class="val">1,735 </td><td data-col="9" class="val">1,743 </td><td data-col="10" class="val">1,750 </td><td data-col="11" class="val">1,756 </td><td data-col="12" class="val">1,765 </td><td data-col="13" class="val">1,768 </td><td data-col="14" class="val">—</td>
         </tr>
         <tr class="total-row" onclick="selectView('chov')">
@@ -1125,6 +1127,8 @@ function slideWindow(dir) {
 }
 
 let currentView = 'all';
+let lockedFund = null;   // קרן נעולה בלחיצה
+let hoverTimeout = null; // debounce ל-hover
 let currentFund = null;
 
 function updateChartStats(data, viewCat) {
@@ -1301,6 +1305,31 @@ function updateChart(data, color, label) {
 
 }
 
+function hoverFund(fundKey, color) {
+  if (lockedFund) return; // אם יש נעילה – אל תשנה
+  if (!fundKey) {
+    // עזיבת שורה – חזור לתצוגה הנוכחית
+    clearTimeout(hoverTimeout);
+    hoverTimeout = setTimeout(function() {
+      if (!lockedFund) {
+        document.querySelectorAll('tr[data-fund]').forEach(r => r.classList.remove('fund-active'));
+        selectView(currentView || 'all');
+      }
+    }, 150);
+    return;
+  }
+  clearTimeout(hoverTimeout);
+  const fund = FUNDS[fundKey];
+  if (!fund) return;
+  document.querySelectorAll('tr[data-fund]').forEach(r => r.classList.remove('fund-active'));
+  const fundRow = document.querySelector(`tr[data-fund="${fundKey}"]`);
+  fundRow?.classList.add('fund-active');
+  const win = getWindow(fund.data);
+  updateChart(win.data, color || CAT_COLORS[fund.cat] || '#2563eb', fund.name);
+  updateActiveTags(fundKey);
+  document.getElementById('activeLabelText').textContent = fund.name;
+}
+
 function selectView(cat) {
   currentFund = null;
   updateActiveTags(null);
@@ -1328,17 +1357,28 @@ function selectFund(fundKey, color) {
   const fund = FUNDS[fundKey];
   if (!fund) return;
 
-  // If clicking same fund again - toggle delta row
-  const existingDelta = document.querySelector(`.delta-row[data-delta="${fundKey}"]`);
-  if (existingDelta) {
-    existingDelta.classList.toggle('visible');
+  // נעילה/שחרור – לחיצה על אותה קרן נעולה משחררת
+  if (lockedFund === fundKey) {
+    lockedFund = null;
+    document.querySelectorAll('tr[data-fund]').forEach(r => {
+      r.classList.remove('fund-active');
+      r.classList.remove('fund-locked');
+    });
+    document.querySelectorAll('.delta-row').forEach(r => r.remove());
+    selectView(currentView || 'all');
     return;
   }
 
+  // נעל את הקרן החדשה
+  lockedFund = fundKey;
   currentFund = fundKey;
-  document.querySelectorAll('tr[data-fund]').forEach(r => r.classList.remove('fund-active'));
+  document.querySelectorAll('tr[data-fund]').forEach(r => {
+    r.classList.remove('fund-active');
+    r.classList.remove('fund-locked');
+  });
   const fundRow = document.querySelector(`tr[data-fund="${fundKey}"]`);
   fundRow?.classList.add('fund-active');
+  fundRow?.classList.add('fund-locked');
 
   // Remove any existing delta rows
   document.querySelectorAll('.delta-row').forEach(r => r.remove());
