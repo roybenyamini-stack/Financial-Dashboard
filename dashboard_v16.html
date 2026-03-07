@@ -5,98 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>תיק השקעות</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js">
-var _chartsInited = false;
-function openCharts() {
-  var m = document.getElementById('charts-modal');
-  m.style.display = 'flex';
-  if (_chartsInited) return;
-  _chartsInited = true;
 
-  // נתונים
-  var last = function(arr) { return arr.slice().reverse().find(function(v){return v!=null;})||0; };
-
-  // 1. לפי קטגוריה
-  var catLabels = ['מזומן','השתלמות','גמל','גמל להשקעה','הראל','מיטב','דירה'];
-  var catKeys   = ['mezuman','hishtalmut','gemel','gemel_invest','harel','meitav','dira'];
-  var catColors = ['#0891b2','#fca5a5','#fcd34d','#6ee7b7','#fde68a','#c4b5fd','#a8a29e'];
-  var catVals   = catKeys.map(function(k){ var a=CAT_TOTALS[k]; return a?Math.round(a[a.length-1]||0):0; });
-  makePie('chart-by-cat', catLabels, catVals, catColors);
-
-  // 2. מנייתי vs כללי (רק קרנות, לא מזומן/דירה/חוב)
-  var eqFunds = Object.values(FUNDS).filter(function(f){
-    return ['hishtalmut','gemel','gemel_invest','harel','meitav'].includes(f.cat);
-  });
-  var eqTotal=0, nonEqTotal=0;
-  eqFunds.forEach(function(f){
-    var v=last(f.data);
-    if(f.tags&&f.tags.includes('equity')) eqTotal+=v; else nonEqTotal+=v;
-  });
-  // הראל כולו כללי, מיטב כולו מנייתי – כבר מחושב דרך tags
-  makePie('chart-equity',['מנייתי','כללי'],[Math.round(eqTotal),Math.round(nonEqTotal)],['#2563eb','#94a3b8']);
-
-  // 3. נזילות
-  var mezTotal = (function(){ var a=CAT_TOTALS['mezuman']; return a?Math.round(a[a.length-1]||0):0; })();
-  var harelTotal = (function(){ var a=CAT_TOTALS['harel']; return a?Math.round(a[a.length-1]||0):0; })();
-  var meitavTotal = (function(){ var a=CAT_TOTALS['meitav']; return a?Math.round(a[a.length-1]||0):0; })();
-  var longTotal = (function(){
-    var tot=0;
-    ['hishtalmut','gemel','gemel_invest'].forEach(function(k){ var a=CAT_TOTALS[k]; if(a) tot+=Math.round(a[a.length-1]||0); });
-    return tot;
-  })();
-  makePie('chart-liquidity',
-    ['טווח ארוך','נזיל (מזומן)','ניתן להנזלה (הראל+מיטב)'],
-    [longTotal, mezTotal, harelTotal+meitavTotal],
-    ['#1a1a2e','#0891b2','#f59e0b']);
-
-  // 4. מקור ניהול
-  var managers = { 'א״ש':0, 'מיטב':0, 'מור':0, 'הראל':0, 'פניקס':0 };
-  Object.values(FUNDS).forEach(function(f){
-    var v=last(f.data); if(!v) return;
-    var n=f.name;
-    if(n.includes('א״ש')||n.includes('אש')) managers['א״ש']+=v;
-    else if(n.includes('מיטב')) managers['מיטב']+=v;
-    else if(n.includes('מור')) managers['מור']+=v;
-    else if(n.includes('הראל')) managers['הראל']+=v;
-    else if(n.includes('פניקס')||n.includes('הפניקס')) managers['פניקס']+=v;
-  });
-  // הוסף דירה ל-א״ש
-  var dira = (function(){ var a=CAT_TOTALS['dira']; return a?Math.round(a[a.length-1]||0):0; })();
-  managers['א״ש']+=dira;
-  makePie('chart-manager',
-    Object.keys(managers),
-    Object.values(managers).map(Math.round),
-    ['#2563eb','#7c3aed','#b45309','#ca8a04','#be185d']);
-}
-
-function makePie(id, labels, data, colors) {
-  var ctx = document.getElementById(id).getContext('2d');
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{ data: data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'bottom', labels: { font:{family:'Heebo',size:11}, padding:8 } },
-        tooltip: {
-          callbacks: {
-            label: function(c) {
-              var total = c.dataset.data.reduce(function(a,b){return a+b;},0);
-              var pct = total>0?(c.parsed/total*100).toFixed(1):'0';
-              return ' ' + c.label + ': ' + c.parsed.toLocaleString() + ' (' + pct + '%)';
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-function closeCharts() {
-  document.getElementById('charts-modal').style.display = 'none';
-}
 
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -798,6 +707,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 
 <script>
+
 const LABELS = ['ינו׳ 25','פבר׳ 25','מרץ 25','אפר׳ 25','מאי 25','יוני 25','יולי 25','אוג׳ 25','ספט׳ 25','אוק׳ 25','נוב׳ 25','דצמ׳ 25','ינו׳ 26','פבר׳ 26','מרץ 26'];
 
 const FUNDS = {
@@ -1958,6 +1868,7 @@ updateNavButtons();
 updateChartStats(currentData, currentView);
 initTableHover();
 markNoteMonths();
+
 </script>
 
 <style>
@@ -2462,4 +2373,97 @@ function toggleTheme(){
   }
 })();
 // END THEME TOGGLE
+
+var _chartsInited = false;
+function openCharts() {
+  var m = document.getElementById('charts-modal');
+  m.style.display = 'flex';
+  if (_chartsInited) return;
+  _chartsInited = true;
+
+  // נתונים
+  var last = function(arr) { return arr.slice().reverse().find(function(v){return v!=null;})||0; };
+
+  // 1. לפי קטגוריה
+  var catLabels = ['מזומן','השתלמות','גמל','גמל להשקעה','הראל','מיטב','דירה'];
+  var catKeys   = ['mezuman','hishtalmut','gemel','gemel_invest','harel','meitav','dira'];
+  var catColors = ['#0891b2','#fca5a5','#fcd34d','#6ee7b7','#fde68a','#c4b5fd','#a8a29e'];
+  var catVals   = catKeys.map(function(k){ var a=CAT_TOTALS[k]; return a?Math.round(a[a.length-1]||0):0; });
+  makePie('chart-by-cat', catLabels, catVals, catColors);
+
+  // 2. מנייתי vs כללי (רק קרנות, לא מזומן/דירה/חוב)
+  var eqFunds = Object.values(FUNDS).filter(function(f){
+    return ['hishtalmut','gemel','gemel_invest','harel','meitav'].includes(f.cat);
+  });
+  var eqTotal=0, nonEqTotal=0;
+  eqFunds.forEach(function(f){
+    var v=last(f.data);
+    if(f.tags&&f.tags.includes('equity')) eqTotal+=v; else nonEqTotal+=v;
+  });
+  // הראל כולו כללי, מיטב כולו מנייתי – כבר מחושב דרך tags
+  makePie('chart-equity',['מנייתי','כללי'],[Math.round(eqTotal),Math.round(nonEqTotal)],['#2563eb','#94a3b8']);
+
+  // 3. נזילות
+  var mezTotal = (function(){ var a=CAT_TOTALS['mezuman']; return a?Math.round(a[a.length-1]||0):0; })();
+  var harelTotal = (function(){ var a=CAT_TOTALS['harel']; return a?Math.round(a[a.length-1]||0):0; })();
+  var meitavTotal = (function(){ var a=CAT_TOTALS['meitav']; return a?Math.round(a[a.length-1]||0):0; })();
+  var longTotal = (function(){
+    var tot=0;
+    ['hishtalmut','gemel','gemel_invest'].forEach(function(k){ var a=CAT_TOTALS[k]; if(a) tot+=Math.round(a[a.length-1]||0); });
+    return tot;
+  })();
+  makePie('chart-liquidity',
+    ['טווח ארוך','נזיל (מזומן)','ניתן להנזלה (הראל+מיטב)'],
+    [longTotal, mezTotal, harelTotal+meitavTotal],
+    ['#1a1a2e','#0891b2','#f59e0b']);
+
+  // 4. מקור ניהול
+  var managers = { 'א״ש':0, 'מיטב':0, 'מור':0, 'הראל':0, 'פניקס':0 };
+  Object.values(FUNDS).forEach(function(f){
+    var v=last(f.data); if(!v) return;
+    var n=f.name;
+    if(n.includes('א״ש')||n.includes('אש')) managers['א״ש']+=v;
+    else if(n.includes('מיטב')) managers['מיטב']+=v;
+    else if(n.includes('מור')) managers['מור']+=v;
+    else if(n.includes('הראל')) managers['הראל']+=v;
+    else if(n.includes('פניקס')||n.includes('הפניקס')) managers['פניקס']+=v;
+  });
+  // הוסף דירה ל-א״ש
+  var dira = (function(){ var a=CAT_TOTALS['dira']; return a?Math.round(a[a.length-1]||0):0; })();
+  managers['א״ש']+=dira;
+  makePie('chart-manager',
+    Object.keys(managers),
+    Object.values(managers).map(Math.round),
+    ['#2563eb','#7c3aed','#b45309','#ca8a04','#be185d']);
+}
+
+function makePie(id, labels, data, colors) {
+  var ctx = document.getElementById(id).getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{ data: data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { font:{family:'Heebo',size:11}, padding:8 } },
+        tooltip: {
+          callbacks: {
+            label: function(c) {
+              var total = c.dataset.data.reduce(function(a,b){return a+b;},0);
+              var pct = total>0?(c.parsed/total*100).toFixed(1):'0';
+              return ' ' + c.label + ': ' + c.parsed.toLocaleString() + ' (' + pct + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function closeCharts() {
+  document.getElementById('charts-modal').style.display = 'none';
+}
 </script>
