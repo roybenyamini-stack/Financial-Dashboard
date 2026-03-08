@@ -95,9 +95,10 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 /* TABLE */
 .category-body { display: none; border-top: 1px solid rgba(0,0,0,0.06); overflow-x: auto; }
 .category-body.open { display: block; }
-table { width: 100%; border-collapse: collapse; font-size: 11.5px; direction: ltr; }
+table { width: 100%; border-collapse: collapse; font-size: 11.5px; direction: ltr; table-layout: fixed; }
 th { padding: 9px 12px; text-align: center; font-weight: 600; color: #888; background: rgba(0,0,0,0.02); border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
-th:first-child { text-align: right; min-width: 200px; direction: rtl; }
+th:first-child { text-align: right; width: 190px; direction: rtl; }
+th:not(:first-child) { width: 58px; }
 td { padding: 9px 12px; text-align: center; border-bottom: 1px solid #f9f9f9; vertical-align: top; }
 td:first-child { text-align: right; font-weight: 600; color: #333; white-space: nowrap; direction: rtl; }
 tr:hover td { background: rgba(0,0,0,0.02); cursor: pointer; }
@@ -427,7 +428,7 @@ body{background:var(--bg,#f0f2f5);}
         </tr>
         <tr class="total-row" onclick="selectView('hishtalmut')">
           <td>סה״כ קטגוריה</td>
-          <td data-col="0">3,779</td><td data-col="1">3,853</td><td data-col="2">3,817</td><td data-col="3">3,762</td><td data-col="4">3,798</td><td data-col="5">3,951</td><td data-col="6">4,110</td><td data-col="7">4,162</td><td data-col="8">4,216</td><td data-col="9">4,342</td><td data-col="10">4,411</td><td data-col="11">4,445</td><td data-col="12">4,486</td><td data-col="13">4,606</td>
+          <td data-col="0">3,779</td><td data-col="1">3,853</td><td data-col="2">3,817</td><td data-col="3">3,762</td><td data-col="4">3,798</td><td data-col="5">3,951</td><td data-col="6">4,110</td><td data-col="7">4,162</td><td data-col="8">4,216</td><td data-col="9">4,342</td><td data-col="10">4,411</td><td data-col="11">4,445</td><td data-col="12">4,486</td><td data-col="13">4,606</td><td data-col="14">4,615</td>
         </tr>
       </tbody>
     </table>
@@ -484,7 +485,7 @@ body{background:var(--bg,#f0f2f5);}
         </tr>
         <tr class="total-row" onclick="selectView('gemel')">
           <td>סה״כ קטגוריה</td>
-          <td data-col="0">1,058</td><td data-col="1">1,079</td><td data-col="2">1,061</td><td data-col="3">1,041</td><td data-col="4">1,051</td><td data-col="5">1,097</td><td data-col="6">1,144</td><td data-col="7">1,156</td><td data-col="8">1,171</td><td data-col="9">1,208</td><td data-col="10">1,639</td><td data-col="11">1,649</td><td data-col="12">1,684</td><td data-col="13">1,730</td>
+          <td data-col="0">1,058</td><td data-col="1">1,079</td><td data-col="2">1,061</td><td data-col="3">1,041</td><td data-col="4">1,051</td><td data-col="5">1,097</td><td data-col="6">1,144</td><td data-col="7">1,156</td><td data-col="8">1,171</td><td data-col="9">1,208</td><td data-col="10">1,639</td><td data-col="11">1,649</td><td data-col="12">1,684</td><td data-col="13">1,730</td><td data-col="14">1,730</td>
         </tr>
       </tbody>
     </table>
@@ -525,7 +526,7 @@ body{background:var(--bg,#f0f2f5);}
         </tr>
         <tr class="total-row" onclick="selectView('gemel_invest')">
           <td>סה״כ קטגוריה</td>
-          <td data-col="0">650</td><td data-col="1">747</td><td data-col="2">745</td><td data-col="3">734</td><td data-col="4">739</td><td data-col="5">769</td><td data-col="6">800</td><td data-col="7">810</td><td data-col="8">818</td><td data-col="9">841</td><td data-col="10">856</td><td data-col="11">860</td><td data-col="12">873</td><td data-col="13">902</td>
+          <td data-col="0">650</td><td data-col="1">747</td><td data-col="2">745</td><td data-col="3">734</td><td data-col="4">739</td><td data-col="5">769</td><td data-col="6">800</td><td data-col="7">810</td><td data-col="8">818</td><td data-col="9">841</td><td data-col="10">856</td><td data-col="11">860</td><td data-col="12">873</td><td data-col="13">902</td><td data-col="14">902</td>
         </tr>
       </tbody>
     </table>
@@ -571,7 +572,7 @@ body{background:var(--bg,#f0f2f5);}
 
         <tr class="total-row" onclick="selectView('harel')">
           <td>סה״כ קטגוריה</td>
-          <td data-col="0">6,149</td><td data-col="1">6,104</td><td data-col="2">6,012</td><td data-col="3">5,959</td><td data-col="4">6,408</td><td data-col="5">6,543</td><td data-col="6">6,669</td><td data-col="7">6,755</td><td data-col="8">6,877</td><td data-col="9">7,029</td><td data-col="10">6,999</td><td data-col="11">7,066</td><td data-col="12">7,199</td><td data-col="13">7,126</td>
+          <td data-col="0">6,149</td><td data-col="1">6,104</td><td data-col="2">6,012</td><td data-col="3">5,959</td><td data-col="4">6,408</td><td data-col="5">6,543</td><td data-col="6">6,669</td><td data-col="7">6,755</td><td data-col="8">6,877</td><td data-col="9">7,029</td><td data-col="10">6,999</td><td data-col="11">7,066</td><td data-col="12">7,199</td><td data-col="13">7,126</td><td data-col="14">7,133</td>
         </tr>
       </tbody>
     </table>
@@ -1548,7 +1549,8 @@ function updateTableCells() {
     const section = row.closest('.category-section');
     if (!section) return;
     const catId = section.id.replace('sec-', '');
-    const catArr = CAT_TOTALS[catId];
+    // Use CAT_CHART_TOTALS (forward-filled) for total-row display
+    const catArr = CAT_CHART_TOTALS[catId] || CAT_TOTALS[catId];
     if (!catArr) return;
     let maxCol = -1;
     row.querySelectorAll('td[data-col]').forEach(td => {
@@ -2422,8 +2424,11 @@ function openCharts() {
   _chartsInited = true;
 
   function getcat(k) {
-    var a = CAT_TOTALS[k];
-    return (a && a.length) ? Math.round(a[a.length-1] || 0) : 0;
+    // CAT_CHART_TOTALS uses per-fund forward-fill = accurate last month values
+    var a = CAT_CHART_TOTALS[k];
+    if (a && a.length) return Math.round(a[a.length-1] || 0);
+    var b = CAT_TOTALS[k];
+    return (b && b.length) ? Math.round(b[b.length-1] || 0) : 0;
   }
   function lastVal(arr) {
     if (!arr) return 0;
