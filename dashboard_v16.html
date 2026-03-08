@@ -2547,7 +2547,7 @@ function makePieWithActive(canvasId, legendId, defs, total) {
         legend: { display: false },
         tooltip: { callbacks: { label: function(c) {
           var lines = ['  ' + c.label + ': ' + c.parsed.toLocaleString() + ' אלפי ש"ח'];
-          if (activeMap[c.label]) lines.push('  פעיל: ' + activeMap[c.label].toLocaleString());
+          if (activeMap[c.label]) lines.push('  מתוכם פעיל: ' + activeMap[c.label].toLocaleString());
           return lines;
         }}, backgroundColor:'#fff', titleColor:'#6b7280', bodyColor:'#111827',
            borderColor:'#e5e7eb', borderWidth:1, cornerRadius:10,
