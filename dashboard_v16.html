@@ -2380,7 +2380,7 @@ function toggleTheme(){
       <div class="ch-card"><div class="ch-title">קטגוריות השקעה</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-by-cat" style="max-width:200px;max-height:200px;"></canvas><div id="legend-by-cat" class="ch-legend"></div></div></div>
       <div class="ch-card"><div class="ch-title">מנייתי vs כללי (קרנות בלבד)</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-equity" style="max-width:200px;max-height:200px;"></canvas><div id="legend-equity" class="ch-legend"></div></div></div>
       <div class="ch-card"><div class="ch-title">נזילות</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-liquidity" style="max-width:200px;max-height:200px;"></canvas><div id="legend-liquidity" class="ch-legend"></div></div></div>
-      <div class="ch-card"><div class="ch-title">מקור ניהול</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-manager" style="max-width:200px;max-height:200px;"></canvas><div id="legend-manager" class="ch-legend"></div></div></div>
+      <div class="ch-card"><div class="ch-title">גוף מנהל</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-manager" style="max-width:200px;max-height:200px;"></canvas><div id="legend-manager" class="ch-legend"></div></div></div>
     </div>
   </div>
 </div>
@@ -2468,25 +2468,33 @@ function openCharts() {
   ];
   makePie('chart-liquidity', 'legend-liquidity', liqDef, age67T+selfT+liquidT);
 
-  // ---- 4. מקור ניהול ----
-  var mgr = [
-    { label:'א"ש',   color:'#1d4ed8', val:0 },
-    { label:'מיטב',  color:'#7c3aed', val:0 },
-    { label:'מור',   color:'#b45309', val:0 },
-    { label:'הראל',  color:'#ca8a04', val:0 },
-    { label:'פניקס', color:'#be185d', val:0 },
-  ];
-  Object.values(FUNDS).forEach(function(f){
-    var v = lastVal(f.data); if (!v) return;
-    var n = f.name || '';
-    if (n.includes('א"ש') || n.includes('אש')) mgr[0].val += v;
-    else if (n.includes('מיטב'))               mgr[1].val += v;
-    else if (n.includes('מור'))                mgr[2].val += v;
-    else if (n.includes('הראל'))               mgr[3].val += v;
-    else if (n.includes('פניקס'))              mgr[4].val += v;
+  // ---- 4. גוף מנהל ----
+  // קרנות לפי גוף מנהל – מרץ 26 בלבד
+  var mgrKeys = {
+    'אלטשולר שחם': ['אשקהש39905556','אשקהש40035706'],
+    'מור':          ['6730511אשגמל','אשגמל39774495','6730512אשגמל','6899425אשגמל','מורגמל1375900'],
+    'מיטב כספית':  ['מיטבשקלית'],
+    'מיטב קרנות':  ['מיטבדשניהולקרנות1693','מיטבדשטרייד'],
+    'מיטב השתלמות+גמ"ל': ['מורקהש499293','מיטבקהש912-443286','אשגמללהשקעה2016-1738','מורגמללהשקעה'],
+    'הראל':         ['הראלמגוון-פוליסתחיסכ','הראלכללי109062745'],
+    'הפניקס':       ['הפניקסגמל926-084678'],
+  };
+  var mgrColors = {
+    'אלטשולר שחם':         '#16a34a',
+    'מור':                  '#c2410c',
+    'מיטב כספית':          '#c4b5fd',
+    'מיטב קרנות':          '#7c3aed',
+    'מיטב השתלמות+גמ"ל':  '#4c1d95',
+    'הראל':                 '#ca8a04',
+    'הפניקס':               '#db2777',
+  };
+  var mgr = Object.keys(mgrKeys).map(function(lbl) {
+    var val = mgrKeys[lbl].reduce(function(s, k) {
+      return s + (FUNDS[k] ? lastVal(FUNDS[k].data) : 0);
+    }, 0);
+    return { label: lbl, color: mgrColors[lbl], val: Math.round(val),
+             tooltip: lbl };
   });
-  mgr[0].val += getcat('dira'); // דירה תחת א"ש
-  mgr.forEach(function(m){ m.val = Math.round(m.val); });
   var mgrTotal = mgr.reduce(function(s,m){ return s+m.val; }, 0);
   makePie('chart-manager', 'legend-manager', mgr, mgrTotal);
 }
@@ -2512,8 +2520,7 @@ function makePie(canvasId, legendId, defs, total) {
         tooltip: {
           callbacks: {
             label: function(c) {
-              var pct = total > 0 ? (c.parsed/total*100).toFixed(1) : '0';
-              return '  ' + c.label + ': ' + c.parsed.toLocaleString() + ' (' + pct + '%)';
+              return '  ' + c.label + ': ' + c.parsed.toLocaleString() + ' אלפי ש"ח';
             }
           },
           backgroundColor:'#fff', titleColor:'#6b7280', bodyColor:'#111827',
