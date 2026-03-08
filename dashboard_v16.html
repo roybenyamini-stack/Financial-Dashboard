@@ -2524,21 +2524,57 @@ function openCharts() {
 }
 
 function makePieWithActive(canvasId, legendId, defs, total) {
-  // בנה עוגה רגילה
-  makePie(canvasId, legendId, defs, total);
-  // הוסף שורות פעיל ל-legend
+  // בנה legend ידני עם שורת פעיל מתחת לכל קטגוריה
+  var filtered = defs.filter(function(d){ return d.val > 0; });
+  var ctx = document.getElementById(canvasId).getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: filtered.map(function(d){ return d.label; }),
+      datasets: [{
+        data: filtered.map(function(d){ return d.val; }),
+        backgroundColor: filtered.map(function(d){ return d.color; }),
+        borderWidth: 2, borderColor: '#fff', hoverBorderWidth: 3
+      }]
+    },
+    options: {
+      responsive: false, cutout: '60%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function(c) {
+          return '  ' + c.label + ': ' + c.parsed.toLocaleString() + ' אלפי ש"ח';
+        }}, backgroundColor:'#fff', titleColor:'#6b7280', bodyColor:'#111827',
+           borderColor:'#e5e7eb', borderWidth:1, cornerRadius:10,
+           bodyFont:{family:'Heebo',size:12,weight:'600'} }
+      }
+    }
+  });
+
   var legendEl = document.getElementById(legendId);
+  legendEl.innerHTML = '';
   defs.forEach(function(d) {
-    if (!d.active || d.active <= 0) return;
-    var pctActive = total > 0 ? (d.active/total*100).toFixed(1) : '0';
+    if (d.val <= 0) return;
+    var pct = total > 0 ? (d.val/total*100).toFixed(1) : '0';
+    // שורה ראשית
     var row = document.createElement('div');
     row.className = 'ch-legend-item';
-    row.style.paddingRight = '16px';
-    row.style.color = '#9ca3af';
-    row.style.fontSize = '10px';
-    row.innerHTML = '<div class="ch-legend-dot" style="background:'+d.color+';opacity:0.4;width:7px;height:7px;"></div>'
-      + '<span>מתוכם פעיל: ' + d.active.toLocaleString() + ' <span style="color:#d1d5db">('+pctActive+'%)</span></span>';
+    row.style.fontWeight = '600';
+    row.innerHTML = '<div class="ch-legend-dot" style="background:'+d.color+'"></div>'
+      + '<span>' + d.label + ' · ' + d.val.toLocaleString()
+      + ' <span style="color:#9ca3af">('+pct+'%)</span></span>';
     legendEl.appendChild(row);
+    // שורת פעיל
+    if (d.active && d.active > 0) {
+      var sub = document.createElement('div');
+      sub.className = 'ch-legend-item';
+      sub.style.paddingRight = '16px';
+      sub.style.fontSize = '10px';
+      sub.style.color = '#6b7280';
+      sub.style.marginBottom = '4px';
+      sub.innerHTML = '<div style="width:7px;height:7px;border-radius:50%;background:'+d.color+';opacity:0.5;flex-shrink:0;"></div>'
+        + '<span>מתוכם פעיל · ' + d.active.toLocaleString() + '</span>';
+      legendEl.appendChild(sub);
+    }
   });
 }
 
