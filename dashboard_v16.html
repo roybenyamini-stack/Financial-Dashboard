@@ -1957,7 +1957,11 @@ async function sendChat() {
     var ctx = buildContext();
     var isExplore = chatMode === 'explore';
     // במוד חקור – סיכום קצר בלבד כדי לא לחרוג ממגבלת טוקנים
-    var equityFunds = Object.values(FUNDS).filter(function(f){ return f.tags && f.tags.includes('equity'); });
+    // קרנות מנייתיות לפי FUND_TAGS (לא f.tags)
+    var equityKeys = Object.keys(FUND_TAGS).filter(function(k){
+      return FUND_TAGS[k].some(function(t){ return t.cls==='note-equity'; });
+    });
+    var equityFunds = equityKeys.map(function(k){ return FUNDS[k]; }).filter(Boolean);
     var equityTotal = equityFunds.reduce(function(sum,f){
       var last = f.data.slice().reverse().find(function(v){return v!=null;})||0;
       return sum+last;
