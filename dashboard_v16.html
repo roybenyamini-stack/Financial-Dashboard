@@ -2527,6 +2527,10 @@ function makePieWithActive(canvasId, legendId, defs, total) {
   // בנה legend ידני עם שורת פעיל מתחת לכל קטגוריה
   var filtered = defs.filter(function(d){ return d.val > 0; });
   var ctx = document.getElementById(canvasId).getContext('2d');
+  // מפה בין label לפעיל
+  var activeMap = {};
+  defs.forEach(function(d){ if(d.active) activeMap[d.label] = d.active; });
+
   new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -2542,7 +2546,9 @@ function makePieWithActive(canvasId, legendId, defs, total) {
       plugins: {
         legend: { display: false },
         tooltip: { callbacks: { label: function(c) {
-          return '  ' + c.label + ': ' + c.parsed.toLocaleString() + ' אלפי ש"ח';
+          var lines = ['  ' + c.label + ': ' + c.parsed.toLocaleString() + ' אלפי ש"ח'];
+          if (activeMap[c.label]) lines.push('  פעיל: ' + activeMap[c.label].toLocaleString());
+          return lines;
         }}, backgroundColor:'#fff', titleColor:'#6b7280', bodyColor:'#111827',
            borderColor:'#e5e7eb', borderWidth:1, cornerRadius:10,
            bodyFont:{family:'Heebo',size:12,weight:'600'} }
