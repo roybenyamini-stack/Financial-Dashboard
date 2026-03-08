@@ -2377,7 +2377,7 @@ function toggleTheme(){
       <button onclick="closeCharts()" style="background:#f3f4f6;border:none;font-size:18px;cursor:pointer;color:#6b7280;width:34px;height:34px;border-radius:50%;">✕</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" id="charts-grid">
-      <div class="ch-card"><div class="ch-title">חלוקה לפי קטגוריה</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-by-cat" style="max-width:200px;max-height:200px;"></canvas><div id="legend-by-cat" class="ch-legend"></div></div></div>
+      <div class="ch-card"><div class="ch-title">קטגוריות השקעה</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-by-cat" style="max-width:200px;max-height:200px;"></canvas><div id="legend-by-cat" class="ch-legend"></div></div></div>
       <div class="ch-card"><div class="ch-title">מנייתי vs כללי (קרנות בלבד)</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-equity" style="max-width:200px;max-height:200px;"></canvas><div id="legend-equity" class="ch-legend"></div></div></div>
       <div class="ch-card"><div class="ch-title">נזילות</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-liquidity" style="max-width:200px;max-height:200px;"></canvas><div id="legend-liquidity" class="ch-legend"></div></div></div>
       <div class="ch-card"><div class="ch-title">מקור ניהול</div><div style="display:flex;gap:12px;align-items:center;"><canvas id="chart-manager" style="max-width:200px;max-height:200px;"></canvas><div id="legend-manager" class="ch-legend"></div></div></div>
@@ -2458,15 +2458,15 @@ function openCharts() {
   makePie('chart-equity', 'legend-equity', eqDef, eqTotal+nonEqTotal);
 
   // ---- 3. נזילות ----
-  var longT   = getcat('hishtalmut') + getcat('gemel') + getcat('gemel_invest');
+  var age67T  = getcat('hishtalmut') + getcat('gemel');
+  var selfT   = getcat('harel') + getcat('meitav') + getcat('gemel_invest');
   var liquidT = getcat('mezuman');
-  var sellT   = getcat('harel') + getcat('meitav');
   var liqDef = [
-    { label:'טווח ארוך',       color:'#1e3a5f', val: longT },
-    { label:'נזיל (מזומן)',     color:'#0891b2', val: liquidT },
-    { label:'ניתן להנזלה',     color:'#f59e0b', val: sellT },
+    { label:'נזיל',            color:'#0891b2', val: liquidT },
+    { label:'השקעה עצמית',     color:'#f59e0b', val: selfT },
+    { label:'גיל 67+',         color:'#1e3a5f', val: age67T },
   ];
-  makePie('chart-liquidity', 'legend-liquidity', liqDef, longT+liquidT+sellT);
+  makePie('chart-liquidity', 'legend-liquidity', liqDef, age67T+selfT+liquidT);
 
   // ---- 4. מקור ניהול ----
   var mgr = [
