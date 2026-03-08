@@ -2029,8 +2029,13 @@ function buildContext() {
   var ctx = 'תיק השקעות באלפי ש"ח.\n';
   ctx += 'חודשים: ' + LABELS.join(',') + '\n';
   ctx += 'נתונים לכל קרן (לפי סדר החודשים):\n';
-  Object.values(FUNDS).forEach(function(f) {
-    ctx += f.name + ' [' + CAT_NAMES[f.cat] + ']: ' + 
+  Object.entries(FUNDS).forEach(function(entry) {
+    var key = entry[0], f = entry[1];
+    var tags = FUND_TAGS[key] || [];
+    var type = 'כללי';
+    if (tags.some(function(t){ return t.cls==='note-equity' || t.cls==='note-equity-sold'; })) type = 'מנייתי';
+    else if (tags.some(function(t){ return t.cls==='note-cash-fund'; })) type = 'כספי';
+    ctx += f.name + ' [' + CAT_NAMES[f.cat] + ', ' + type + ']: ' +
            f.data.map(function(v){return v!=null?Math.round(v):'';}).join(',') + '\n';
   });
   ctx += 'סהכ תיק: ' + ALL_TOTALS.map(function(v){return Math.round(v);}).join(',') + '\n';
