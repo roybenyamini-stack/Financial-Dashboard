@@ -89,7 +89,7 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 .cat-pct:not(:empty) { padding: 3px 10px; }
 .cat-pct.pos { background: #dcfce7; color: #16a34a; }
 .cat-pct.neg { background: #fee2e2; color: #dc2626; }
-.chevron { font-size: 11px; color: #ccc; transition: transform 0.25s; margin-right: 12px; }
+.chevron { font-size: 12px; color: #aaa; transition: transform 0.25s; font-weight: 600; }
 .chevron.open { transform: rotate(180deg); }
 
 /* TABLE */
@@ -166,8 +166,9 @@ body{background:var(--bg,#f0f2f5);}
 #cat-modal-body td { padding:11px 16px; }
 #cat-modal-body .val { font-size:13px; }
 #cat-modal-body tr:hover td { background:rgba(0,0,0,0.03) !important; }
-.cat-zoom-btn { background:none; border:none; cursor:pointer; font-size:15px; opacity:0.45; padding:4px 6px; border-radius:6px; transition:all .15s; margin-right:4px; }
-.cat-zoom-btn:hover { opacity:1; background:rgba(0,0,0,0.06); }
+.cat-zoom-btn { background:none; border:none; cursor:pointer; font-size:14px; opacity:0.4; padding:4px 7px; border-radius:6px; transition:all .15s; line-height:1; }
+.cat-zoom-btn:hover { opacity:1; background:rgba(0,0,0,0.07); transform:scale(1.1); }
+.cat-actions { display:flex; align-items:center; gap:4px; flex-shrink:0; }
 
 </style>
 </head>
@@ -379,7 +380,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-mezuman"></div>
       <div class="cat-pct" id="sec-ytd-mezuman" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('mezuman')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-mezuman">▼</div>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('mezuman')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-mezuman">▼</div></div>
   </div>
   <div class="category-body" id="body-mezuman">
     <table>
@@ -423,7 +424,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-hishtalmut">+16.9%</div>
       <div class="cat-pct" id="sec-ytd-hishtalmut" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('hishtalmut')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-hishtalmut">▼</div>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('hishtalmut')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-hishtalmut">▼</div></div>
   </div>
   <div class="category-body" id="body-hishtalmut">
     <table>
@@ -476,7 +477,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-gemel">+17.6%</div>
       <div class="cat-pct" id="sec-ytd-gemel" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('gemel')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-gemel">▼</div>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('gemel')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-gemel">▼</div></div>
   </div>
   <div class="category-body" id="body-gemel">
     <table>
@@ -533,7 +534,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-gemel_invest">+21.8%</div>
       <div class="cat-pct" id="sec-ytd-gemel_invest" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('gemel_invest')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-gemel_invest">▼</div>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('gemel_invest')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-gemel_invest">▼</div></div>
   </div>
   <div class="category-body" id="body-gemel_invest">
     <table>
@@ -574,7 +575,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-harel">+11.4%</div>
       <div class="cat-pct" id="sec-ytd-harel" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('harel')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-harel">▼</div>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('harel')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-harel">▼</div></div>
   </div>
   <div class="category-body" id="body-harel">
     <table>
@@ -620,7 +621,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-meitav">+13.2%</div>
       <div class="cat-pct" id="sec-ytd-meitav" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('meitav')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-meitav">▼</div>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('meitav')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-meitav">▼</div></div>
   </div>
   <div class="category-body" id="body-meitav">
     <table>
@@ -657,7 +658,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-arbitrage"></div>
       <div class="cat-pct" id="sec-ytd-arbitrage" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('arbitrage')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-arbitrage">▼</div>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('arbitrage')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-arbitrage">▼</div></div>
   </div>
   <div class="category-body" id="body-arbitrage">
     <table>
@@ -689,7 +690,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-dira"></div>
       <div class="cat-pct" id="sec-ytd-dira" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('dira')" title="פתח בחלון מלא">⛶</button>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('dira')" title="פתח בחלון מלא">⛶</button></div>
   </div>
 </div>
 
@@ -708,7 +709,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-chov"></div>
       <div class="cat-pct" id="sec-ytd-chov" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('chov')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-chov">▼</div>
+    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('chov')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-chov">▼</div></div>
   </div>
   <div class="category-body" id="body-chov">
     <table>
@@ -2726,12 +2727,27 @@ function openCatModal(catId) {
     // bind click events on cloned rows
     body.querySelectorAll('tr[data-fund]').forEach(function(row) {
       var key = row.getAttribute('data-fund');
-      var oc = row.getAttribute('onclick');
-      if (oc) row.addEventListener('click', function() { eval(oc); closeCatModal(); });
+      // extract color from original onclick attr
+      var origOC = row.getAttribute('onclick') || '';
+      var colorMatch = origOC.match(/'(#[^']+)'/);
+      var clr = colorMatch ? colorMatch[1] : '#2563eb';
+      row.removeAttribute('onclick');
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', function() {
+        selectFund(key, clr);
+        closeCatModal();
+      });
     });
     body.querySelectorAll('tr.total-row').forEach(function(row) {
-      var oc = row.getAttribute('onclick');
-      if (oc) row.addEventListener('click', function() { eval(oc); closeCatModal(); });
+      var origOC = row.getAttribute('onclick') || '';
+      var catMatch = origOC.match(/selectView\('([^']+)'\)/);
+      var cat = catMatch ? catMatch[1] : null;
+      row.removeAttribute('onclick');
+      row.style.cursor = 'pointer';
+      if (cat) row.addEventListener('click', function() {
+        selectView(cat);
+        closeCatModal();
+      });
     });
   }
 
