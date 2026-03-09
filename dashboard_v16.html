@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:9px;font-weight:600;color:#ef4444;margin-right:6px;font-family:monospace;">v16.09k</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:9px;font-weight:600;color:#ef4444;margin-right:6px;font-family:monospace;">v16.09m</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -787,9 +787,9 @@ const LABELS = ['ינו׳ 25','פבר׳ 25','מרץ 25','אפר׳ 25','מאי 25
 
 const FUNDS = {
   'אשקהש39905556':       { name:'א״ש ק״הש 39905556',      cat:'hishtalmut', data:[2406,2437,2416,2386,2401,2469,2548,2567,2595,2654,2685,2700,2700,2743,null] },
-  'אשקהש6730513':        { name:'א״ש ק״הש 6730513 ← מיטב 442504', cat:'hishtalmut', data:[772,792,770,747,754,802,846,860,869,905,919,921,941,981,981] },
+  'אשקהש6730513':        { name:'א״ש ק״הש 6730513 ← מיטב 442504', cat:'hishtalmut', transferred:true, data:[772,792,770,747,754,802,846,860,869,905,919,921,941,981,981] },
   'אשקהש40035706':       { name:'א״ש קה״ש 40035706',       cat:'hishtalmut', data:[281,285,283,279,281,289,298,300,304,310,314,316,316,321,321] },
-  'מורקהש499293':        { name:'מור קה״ש 499293 ← מיטב 443195', cat:'hishtalmut', data:[320,339,348,350,362,391,418,435,448,473,493,508,529,561,null] },
+  'מורקהש499293':        { name:'מור קה״ש 499293 ← מיטב 443195', cat:'hishtalmut', transferred:true, data:[320,339,348,350,362,391,418,435,448,473,493,508,529,561,null] },
   'מיטבקהש912-443286':   { name:'מיטב קה״ש 912-443286', cat:'hishtalmut', data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,9] },
 
   '6730511אשגמל':        { name:'א״ש גמל 6730511 ← מור 1428298', cat:'gemel', data:[402,413,402,391,395,421,444,452,457,476,484,490,495,517,null] },
@@ -1188,6 +1188,7 @@ function updateNavButtons() {
       const lastVisIdx = Math.min(winStart + WINDOW - 1, LABELS.length - 1);
       Object.values(FUNDS).forEach(f => {
         if (f.cat !== currentView) return;
+        if (f.transferred) return;
         let wasActive = false;
         for (let i = 0; i < f.data.length; i++) {
           if ((f.data[i]||0) > 0) wasActive = true;
