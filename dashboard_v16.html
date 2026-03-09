@@ -2833,12 +2833,19 @@ function openCatModal(catId) {
   cmUpdateNavBtns();
   cmUpdateCatStats(catId, catData);
 
-  // רשימה
-  cmBuildFundList(catId, color);
-  cmShowList();
-
+  // פתח מודאל קודם – לפני כל שגיאה אפשרית
   document.getElementById('cat-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // רשימה
+  try {
+    cmBuildFundList(catId, color);
+    cmShowList();
+  } catch(e) {
+    console.error('cmBuildFundList error:', e);
+    document.getElementById('cm-fund-list').innerHTML =
+      '<p style="padding:20px;color:#888;text-align:center">' + e.message + '</p>';
+  }
 }
 
 // ---- סטטיסטיקות קטגוריה (אותה לוגיקה כמו updateChartStats) ----
