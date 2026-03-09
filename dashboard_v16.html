@@ -61,6 +61,12 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 .chart-nav-row button { background: #f0f2f5; border: none; border-radius: 8px; width: 32px; height: 32px; font-size: 15px; cursor: pointer; color: #555; display: flex; align-items: center; justify-content: center; }
 .chart-nav-row button:hover:not(:disabled) { background: #e2e8f0; }
 .chart-nav-row button:disabled { opacity: 0.3; cursor: default; }
+#chart-nav-btns { display:none; align-items:center; gap:6px; margin-right:8px; }
+#chart-nav-btns.visible { display:flex; }
+.chart-nav-cat-btn { background:#f0f2f5; border:none; border-radius:8px; padding:5px 10px; font-size:11px; font-family:Heebo,sans-serif; cursor:pointer; color:#555; font-weight:600; transition:all .15s; white-space:nowrap; }
+.chart-nav-cat-btn:hover { background:#e2e8f0; color:#1a1a2e; }
+.chart-nav-close-btn { background:#fee2e2; border:none; border-radius:8px; padding:5px 10px; font-size:11px; font-family:Heebo,sans-serif; cursor:pointer; color:#dc2626; font-weight:600; transition:all .15s; }
+.chart-nav-close-btn:hover { background:#fecaca; }
 #winRange { font-size: 13px; color: #555; font-family: Heebo,sans-serif; font-weight: 700; min-width: 160px; text-align: center; }
 #sold-fund-notice { display: none; font-size: 11px; color: #b45309; font-family: Heebo; font-weight: 600; }
 #hdr-external-wrap { display: none; }
@@ -142,36 +148,6 @@ body{background:var(--bg,#f0f2f5);}
 .header{background:var(--hdr,#1a1a2e)!important;border-radius:var(--hdr-r,18px)!important;}
 #top-fixed{background:var(--bg,#f0f2f5)!important;}
 /* END THEMES */
-/* CATEGORY DRILL-DOWN MODAL */
-#cat-modal { display:none; position:fixed; inset:0; z-index:1100; background:rgba(10,10,30,0.55); backdrop-filter:blur(6px); justify-content:center; align-items:flex-start; padding:24px 16px; }
-#cat-modal.open { display:flex; }
-#cat-modal-box { background:#fff; border-radius:20px; width:100%; max-width:1200px; max-height:calc(100vh - 48px); display:flex; flex-direction:column; box-shadow:0 24px 80px rgba(0,0,0,0.22); overflow:hidden; animation:modalSlideIn 0.22s ease; }
-@keyframes modalSlideIn { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-#cat-modal-header { display:flex; justify-content:space-between; align-items:center; padding:18px 28px 16px; border-bottom:1px solid #f0f0f0; flex-shrink:0; border-right:5px solid var(--modal-color, #1a1a2e); }
-#cat-modal-title { display:flex; align-items:center; gap:12px; }
-#cat-modal-icon  { width:40px; height:40px; border-radius:12px; background:var(--modal-color-light,#f0f2f5); display:flex; align-items:center; justify-content:center; font-size:18px; }
-#cat-modal-name  { font-size:18px; font-weight:800; color:#1a1a2e; }
-#cat-modal-sub   { font-size:12px; color:#94a3b8; margin-top:2px; }
-#cat-modal-stats { display:flex; gap:28px; align-items:center; }
-.cmod-stat { text-align:center; }
-.cmod-stat-lbl { font-size:10px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.6px; }
-.cmod-stat-val { font-size:20px; font-weight:800; color:#1a1a2e; margin-top:2px; }
-.cmod-stat-val.pos { color:#16a34a; }
-.cmod-stat-val.neg { color:#dc2626; }
-#cat-modal-close { width:36px; height:36px; border-radius:50%; border:none; background:#f1f5f9; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; transition:all .15s; color:#64748b; }
-#cat-modal-close:hover { background:#e2e8f0; color:#1a1a2e; transform:scale(1.1); }
-#cat-modal-body  { overflow:auto; padding:0; flex:1; }
-#cat-modal-body table { font-size:13px; }
-#cat-modal-body th { padding:11px 16px; font-size:11px; position:sticky; top:0; z-index:2; background:#f8fafc; }
-#cat-modal-body td { padding:11px 16px; }
-#cat-modal-body .val { font-size:13px; }
-#cat-modal-body tr:hover td { background:rgba(0,0,0,0.03) !important; }
-#cat-modal-body tr.modal-row-active td { background:rgba(37,99,235,0.07) !important; }
-#cat-modal-body tr.modal-row-active td:last-child { border-left: 3px solid #2563eb; }
-#cat-modal-body tr.modal-row-active td:first-child { border-right: 4px solid #2563eb; font-weight:700; color:#2563eb; }
-.cat-zoom-btn { background:none; border:none; cursor:pointer; font-size:14px; opacity:0.4; padding:4px 7px; border-radius:6px; transition:all .15s; line-height:1; }
-.cat-zoom-btn:hover { opacity:1; background:rgba(0,0,0,0.07); transform:scale(1.1); }
-.cat-actions { display:flex; align-items:center; gap:4px; flex-shrink:0; }
 
 </style>
 </head>
@@ -281,6 +257,10 @@ body{background:var(--bg,#f0f2f5);}
           <div style="font-size:11px;color:#888;font-family:Heebo,sans-serif;">YTD 2026</div>
           <div id="chart-ytd" style="font-size:15px;font-weight:700;font-family:Heebo,sans-serif;color:#16a34a;">—</div>
         </div>
+        <div id="chart-nav-btns">
+          <button class="chart-nav-cat-btn" id="btn-back-cat" onclick="navBackToCat()">← קטגוריה</button>
+          <button class="chart-nav-close-btn" onclick="navCloseAll()">✕ סגור</button>
+        </div>
         <div style="display:flex;align-items:center;gap:8px;background:#f0f2f5;border-radius:10px;padding:4px 8px;">
           <button id="btnNext" onclick="slideWindow(1)" title="תקופה הבאה" style="background:none;border:none;width:24px;height:24px;font-size:14px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;padding:0;">&#8594;</button>
           <div style="text-align:center;">
@@ -383,7 +363,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-mezuman"></div>
       <div class="cat-pct" id="sec-ytd-mezuman" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('mezuman')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-mezuman">▼</div></div>
+    <div class="chevron" id="chev-mezuman">▼</div>
   </div>
   <div class="category-body" id="body-mezuman">
     <table>
@@ -427,7 +407,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-hishtalmut">+16.9%</div>
       <div class="cat-pct" id="sec-ytd-hishtalmut" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('hishtalmut')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-hishtalmut">▼</div></div>
+    <div class="chevron" id="chev-hishtalmut">▼</div>
   </div>
   <div class="category-body" id="body-hishtalmut">
     <table>
@@ -480,7 +460,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-gemel">+17.6%</div>
       <div class="cat-pct" id="sec-ytd-gemel" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('gemel')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-gemel">▼</div></div>
+    <div class="chevron" id="chev-gemel">▼</div>
   </div>
   <div class="category-body" id="body-gemel">
     <table>
@@ -537,7 +517,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-gemel_invest">+21.8%</div>
       <div class="cat-pct" id="sec-ytd-gemel_invest" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('gemel_invest')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-gemel_invest">▼</div></div>
+    <div class="chevron" id="chev-gemel_invest">▼</div>
   </div>
   <div class="category-body" id="body-gemel_invest">
     <table>
@@ -578,7 +558,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-harel">+11.4%</div>
       <div class="cat-pct" id="sec-ytd-harel" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('harel')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-harel">▼</div></div>
+    <div class="chevron" id="chev-harel">▼</div>
   </div>
   <div class="category-body" id="body-harel">
     <table>
@@ -624,7 +604,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-meitav">+13.2%</div>
       <div class="cat-pct" id="sec-ytd-meitav" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('meitav')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-meitav">▼</div></div>
+    <div class="chevron" id="chev-meitav">▼</div>
   </div>
   <div class="category-body" id="body-meitav">
     <table>
@@ -661,7 +641,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-arbitrage"></div>
       <div class="cat-pct" id="sec-ytd-arbitrage" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('arbitrage')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-arbitrage">▼</div></div>
+    <div class="chevron" id="chev-arbitrage">▼</div>
   </div>
   <div class="category-body" id="body-arbitrage">
     <table>
@@ -693,7 +673,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-dira"></div>
       <div class="cat-pct" id="sec-ytd-dira" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('dira')" title="פתח בחלון מלא">⛶</button></div>
+
   </div>
 </div>
 
@@ -712,7 +692,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-chov"></div>
       <div class="cat-pct" id="sec-ytd-chov" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="cat-actions"><button class="cat-zoom-btn" onclick="event.stopPropagation(); openCatModal('chov')" title="פתח בחלון מלא">⛶</button><div class="chevron" id="chev-chov">▼</div></div>
+    <div class="chevron" id="chev-chov">▼</div>
   </div>
   <div class="category-body" id="body-chov">
     <table>
@@ -1161,6 +1141,7 @@ function slideWindow(dir) {
 
 let currentView = 'all';
 let lockedFund = null;   // קרן נעולה בלחיצה
+let currentCatContext = null; // קטגוריה שממנה נבחרה הקרן
 let hoverTimeout = null; // debounce ל-hover
 let currentFund = null;
 
@@ -1401,6 +1382,13 @@ function selectView(cat) {
 function selectFund(fundKey, color) {
   const fund = FUNDS[fundKey];
   if (!fund) return;
+
+  // שמור קטגוריה + הצג כפתורי ניווט
+  currentCatContext = fund.cat;
+  const catBtn = document.getElementById('btn-back-cat');
+  if (catBtn) catBtn.textContent = '← ' + (CAT_NAMES[fund.cat] || fund.cat);
+  const navBtns = document.getElementById('chart-nav-btns');
+  if (navBtns) navBtns.classList.add('visible');
 
   // נעילה/שחרור – לחיצה על אותה קרן נעולה משחררת
   if (lockedFund === fundKey) {
@@ -2677,151 +2665,39 @@ function toggleCard(el) {
   if (!wasExpanded) el.classList.add('expanded');
 }
 
+function navBackToCat() {
+  // חזרה לקטגוריה הפעילה
+  if (currentCatContext) {
+    selectView(currentCatContext);
+    // פתח את הקטגוריה אם סגורה
+    var body = document.getElementById('body-' + currentCatContext);
+    var chev = document.getElementById('chev-' + currentCatContext);
+    if (body && !body.classList.contains('open')) {
+      body.classList.add('open');
+      if (chev) chev.classList.add('open');
+    }
+    // גלול לקטגוריה
+    var sec = document.getElementById('sec-' + currentCatContext);
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.getElementById('chart-nav-btns').classList.remove('visible');
+  currentCatContext = null;
+}
+
+function navCloseAll() {
+  // סגור הכל וחזור לסה"כ
+  selectView('all');
+  document.querySelectorAll('.category-body.open').forEach(function(b) { b.classList.remove('open'); });
+  document.querySelectorAll('.chevron.open').forEach(function(c) { c.classList.remove('open'); });
+  document.getElementById('chart-nav-btns').classList.remove('visible');
+  currentCatContext = null;
+}
+
 function closeCharts() {
   document.getElementById('charts-modal').style.display = 'none';
 }
 
-// ===== CATEGORY DRILL-DOWN MODAL =====
-function openCatModal(catId) {
-  var sec = document.getElementById('sec-' + catId);
-  if (!sec) return;
-
-  // צבע + מידע
-  var color     = getComputedStyle(sec).getPropertyValue('--cat-color').trim();
-  var colorLight= getComputedStyle(sec).getPropertyValue('--cat-color-light').trim();
-  var hdr       = document.getElementById('hdr-' + catId);
-  var icon      = hdr ? hdr.querySelector('.cat-icon') : null;
-  var name      = hdr ? (hdr.querySelector('.cat-name') ? hdr.querySelector('.cat-name').textContent : catId) : catId;
-  var sub       = hdr ? (hdr.querySelector('.cat-count') ? hdr.querySelector('.cat-count').textContent : '') : '';
-
-  // עדכן header
-  document.getElementById('cat-modal-icon').textContent = icon ? icon.textContent : '📊';
-  document.getElementById('cat-modal-icon').style.background = colorLight || '#f0f2f5';
-  document.getElementById('cat-modal-name').textContent = name;
-  document.getElementById('cat-modal-sub').textContent = sub;
-  document.getElementById('cat-modal-box').style.setProperty('--modal-color', color);
-  document.getElementById('cat-modal-box').style.setProperty('--modal-color-light', colorLight);
-
-  // סטטיסטיקות
-  var catArr = CAT_CHART_TOTALS[catId] || CAT_TOTALS[catId] || [];
-  var lastVal = catArr.length ? Math.round(catArr[catArr.length-1]) : 0;
-  document.getElementById('cmod-total').textContent = lastVal.toLocaleString();
-
-  // תשואה מ-sec-pct
-  var pctEl = document.getElementById('sec-pct-' + catId);
-  var retEl = document.getElementById('cmod-ret');
-  if (pctEl && pctEl.textContent) {
-    retEl.textContent = pctEl.textContent;
-    retEl.className = 'cmod-stat-val ' + (pctEl.classList.contains('pos') ? 'pos' : 'neg');
-  } else { retEl.textContent = '—'; }
-
-  // YTD
-  var ytdEl = document.getElementById('sec-ytd-' + catId);
-  var ytdOut = document.getElementById('cmod-ytd');
-  if (ytdEl && ytdEl.textContent) {
-    ytdOut.textContent = ytdEl.textContent;
-  } else { ytdOut.textContent = '—'; }
-
-  // העתק טבלה
-  var body = document.getElementById('cat-modal-body');
-  var srcBody = document.getElementById('body-' + catId);
-  if (srcBody) {
-    body.innerHTML = srcBody.innerHTML;
-    // forward-fill: החלף — בערך אחרון ידוע בכל שורה
-    body.querySelectorAll('tr[data-fund]').forEach(function(row) {
-      var key = row.getAttribute('data-fund');
-      var fund = FUNDS[key];
-      if (!fund) return;
-      var ffData = ffFundData(fund.data);
-      row.querySelectorAll('td[data-col]').forEach(function(td) {
-        var col = parseInt(td.getAttribute('data-col'));
-        if (td.classList.contains('dash') && ffData[col] != null && ffData[col] !== 0) {
-          td.textContent = Math.round(ffData[col]).toLocaleString();
-          td.className = 'val';
-          td.style.opacity = '0.45';
-          td.title = 'ערך forward-fill';
-        }
-      });
-    });
-    // bind click events on cloned rows
-    body.querySelectorAll('tr[data-fund]').forEach(function(row) {
-      var key = row.getAttribute('data-fund');
-      var fund = FUNDS[key];
-      var clr = (fund && CAT_COLORS[fund.cat]) ? CAT_COLORS[fund.cat] : '#2563eb';
-      row.removeAttribute('onclick');
-      row.style.cursor = 'pointer';
-      row.addEventListener('click', function() {
-        // אפשרות ג׳: מודאל נשאר פתוח, שורה מסומנת, גרף מתעדכן ברקע
-        body.querySelectorAll('tr').forEach(function(r) { r.classList.remove('modal-row-active'); });
-        row.classList.add('modal-row-active');
-        selectFund(key, clr);
-        // עדכן כותרת המודאל לקרן שנבחרה
-        document.getElementById('cat-modal-name').textContent = fund ? fund.name : key;
-        document.getElementById('cat-modal-sub').innerHTML = 'גרף מוצג ברקע &nbsp;<button onclick="closeCatModal()" style="font-size:11px;background:#2563eb;color:#fff;border:none;border-radius:6px;padding:2px 10px;cursor:pointer;font-family:Heebo,sans-serif;">סגור וראה גרף ←</button>';
-      });
-    });
-    body.querySelectorAll('tr.total-row').forEach(function(row) {
-      var origOC = row.getAttribute('onclick') || '';
-      var i1 = origOC.indexOf("selectView('");
-      var cat = null;
-      if (i1 >= 0) {
-        var i2 = origOC.indexOf("')", i1 + 12);
-        if (i2 >= 0) cat = origOC.substring(i1 + 12, i2);
-      }
-      row.removeAttribute('onclick');
-      row.style.cursor = 'pointer';
-      if (cat) row.addEventListener('click', function() {
-        selectView(cat);
-        closeCatModal();
-      });
-    });
-  }
-
-  // פתח
-  document.getElementById('cat-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeCatModal() {
-  document.getElementById('cat-modal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// Escape key
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeCatModal();
-});
 
 </script>
 
-<!-- CATEGORY DRILL-DOWN MODAL -->
-<div id="cat-modal" onclick="if(event.target===this)closeCatModal()">
-  <div id="cat-modal-box">
-    <div id="cat-modal-header">
-      <div id="cat-modal-title">
-        <div id="cat-modal-icon">📊</div>
-        <div>
-          <div id="cat-modal-name">קטגוריה</div>
-          <div id="cat-modal-sub"></div>
-        </div>
-      </div>
-      <div id="cat-modal-stats">
-        <div class="cmod-stat">
-          <div class="cmod-stat-lbl">סה״כ</div>
-          <div class="cmod-stat-val" id="cmod-total">—</div>
-        </div>
-        <div class="cmod-stat">
-          <div class="cmod-stat-lbl">מינו׳ 25</div>
-          <div class="cmod-stat-val pos" id="cmod-ret">—</div>
-        </div>
-        <div class="cmod-stat">
-          <div class="cmod-stat-lbl">YTD 2026</div>
-          <div class="cmod-stat-val pos" id="cmod-ytd">—</div>
-        </div>
-        <button id="cat-modal-close" onclick="closeCatModal()">✕</button>
-      </div>
-    </div>
-    <div id="cat-modal-body"></div>
-  </div>
-</div>
 </body></html>
