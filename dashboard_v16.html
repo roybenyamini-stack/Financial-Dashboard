@@ -2944,11 +2944,13 @@ function cmClickFund(fundKey) {
   nameEl.style.color = fundClr;
   nameEl.textContent = fund.name;
 
-  // סטטיסטיקות + ניווט
+  // סטטיסטיקות
   cmSetFundStats(fundKey);
-  document.getElementById('cm-fund-nav').classList.add('visible');
   document.getElementById('cm-back').classList.add('visible');
   cmUpdateFundNavBtns();
+
+  // הצג view לפני ציור הגרף (canvas חייב להיות גלוי)
+  cmShowFundView();
 
   // גרף
   var ff = ffFundData(fund.data);
@@ -2956,10 +2958,8 @@ function cmClickFund(fundKey) {
   cmUpdateWinLabel();
   cmUpdateNavBtns();
 
-  // טבלת נתונים מלאה
+  // טבלה
   cmBuildFundTable(fundKey, fundClr);
-
-  cmShowFundView();
 }
 
 // ---- ניווט בין קרנות ----
