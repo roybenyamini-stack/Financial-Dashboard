@@ -193,7 +193,8 @@ body{background:var(--bg,#f0f2f5);}
 #cm-chart-wrap { height:160px; position:relative; direction:ltr; }
 
 /* אזור רשימה/טבלה */
-#cm-list-section { flex:1; overflow:auto; min-height:0; }
+#cm-list-section { flex:1; overflow:hidden; min-height:0; display:flex; flex-direction:column; }
+#cm-fund-list { flex:1; overflow:auto; min-height:0; }
 #cm-fund-list table { width:100%; border-collapse:collapse; }
 #cm-fund-list th { padding:8px 13px; font-size:11px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; border-bottom:2px solid #e8eaf0; white-space:nowrap; font-family:Heebo,sans-serif; }
 #cm-fund-list td { padding:8px 13px; text-align:right; border-bottom:1px solid #f0f0f0; font-family:Heebo,sans-serif; font-size:13px; }
@@ -2988,8 +2989,10 @@ function cmUpdateWinLabel() {
 }
 
 function cmUpdateNavBtns() {
-  document.getElementById('cm-btn-next').disabled = cmWinStart <= 0;
-  document.getElementById('cm-btn-prev').disabled = cmWinStart + CM_WINDOW >= LABELS.length;
+  // cm-btn-prev = ← = חדש יותר (cmSlide(-1) = הקטן את winStart)
+  document.getElementById('cm-btn-prev').disabled = cmWinStart <= 0;
+  // cm-btn-next = → = ישן יותר (cmSlide(1) = הגדל את winStart)
+  document.getElementById('cm-btn-next').disabled = cmWinStart + CM_WINDOW >= LABELS.length;
 }
 
 // ---- רשימת קרנות ----
@@ -3159,7 +3162,7 @@ document.addEventListener('keydown', function(e) {
 
 <!-- CATEGORY MODAL v4 -->
 <div id="cat-modal" onclick="if(event.target===this)closeCatModal()">
-  <div id="cat-modal-box">
+  <div id="cat-modal-box" dir="rtl">
     <div id="cm-header">
       <div id="cm-title-row">
         <div id="cm-icon">📊</div>
@@ -3195,9 +3198,9 @@ document.addEventListener('keydown', function(e) {
     <div id="cm-body">
       <div id="cm-chart-section">
         <div id="cm-chart-nav-row">
-          <button id="cm-btn-next" onclick="cmSlide(-1)">→</button>
+          <button id="cm-btn-prev" onclick="cmSlide(-1)" title="חדש יותר">←</button>
           <span id="cm-win-label">—</span>
-          <button id="cm-btn-prev" onclick="cmSlide(1)">←</button>
+          <button id="cm-btn-next" onclick="cmSlide(1)" title="ישן יותר">→</button>
         </div>
         <div id="cm-chart-wrap"><canvas id="cm-mini-chart"></canvas></div>
       </div>
