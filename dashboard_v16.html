@@ -3018,8 +3018,10 @@ function cmBuildFundList(catId, color) {
   var thead = srcTable.querySelector('thead');
   if (thead) newTable.appendChild(thead.cloneNode(true));
   var tbody = document.createElement('tbody');
-  // הסתר עמודות שמחוץ לחלון
-  Array.from(srcBody.rows).forEach(function(row) {
+  var srcTbody = srcTable.querySelector('tbody');
+  if (!srcTbody) { if (wasHidden) srcBody.classList.remove('open'); listEl.innerHTML = ''; return; }
+  // העתק שורות מה-tbody
+  Array.from(srcTbody.rows).forEach(function(row) {
     var newRow = row.cloneNode(true);
     if (row.classList.contains('total-row') || row.classList.contains('delta-row')) {
       tbody.appendChild(newRow);
