@@ -166,6 +166,7 @@ body{background:var(--bg,#f0f2f5);}
 #cat-modal-body td { padding:11px 16px; }
 #cat-modal-body .val { font-size:13px; }
 #cat-modal-body tr:hover td { background:rgba(0,0,0,0.03) !important; }
+#cat-modal-body tr.modal-row-active td { background:rgba(37,99,235,0.08) !important; border-right: 3px solid #2563eb; }
 .cat-zoom-btn { background:none; border:none; cursor:pointer; font-size:14px; opacity:0.4; padding:4px 7px; border-radius:6px; transition:all .15s; line-height:1; }
 .cat-zoom-btn:hover { opacity:1; background:rgba(0,0,0,0.07); transform:scale(1.1); }
 .cat-actions { display:flex; align-items:center; gap:4px; flex-shrink:0; }
@@ -2724,6 +2725,22 @@ function openCatModal(catId) {
   var srcBody = document.getElementById('body-' + catId);
   if (srcBody) {
     body.innerHTML = srcBody.innerHTML;
+    // forward-fill: החלף — בערך אחרון ידוע בכל שורה
+    body.querySelectorAll('tr[data-fund]').forEach(function(row) {
+      var key = row.getAttribute('data-fund');
+      var fund = FUNDS[key];
+      if (!fund) return;
+      var ffData = ffFundData(fund.data);
+      row.querySelectorAll('td[data-col]').forEach(function(td) {
+        var col = parseInt(td.getAttribute('data-col'));
+        if (td.classList.contains('dash') && ffData[col] != null && ffData[col] !== 0) {
+          td.textContent = Math.round(ffData[col]).toLocaleString();
+          td.className = 'val';
+          td.style.opacity = '0.45';
+          td.title = 'ערך forward-fill';
+        }
+      });
+    });
     // bind click events on cloned rows
     body.querySelectorAll('tr[data-fund]').forEach(function(row) {
       var key = row.getAttribute('data-fund');
@@ -2732,8 +2749,13 @@ function openCatModal(catId) {
       row.removeAttribute('onclick');
       row.style.cursor = 'pointer';
       row.addEventListener('click', function() {
+        // אפשרות ג׳: מודאל נשאר פתוח, שורה מסומנת, גרף מתעדכן ברקע
+        body.querySelectorAll('tr').forEach(function(r) { r.classList.remove('modal-row-active'); });
+        row.classList.add('modal-row-active');
         selectFund(key, clr);
-        closeCatModal();
+        // עדכן כותרת המודאל לקרן שנבחרה
+        document.getElementById('cat-modal-name').textContent = fund ? fund.name : key;
+        document.getElementById('cat-modal-sub').textContent = 'לחץ X לסגירה ולחזרה לגרף';
       });
     });
     body.querySelectorAll('tr.total-row').forEach(function(row) {
@@ -2787,11 +2809,11 @@ document.addEventListener('keydown', function(e) {
           <div class="cmod-stat-val" id="cmod-total">—</div>
         </div>
         <div class="cmod-stat">
-          <div class="cmod-stat-lbl">תשואה</div>
+          <div class="cmod-stat-lbl">מינו׳ 25</div>
           <div class="cmod-stat-val pos" id="cmod-ret">—</div>
         </div>
         <div class="cmod-stat">
-          <div class="cmod-stat-lbl">YTD</div>
+          <div class="cmod-stat-lbl">YTD 2026</div>
           <div class="cmod-stat-val pos" id="cmod-ytd">—</div>
         </div>
         <button id="cat-modal-close" onclick="closeCatModal()">✕</button>
