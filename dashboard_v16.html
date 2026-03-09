@@ -2949,17 +2949,17 @@ function cmClickFund(fundKey) {
   document.getElementById('cm-back').classList.add('visible');
   cmUpdateFundNavBtns();
 
-  // הצג view לפני ציור הגרף (canvas חייב להיות גלוי)
+  // הצג view (canvas חייב להיות גלוי לפני Chart.js)
   cmShowFundView();
 
-  // גרף
+  // גרף – requestAnimationFrame מבטיח שה-canvas גלוי ב-DOM
   var ff = ffFundData(fund.data);
-  cmDrawChart(ff, fundClr, fund.name);
-  cmUpdateWinLabel();
-  cmUpdateNavBtns();
-
-  // טבלה
-  cmBuildFundTable(fundKey, fundClr);
+  requestAnimationFrame(function() {
+    cmDrawChart(ff, fundClr, fund.name);
+    cmUpdateWinLabel();
+    cmUpdateNavBtns();
+    cmBuildFundTable(fundKey, fundClr);
+  });
 }
 
 // ---- ניווט בין קרנות ----
@@ -3172,5 +3172,5 @@ document.addEventListener('keydown', function(e) {
     </div>
   </div>
 </div>
-<div style="position:fixed;bottom:6px;left:10px;font-size:10px;color:#cbd5e1;font-family:monospace;z-index:9999;pointer-events:none;">v16.09b</div>
+<div style="position:fixed;bottom:6px;left:10px;font-size:10px;color:#cbd5e1;font-family:monospace;z-index:9999;pointer-events:none;">v16.09c</div>
 </body></html>
