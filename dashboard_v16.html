@@ -186,10 +186,6 @@ body{background:var(--bg,#f0f2f5);}
 #cm-mini-chart-container { height:155px; width:100%; position:relative; }
 #cm-mini-chart { width:100%; height:100%; }
 #cm-table-wrap { padding:0; }
-#cm-delta-row { padding:4px 20px 8px; display:flex; gap:0; overflow-x:auto; }
-.cm-delta-cell { text-align:center; flex:1; min-width:46px; font-size:11px; font-family:Heebo,sans-serif; }
-.cm-delta-pct { font-weight:700; font-size:11px; }
-.cm-delta-lbl { color:#94a3b8; font-size:9px; margin-top:1px; }
 #cm-table-wrap table { width:100%; font-size:12px; border-collapse:collapse; }
 #cm-table-wrap th { padding:8px 12px; font-size:10px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; font-family:Heebo,sans-serif; }
 #cm-table-wrap td { padding:9px 12px; text-align:right; font-family:Heebo,sans-serif; border-bottom:1px solid #f4f4f4; }
@@ -2871,47 +2867,38 @@ function cmOpenFund(fundKey, color) {
 }
 
 function cmBuildFundTableFromDashboard(fundKey) {
-  // מציג רק את שורת הקרן ושורת הדלתא מהטבלה הקיימת
-  var wrap = document.getElementById('cm-table-wrap');
-  var srcRow = document.querySelector('tr[data-fund="' + fundKey + '"]');
-  if (!srcRow) { cmBuildFundTable(fundKey); return; }
-  var deltaRow = srcRow.nextElementSibling;
-  // שכפל את ה-table המקורית עם רק שתי השורות
-  var tbl = srcRow.closest('table');
-  if (!tbl) { cmBuildFundTable(fundKey); return; }
-  var newTbl = document.createElement('table');
-  newTbl.className = tbl.className;
-  newTbl.style.cssText = 'width:100%;font-size:13px;border-collapse:collapse;';
-  // header
-  var thead = tbl.querySelector('thead');
-  if (thead) newTbl.appendChild(thead.cloneNode(true));
-  var tbody = document.createElement('tbody');
-  tbody.appendChild(srcRow.cloneNode(true));
-  if (deltaRow && deltaRow.classList.contains('delta-row')) {
-    tbody.appendChild(deltaRow.cloneNode(true));
-  }
-  newTbl.appendChild(tbody);
-  wrap.innerHTML = '';
-  wrap.appendChild(newTbl);
+  var fund = FUNDS[fundKey];
+  var ffData = ffFundData(fund.data);
+  var clrFund = FUND_COLORS[fundKey] || CAT_COLORS[fund.cat] || '#2563eb';
 
-  // בנה שורת % שינוי מתחת לגרף
-  var deltaDiv = document.getElementById('cm-delta-row');
-  if (deltaDiv) {
-    var fund = FUNDS[fundKey];
-    var ffData = ffFundData(fund.data);
-    var clrFund = FUND_COLORS[fundKey] || CAT_COLORS[fund.cat] || '#2563eb';
-    var html = '';
-    LABELS.forEach(function(lbl, i) {
-      var val = ffData[i];
-      var prev = i > 0 ? ffData[i-1] : null;
-      if (val == null) { html += '<div class="cm-delta-cell"><div class="cm-delta-pct" style="color:#ddd">—</div><div class="cm-delta-lbl">' + lbl + '</div></div>'; return; }
-      var pct = (prev != null && prev > 0) ? ((val - prev) / prev * 100) : null;
-      var pctStr = pct != null ? (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%' : '—';
-      var pctColor = pct != null ? (pct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
-      html += '<div class="cm-delta-cell"><div class="cm-delta-pct" style="color:' + pctColor + '">' + pctStr + '</div><div class="cm-delta-lbl">' + lbl + '</div></div>';
-    });
-    deltaDiv.innerHTML = html;
-  }
+  // טבלה: חודש | כמות | תשואה %
+  var wrap = document.getElementById('cm-table-wrap');
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:Heebo,sans-serif;">' +
+    '<thead><tr style="background:#f8fafc;">' +
+    '<th style="padding:8px 16px;text-align:right;font-size:11px;color:#94a3b8;border-bottom:1px solid #eee;">חודש</th>' +
+    '<th style="padding:8px 16px;text-align:right;font-size:11px;color:#94a3b8;border-bottom:1px solid #eee;">כמות</th>' +
+    '<th style="padding:8px 16px;text-align:right;font-size:11px;color:#94a3b8;border-bottom:1px solid #eee;">תשואה</th>' +
+    '</tr></thead><tbody>';
+
+  LABELS.forEach(function(lbl, i) {
+    var val = ffData[i];
+    var prev = i > 0 ? ffData[i-1] : null;
+    var isFF = (fund.data[i] == null && val != null);
+    if (val == null) return;
+    var pct = (prev != null && prev > 0) ? ((val - prev) / prev * 100) : null;
+    var pctStr = pct != null ? (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%' : '—';
+    var pctColor = pct != null ? (parseFloat(pct) >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
+    html += '<tr style="border-bottom:1px solid #f4f4f4;' + (isFF ? 'opacity:0.5' : '') + '">' +
+      '<td style="padding:9px 16px;color:#64748b;">' + lbl + (isFF ? ' <span style="font-size:9px;color:#aaa">ff</span>' : '') + '</td>' +
+      '<td style="padding:9px 16px;font-weight:600;color:' + clrFund + ';">' + Math.round(val).toLocaleString() + '</td>' +
+      '<td style="padding:9px 16px;font-weight:700;color:' + pctColor + ';">' + pctStr + '</td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+
+  // שורת % מתחת לגרף – רנדר ללא כפילות
+  document.getElementById('cm-delta-row').innerHTML = '';
 }
 
 function cmDrawMiniChart(fundKey, color) {
@@ -3032,7 +3019,6 @@ document.addEventListener('keydown', function(e) {
             <canvas id="cm-mini-chart"></canvas>
           </div>
         </div>
-        <div id="cm-delta-row"></div>
         <div id="cm-table-wrap"></div>
       </div>
     </div>
