@@ -173,19 +173,18 @@ body{background:var(--bg,#f0f2f5);}
 #cm-close:hover { background:#fee2e2; color:#dc2626; }
 #cm-body { overflow:auto; flex:1; }
 /* תצוגת רשימה */
-#cm-fund-list { padding:8px 0; }
-.cm-fund-row { display:flex; justify-content:space-between; align-items:center; padding:12px 24px; cursor:pointer; border-bottom:1px solid #f8f8f8; transition:background .12s; font-family:Heebo,sans-serif; }
-.cm-fund-row:hover { background:#f8faff; }
-.cm-fund-name { font-size:14px; font-weight:600; color:#1a1a2e; }
-.cm-fund-meta { font-size:11px; color:#94a3b8; margin-top:2px; }
-.cm-fund-val { font-size:15px; font-weight:700; color:#1a1a2e; text-align:left; }
-.cm-fund-pct { font-size:11px; font-weight:600; color:#16a34a; text-align:left; }
-.cm-fund-pct.neg { color:#dc2626; }
+#cm-fund-list { overflow-x:auto; }
+#cm-fund-list table { width:100%; border-collapse:collapse; font-size:13px; font-family:Heebo,sans-serif; }
+#cm-fund-list th { padding:9px 14px; font-size:11px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; border-bottom:1px solid #eee; white-space:nowrap; }
+#cm-fund-list td { padding:10px 14px; text-align:right; border-bottom:1px solid #f4f4f4; cursor:pointer; }
+#cm-fund-list tr[data-fund]:hover td { background:rgba(0,0,0,0.04) !important; }
+#cm-fund-list tr.total-row td { background:#f8faff; font-weight:700; border-top:2px solid #e8eaf0; cursor:default; }
 /* תצוגת גרף + טבלה */
 #cm-fund-detail { display:none; }
 #cm-fund-detail.visible { display:block; }
-#cm-mini-chart-wrap { padding:16px 24px 0; }
-#cm-mini-chart { width:100%; height:160px; }
+#cm-mini-chart-wrap { padding:16px 20px 0; }
+#cm-mini-chart-container { height:155px; width:100%; position:relative; }
+#cm-mini-chart { width:100%; height:100%; }
 #cm-table-wrap { padding:0; }
 #cm-table-wrap table { width:100%; font-size:12px; border-collapse:collapse; }
 #cm-table-wrap th { padding:8px 12px; font-size:10px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; font-family:Heebo,sans-serif; }
@@ -2784,36 +2783,24 @@ function openCatModal(catId) {
 
 function cmBuildFundList(catId, color) {
   var list = document.getElementById('cm-fund-list');
-  list.innerHTML = '';
-  var catFunds = Object.entries(FUNDS).filter(function(e){ return e[1].cat === catId; });
-  catFunds.forEach(function(entry) {
-    var key = entry[0], fund = entry[1];
-    var ffData = ffFundData(fund.data);
-    var lastVal = 0;
-    for (var i = ffData.length-1; i >= 0; i--) { if (ffData[i] != null) { lastVal = Math.round(ffData[i]); break; } }
-
-    var row = document.createElement('div');
-    row.className = 'cm-fund-row';
-    row.innerHTML =
-      '<div>' +
-        '<div class="cm-fund-name">' + fund.name + '</div>' +
-      '</div>' +
-      '<div style="text-align:left">' +
-        '<div class="cm-fund-val">' + (lastVal > 0 ? lastVal.toLocaleString() : '-') + '</div>' +
-      '</div>';
-    row.addEventListener('click', function() { cmOpenFund(key, color); });
-    list.appendChild(row);
-  });
-
-  var catArr = CAT_CHART_TOTALS[catId] || [];
-  var catTotal = catArr.length ? Math.round(catArr[catArr.length-1]) : 0;
-  var totRow = document.createElement('div');
-  totRow.className = 'cm-fund-row';
-  totRow.style.cssText = 'background:#f8faff;font-weight:700;border-top:2px solid #e8eaf0;cursor:default;';
-  totRow.innerHTML =
-    '<div class="cm-fund-name" style="color:' + color + '">סה"כ קטגוריה</div>' +
-    '<div class="cm-fund-val" style="color:' + color + '">' + catTotal.toLocaleString() + '</div>';
-  list.appendChild(totRow);
+  // העתק את הטבלה הקיימת מהדשבורד
+  var srcBody = document.getElementById('body-' + catId);
+  if (srcBody) {
+    list.innerHTML = srcBody.innerHTML;
+    // bind לחיצות על שורות קרן
+    list.querySelectorAll('tr[data-fund]').forEach(function(row) {
+      var key = row.getAttribute('data-fund');
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', function(e) {
+        e.stopPropagation();
+        cmOpenFund(key, color);
+      });
+    });
+    // מנע לחיצה על delta-row ו-total-row
+    list.querySelectorAll('tr.delta-row, tr.total-row').forEach(function(row) {
+      row.style.cursor = 'default';
+    });
+  }
 }
 
 function cmOpenFund(fundKey, color) {
@@ -2834,9 +2821,35 @@ function cmOpenFund(fundKey, color) {
   document.getElementById('cm-ytd').textContent = '-';
 
   cmDrawMiniChart(fundKey, clr);
-  cmBuildFundTable(fundKey);
+  // הצג גרף + טבלת שורת קרן + שורת דלתא
+  cmBuildFundTableFromDashboard(fundKey);
   cmShowDetail();
   selectFund(fundKey, clr);
+}
+
+function cmBuildFundTableFromDashboard(fundKey) {
+  // מציג רק את שורת הקרן ושורת הדלתא מהטבלה הקיימת
+  var wrap = document.getElementById('cm-table-wrap');
+  var srcRow = document.querySelector('tr[data-fund="' + fundKey + '"]');
+  if (!srcRow) { cmBuildFundTable(fundKey); return; }
+  var deltaRow = srcRow.nextElementSibling;
+  // שכפל את ה-table המקורית עם רק שתי השורות
+  var tbl = srcRow.closest('table');
+  if (!tbl) { cmBuildFundTable(fundKey); return; }
+  var newTbl = document.createElement('table');
+  newTbl.className = tbl.className;
+  newTbl.style.cssText = 'width:100%;font-size:13px;border-collapse:collapse;';
+  // header
+  var thead = tbl.querySelector('thead');
+  if (thead) newTbl.appendChild(thead.cloneNode(true));
+  var tbody = document.createElement('tbody');
+  tbody.appendChild(srcRow.cloneNode(true));
+  if (deltaRow && deltaRow.classList.contains('delta-row')) {
+    tbody.appendChild(deltaRow.cloneNode(true));
+  }
+  newTbl.appendChild(tbody);
+  wrap.innerHTML = '';
+  wrap.appendChild(newTbl);
 }
 
 function cmDrawMiniChart(fundKey, color) {
@@ -2953,7 +2966,9 @@ document.addEventListener('keydown', function(e) {
       <div id="cm-fund-list"></div>
       <div id="cm-fund-detail">
         <div id="cm-mini-chart-wrap">
-          <canvas id="cm-mini-chart"></canvas>
+          <div class="chart-container" dir="ltr" id="cm-mini-chart-container">
+            <canvas id="cm-mini-chart"></canvas>
+          </div>
         </div>
         <div id="cm-table-wrap"></div>
       </div>
