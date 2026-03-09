@@ -163,7 +163,7 @@ body{background:var(--bg,#f0f2f5);}
 #cm-stats { display:flex; gap:24px; align-items:center; }
 .cm-stat { text-align:center; }
 .cm-stat-lbl { font-size:10px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; font-family:Heebo,sans-serif; }
-.cm-stat-val { font-size:18px; font-weight:800; color:#1a1a2e; font-family:Heebo,sans-serif; }
+.cm-stat-val { font-size:14px; font-weight:700; color:#1a1a2e; font-family:Heebo,sans-serif; }
 .cm-stat-val.pos { color:#16a34a; }
 .cm-stat-val.neg { color:#dc2626; }
 #cm-back { display:none; background:#f1f5f9; border:none; border-radius:8px; padding:6px 12px; font-size:12px; font-family:Heebo,sans-serif; cursor:pointer; color:#475569; font-weight:600; transition:all .15s; }
@@ -186,6 +186,10 @@ body{background:var(--bg,#f0f2f5);}
 #cm-mini-chart-container { height:155px; width:100%; position:relative; }
 #cm-mini-chart { width:100%; height:100%; }
 #cm-table-wrap { padding:0; }
+#cm-delta-row { padding:4px 20px 8px; display:flex; gap:0; overflow-x:auto; }
+.cm-delta-cell { text-align:center; flex:1; min-width:46px; font-size:11px; font-family:Heebo,sans-serif; }
+.cm-delta-pct { font-weight:700; font-size:11px; }
+.cm-delta-lbl { color:#94a3b8; font-size:9px; margin-top:1px; }
 #cm-table-wrap table { width:100%; font-size:12px; border-collapse:collapse; }
 #cm-table-wrap th { padding:8px 12px; font-size:10px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; font-family:Heebo,sans-serif; }
 #cm-table-wrap td { padding:9px 12px; text-align:right; font-family:Heebo,sans-serif; border-bottom:1px solid #f4f4f4; }
@@ -792,6 +796,32 @@ const FUNDS = {
 
 const CAT_COLORS = { mezuman:'#0891b2', chov:'#94a3b8', arbitrage:'#0d9488', dira:'#a8a29e', hishtalmut:'#fca5a5', gemel:'#fcd34d', gemel_invest:'#6ee7b7', harel:'#fde68a', meitav:'#c4b5fd', all:'#2563eb' };
 const CAT_NAMES  = { mezuman:'מזומן', chov:'חוב', arbitrage:'ארביטראז׳ ואליו', dira:'דירה', hishtalmut:'קרנות השתלמות', gemel:'קופות גמל', gemel_invest:'גמל להשקעה', harel:'הראל', meitav:'מיטב', all:'סה״כ כל הקטגוריות' };
+const FUND_COLORS = {
+  'מזומןשקלי': '#0891b2',
+  'מזומןדולרי': '#0891b2',
+  'מיטבשקלית': '#0891b2',
+  'אשקהש39905556': '#dc2626',
+  'אשקהש6730513': '#dc2626',
+  'אשקהש40035706': '#dc2626',
+  'מורקהש499293': '#dc2626',
+  'מיטבקהש912-443286': '#dc2626',
+  '6730511אשגמל': '#b45309',
+  'אשגמל39774495': '#b45309',
+  '6730512אשגמל': '#b45309',
+  '6899425אשגמל': '#b45309',
+  'הפניקסגמל926-084678': '#be185d',
+  'מורגמל1375900': '#b45309',
+  'אשגמללהשקעה2016-1738': '#9f1239',
+  'מורגמללהשקעה': '#9f1239',
+  'הראלמגוון-פוליסתחיסכ': '#a16207',
+  'הראלמניות106863031': '#a16207',
+  'הראלכללי109062745': '#a16207',
+  'מיטבדשניהולקרנות1693': '#7c3aed',
+  'מיטבדשטרייד': '#7c3aed',
+  'ארביטראזואליו': '#7c3aed',
+  'חובהראל': '#64748b',
+  'חובאלטשולר': '#64748b',
+};
 
 // Category totals (for table display - includes all funds)
 const CAT_TOTALS = { mezuman:[], chov:[], arbitrage:[], dira:[], hishtalmut:[], gemel:[], gemel_invest:[], harel:[], meitav:[] };
@@ -2808,7 +2838,20 @@ function cmOpenFund(fundKey, color) {
   if (!fund) return;
   var clr = CAT_COLORS[fund.cat] || color || '#2563eb';
 
-  document.getElementById('cm-name').textContent = fund.name;
+  // צבע כותרת לפי גוף מנהל
+  var fundClr = FUND_COLORS[fundKey] || clr;
+  var nameEl = document.getElementById('cm-name');
+  // אם יש ← בשם – שני גופים, חלק את הכותרת
+  if (fund.name.indexOf('←') >= 0) {
+    var parts = fund.name.split('←');
+    var clr2 = CAT_COLORS[fund.cat] || clr;
+    nameEl.innerHTML = '<span style="color:' + clr2 + '">' + parts[0].trim() + '</span>' +
+      ' <span style="color:#94a3b8;font-size:13px;font-weight:400">←</span> ' +
+      '<span style="color:' + fundClr + '">' + parts[1].trim() + '</span>';
+  } else {
+    nameEl.style.color = fundClr;
+    nameEl.textContent = fund.name;
+  }
   document.getElementById('cm-sub').textContent = 'לחץ חזרה לרשימת הקרנות';
   document.getElementById('cm-back').classList.add('visible');
 
@@ -2850,6 +2893,25 @@ function cmBuildFundTableFromDashboard(fundKey) {
   newTbl.appendChild(tbody);
   wrap.innerHTML = '';
   wrap.appendChild(newTbl);
+
+  // בנה שורת % שינוי מתחת לגרף
+  var deltaDiv = document.getElementById('cm-delta-row');
+  if (deltaDiv) {
+    var fund = FUNDS[fundKey];
+    var ffData = ffFundData(fund.data);
+    var clrFund = FUND_COLORS[fundKey] || CAT_COLORS[fund.cat] || '#2563eb';
+    var html = '';
+    LABELS.forEach(function(lbl, i) {
+      var val = ffData[i];
+      var prev = i > 0 ? ffData[i-1] : null;
+      if (val == null) { html += '<div class="cm-delta-cell"><div class="cm-delta-pct" style="color:#ddd">—</div><div class="cm-delta-lbl">' + lbl + '</div></div>'; return; }
+      var pct = (prev != null && prev > 0) ? ((val - prev) / prev * 100) : null;
+      var pctStr = pct != null ? (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%' : '—';
+      var pctColor = pct != null ? (pct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
+      html += '<div class="cm-delta-cell"><div class="cm-delta-pct" style="color:' + pctColor + '">' + pctStr + '</div><div class="cm-delta-lbl">' + lbl + '</div></div>';
+    });
+    deltaDiv.innerHTML = html;
+  }
 }
 
 function cmDrawMiniChart(fundKey, color) {
@@ -2970,6 +3032,7 @@ document.addEventListener('keydown', function(e) {
             <canvas id="cm-mini-chart"></canvas>
           </div>
         </div>
+        <div id="cm-delta-row"></div>
         <div id="cm-table-wrap"></div>
       </div>
     </div>
