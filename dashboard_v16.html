@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:9px;font-weight:400;opacity:0.4;margin-right:6px;font-family:monospace;">v16.09e</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:9px;font-weight:400;opacity:0.4;margin-right:6px;font-family:monospace;">v16.09f</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2949,6 +2949,9 @@ function cmClickFund(fundKey) {
   document.getElementById('cm-back').classList.add('visible');
   cmUpdateFundNavBtns();
 
+  // אפס חלון לחודש הנוכחי בכל פתיחת קרן חדשה
+  cmWinStart = Math.max(0, LABELS.length - CM_WINDOW);
+
   // הצג view (canvas חייב להיות גלוי לפני Chart.js)
   cmShowFundView();
 
@@ -3068,7 +3071,7 @@ function cmBuildFundTable(fundKey, color) {
     var chgPct = (val > 0 && prev && prev > 0) ? ((val - prev) / prev * 100) : null;
     var isFF = (fund.data[m] == null && val != null);
     var pClr = chgPct != null ? (chgPct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
-    var pStr = chgPct != null ? chgPct.toFixed(1) + '%' : '—';
+    var pStr = chgPct != null ? Math.abs(chgPct).toFixed(1) + '%' : '—';
 
     rowLbl += '<td style="' + cellStyle + 'font-size:10px;color:#64748b;white-space:nowrap;overflow:hidden;">' + (LABELS[m]||'') + '</td>';
     var valClr = chgPct == null ? '#94a3b8' : (chgPct > 0.05 ? '#16a34a' : (chgPct < -0.05 ? '#dc2626' : '#94a3b8'));
@@ -3152,7 +3155,7 @@ document.addEventListener('keydown', function(e) {
         <div id="cm-stats">
           <div class="cm-stat"><div class="cm-stat-lbl">סה״כ</div><div class="cm-stat-val" id="cm-total">—</div></div>
           <div class="cm-stat"><div class="cm-stat-lbl">גידול</div><div class="cm-stat-val" id="cm-growth">—</div></div>
-          <div class="cm-stat"><div class="cm-stat-lbl">שנתי</div><div class="cm-stat-val" id="cm-ret">—</div></div>
+          <div class="cm-stat"><div class="cm-stat-lbl">YTD</div><div class="cm-stat-val" id="cm-ret">—</div></div>
           <div class="cm-stat"><div class="cm-stat-lbl">2026</div><div class="cm-stat-val" id="cm-ytd">—</div></div>
         </div>
 <div id="cm-fund-nav" style="display:none!important"></div>
