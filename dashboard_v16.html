@@ -201,6 +201,7 @@ body{background:var(--bg,#f0f2f5);}
 #cm-fund-list tr[data-fund] { cursor:pointer; transition:background .1s; }
 #cm-fund-list tr[data-fund]:hover td { background:rgba(0,0,0,0.025) !important; }
 #cm-fund-list tr.cm-fund-selected td { background:rgba(var(--cm-color-rgb,37,99,235),0.07) !important; }
+#cm-fund-list tr.delta-row { display:table-row !important; }
 #cm-fund-list tr.delta-row td { background:#fafafa; font-size:11px; cursor:default; color:#64748b; }
 #cm-fund-list tr.total-row td { background:#f0f4ff; font-weight:700; border-top:2px solid #e0e7ff; cursor:default; position:sticky; bottom:0; z-index:1; }
 
@@ -3087,14 +3088,15 @@ function cmOpenFund(fundKey) {
 
   // כותרת שם קרן
   var nameEl = document.getElementById('cm-name');
+  nameEl.setAttribute('dir','rtl');
   if (fund.name.indexOf('←') >= 0) {
     var parts = fund.name.split('←');
-    nameEl.innerHTML = '<span style="color:' + catColor + '">' + parts[0].trim() + '</span>' +
+    nameEl.innerHTML = '<span style="color:' + catColor + ';unicode-bidi:plaintext">' + parts[0].trim() + '</span>' +
       ' <span style="color:#ccc;font-size:12px">←</span> ' +
-      '<span style="color:' + fundClr + '">' + parts[1].trim() + '</span>';
+      '<span style="color:' + fundClr + ';unicode-bidi:plaintext">' + parts[1].trim() + '</span>';
   } else {
     nameEl.style.color = fundClr;
-    nameEl.innerHTML = fund.name;
+    nameEl.innerHTML = '<span style="unicode-bidi:plaintext">' + fund.name + '</span>';
   }
 
   // גרף קרן
@@ -3146,18 +3148,22 @@ function cmBuildFundTable(fundKey, color) {
     var isFF = (fund.data[i] == null && val != null);
     var yoyIdx = i - 12;
     var yoyVal = (yoyIdx >= 0 && ffData[yoyIdx] > 0) ? ffData[yoyIdx] : null;
-    var yoyChange = yoyVal ? Math.round(val - yoyVal) : null;
-    var yoyPct = yoyVal ? ((val - yoyVal) / yoyVal * 100) : null;
+    var prevValFb = i > 0 ? ffData[i-1] : null;
+    var baseVal = yoyVal != null ? yoyVal : prevValFb;
+    var baseLabel = yoyVal != null ? LABELS[yoyIdx] : (i > 0 ? LABELS[i-1] : null);
+    var isYoy = yoyVal != null;
+    var yoyChange = baseVal ? Math.round(val - baseVal) : null;
+    var yoyPct = (baseVal && baseVal > 0) ? ((val - baseVal) / baseVal * 100) : null;
     var yoyColor = yoyPct != null ? (yoyPct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
     var changeStr = yoyChange != null ? (yoyChange >= 0 ? '+' : '') + yoyChange.toLocaleString() : '—';
     var pctStr = yoyPct != null ? (yoyPct >= 0 ? '+' : '') + yoyPct.toFixed(1) + '%' : '—';
+    var vsLbl = baseLabel ? ' <span style="font-size:10px;color:#aaa">vs ' + baseLabel + '</span>' : '';
 
     html += '<tr style="border-bottom:1px solid #f4f4f4;' + (isFF ? 'opacity:0.5' : '') + '">' +
       '<td style="color:#64748b;white-space:nowrap;">' + LABELS[i] + (isFF ? ' <span style="font-size:9px;color:#aaa">ff</span>' : '') + '</td>' +
       '<td style="font-weight:600;color:' + color + ';">' + Math.round(val).toLocaleString() + '</td>' +
-      '<td style="font-weight:600;color:' + yoyColor + ';">' + changeStr +
-        (yoyIdx >= 0 ? ' <span style="font-size:10px;color:#aaa">vs ' + LABELS[yoyIdx] + '</span>' : '') + '</td>' +
-      '<td style="font-weight:700;color:' + yoyColor + ';">' + pctStr + '</td>' +
+      '<td style="font-weight:600;color:' + yoyColor + ';">' + changeStr + vsLbl + '</td>' +
+      '<td style="font-weight:700;color:' + yoyColor + ';">' + pctStr + (isYoy ? '' : ' <span style="font-size:9px;color:#94a3b8">MoM</span>') + '</td>' +
       '</tr>';
   }
   html += '</tbody></table>';
