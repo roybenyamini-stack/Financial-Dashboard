@@ -149,46 +149,61 @@ body{background:var(--bg,#f0f2f5);}
 #top-fixed{background:var(--bg,#f0f2f5)!important;}
 /* END THEMES */
 
-/* ===== CATEGORY MODAL v2 ===== */
+/* ===== CATEGORY MODAL v3 ===== */
 #cat-modal { display:none; position:fixed; inset:0; z-index:1100; background:rgba(10,10,30,0.5); backdrop-filter:blur(4px); justify-content:center; align-items:flex-start; padding:20px 16px; }
 #cat-modal.open { display:flex; }
-#cat-modal-box { background:#fff; border-radius:18px; width:100%; max-width:1200px; max-height:calc(100vh - 40px); display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.2); overflow:hidden; animation:cmSlideIn .2s ease; border-right:5px solid var(--cm-color,#1a1a2e); }
+#cat-modal-box { background:#f8fafc; border-radius:18px; width:100%; max-width:1200px; max-height:calc(100vh - 40px); display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.2); overflow:hidden; animation:cmSlideIn .2s ease; border-right:5px solid var(--cm-color,#1a1a2e); }
 @keyframes cmSlideIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-#cm-header { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid #f0f0f0; flex-shrink:0; }
-#cm-title-row { display:flex; align-items:center; gap:10px; }
-#cm-icon { width:38px; height:38px; border-radius:11px; background:var(--cm-color-light,#f0f2f5); display:flex; align-items:center; justify-content:center; font-size:17px; }
-#cm-name { font-size:17px; font-weight:800; color:#1a1a2e; font-family:Heebo,sans-serif; }
-#cm-sub  { font-size:11px; color:#94a3b8; margin-top:2px; font-family:Heebo,sans-serif; }
-#cm-header-actions { display:flex; align-items:center; gap:8px; }
-#cm-stats { display:flex; gap:24px; align-items:center; }
+
+/* כותרת */
+#cm-header { display:flex; justify-content:space-between; align-items:center; padding:14px 22px; border-bottom:1px solid #e8eaf0; flex-shrink:0; background:#fff; }
+#cm-title-row { display:flex; align-items:center; gap:10px; min-width:0; }
+#cm-icon { width:36px; height:36px; border-radius:10px; background:var(--cm-color-light,#f0f2f5); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+#cm-name { font-size:16px; font-weight:800; color:#1a1a2e; font-family:Heebo,sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#cm-header-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+#cm-stats { display:flex; gap:18px; align-items:center; }
 .cm-stat { text-align:center; }
-.cm-stat-lbl { font-size:10px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; font-family:Heebo,sans-serif; }
-.cm-stat-val { font-size:14px; font-weight:700; color:#1a1a2e; font-family:Heebo,sans-serif; }
+.cm-stat-lbl { font-size:9px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; font-family:Heebo,sans-serif; white-space:nowrap; }
+.cm-stat-val { font-size:13px; font-weight:700; color:#1a1a2e; font-family:Heebo,sans-serif; }
 .cm-stat-val.pos { color:#16a34a; }
 .cm-stat-val.neg { color:#dc2626; }
-#cm-back { display:none; background:#f1f5f9; border:none; border-radius:8px; padding:6px 12px; font-size:12px; font-family:Heebo,sans-serif; cursor:pointer; color:#475569; font-weight:600; transition:all .15s; }
-#cm-back:hover { background:#e2e8f0; color:#1a1a2e; }
+#cm-back { display:none; background:#f1f5f9; border:none; border-radius:8px; padding:5px 12px; font-size:12px; font-family:Heebo,sans-serif; cursor:pointer; color:#475569; font-weight:600; transition:all .15s; white-space:nowrap; }
+#cm-back:hover { background:#e2e8f0; }
 #cm-back.visible { display:inline-flex; align-items:center; gap:4px; }
-#cm-close { width:34px; height:34px; border-radius:50%; border:none; background:#f1f5f9; cursor:pointer; font-size:16px; color:#64748b; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+#cm-close { width:32px; height:32px; border-radius:50%; border:none; background:#f1f5f9; cursor:pointer; font-size:15px; color:#64748b; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0; }
 #cm-close:hover { background:#fee2e2; color:#dc2626; }
-#cm-body { overflow:auto; flex:1; }
+
+/* ניווט בין קרנות */
+#cm-fund-nav { display:none; align-items:center; gap:6px; }
+#cm-fund-nav.visible { display:flex; }
+.cm-nav-btn { background:#f1f5f9; border:none; border-radius:7px; padding:4px 10px; font-size:12px; font-family:Heebo,sans-serif; cursor:pointer; color:#475569; font-weight:600; transition:all .15s; }
+.cm-nav-btn:hover { background:#e2e8f0; }
+.cm-nav-btn:disabled { opacity:0.3; cursor:default; }
+
+/* גוף המודאל */
+#cm-body { flex:1; overflow:hidden; display:flex; flex-direction:column; min-height:0; }
+
 /* תצוגת רשימה */
-#cm-fund-list { overflow-x:auto; }
-#cm-fund-list table { width:100%; border-collapse:collapse; font-size:13px; font-family:Heebo,sans-serif; }
-#cm-fund-list th { padding:9px 14px; font-size:11px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; border-bottom:1px solid #eee; white-space:nowrap; }
-#cm-fund-list td { padding:10px 14px; text-align:right; border-bottom:1px solid #f4f4f4; cursor:pointer; }
-#cm-fund-list tr[data-fund]:hover td { background:rgba(0,0,0,0.04) !important; }
-#cm-fund-list tr.total-row td { background:#f8faff; font-weight:700; border-top:2px solid #e8eaf0; cursor:default; }
-/* תצוגת גרף + טבלה */
-#cm-fund-detail { display:none; }
-#cm-fund-detail.visible { display:block; }
-#cm-mini-chart-wrap { padding:16px 20px 0; }
-#cm-mini-chart-container { height:155px; width:100%; position:relative; }
-#cm-mini-chart { width:100%; height:100%; }
-#cm-table-wrap { padding:0; }
-#cm-table-wrap table { width:100%; font-size:12px; border-collapse:collapse; }
-#cm-table-wrap th { padding:8px 12px; font-size:10px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; font-family:Heebo,sans-serif; }
-#cm-table-wrap td { padding:9px 12px; text-align:right; font-family:Heebo,sans-serif; border-bottom:1px solid #f4f4f4; }
+#cm-fund-list { flex:1; overflow:auto; }
+#cm-fund-list table { width:100%; border-collapse:collapse; }
+#cm-fund-list th { padding:9px 14px; font-size:11px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; border-bottom:2px solid #e8eaf0; white-space:nowrap; font-family:Heebo,sans-serif; }
+#cm-fund-list td { padding:9px 14px; text-align:right; border-bottom:1px solid #f0f0f0; font-family:Heebo,sans-serif; font-size:13px; }
+#cm-fund-list tr[data-fund] { cursor:pointer; }
+#cm-fund-list tr[data-fund]:hover td { background:rgba(0,0,0,0.03) !important; }
+#cm-fund-list tr.delta-row td { background:#fafafa; cursor:default; }
+#cm-fund-list tr.total-row td { background:#f0f4ff; font-weight:700; border-top:2px solid #e0e7ff; cursor:default; position:sticky; bottom:0; }
+
+/* תצוגת קרן בודדת */
+#cm-fund-detail { display:none; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
+#cm-fund-detail.visible { display:flex; }
+#cm-chart-area { padding:16px 20px 8px; flex-shrink:0; background:#fff; border-bottom:1px solid #f0f0f0; }
+#cm-chart-container { height:155px; width:100%; position:relative; }
+#cm-table-area { flex:1; overflow:auto; }
+#cm-table-area table { width:100%; border-collapse:collapse; font-size:13px; font-family:Heebo,sans-serif; }
+#cm-table-area th { padding:8px 16px; font-size:11px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; border-bottom:1px solid #eee; font-family:Heebo,sans-serif; }
+#cm-table-area td { padding:9px 16px; text-align:right; border-bottom:1px solid #f4f4f4; }
+
+/* כפתור פתיחת מודאל */
 .cm-zoom-btn { background:none; border:1px solid rgba(0,0,0,0.12); cursor:pointer; font-size:13px; opacity:0.5; padding:3px 7px; border-radius:6px; transition:all .15s; line-height:1; }
 .cm-zoom-btn:hover { opacity:1; background:rgba(0,0,0,0.06); }
 </style>
@@ -2766,41 +2781,57 @@ function closeCharts() {
   document.getElementById('charts-modal').style.display = 'none';
 }
 
-// ===== CATEGORY MODAL v2 =====
+// ===== CATEGORY MODAL v3 =====
 var cmChartInstance = null;
 var cmCurrentCat = null;
+var cmCurrentFundKey = null;
+var cmCatFundKeys = []; // רשימת קרנות בקטגוריה הנוכחית
 
 function openCatModal(catId) {
   cmCurrentCat = catId;
   var sec = document.getElementById('sec-' + catId);
   if (!sec) return;
 
+  // צבעים
   var color = getComputedStyle(sec).getPropertyValue('--cat-color').trim() || '#2563eb';
   var colorLight = getComputedStyle(sec).getPropertyValue('--cat-color-light').trim() || '#f0f4ff';
   var box = document.getElementById('cat-modal-box');
   box.style.setProperty('--cm-color', color);
   box.style.setProperty('--cm-color-light', colorLight);
 
+  // כותרת קטגוריה
   var hdr = document.getElementById('hdr-' + catId);
   var icon = hdr ? hdr.querySelector('.cat-icon') : null;
   var name = hdr ? (hdr.querySelector('.cat-name') ? hdr.querySelector('.cat-name').textContent : catId) : catId;
-  var sub  = hdr ? (hdr.querySelector('.cat-count') ? hdr.querySelector('.cat-count').textContent : '') : '';
-  document.getElementById('cm-icon').textContent = icon ? icon.textContent : 'folder';
+  document.getElementById('cm-icon').textContent = icon ? icon.textContent : '📊';
   document.getElementById('cm-icon').style.background = colorLight;
+  document.getElementById('cm-name').style.color = color;
   document.getElementById('cm-name').textContent = name;
-  document.getElementById('cm-sub').textContent = sub;
 
+  // סטטיסטיקות קטגוריה
   var catArr = CAT_CHART_TOTALS[catId] || CAT_TOTALS[catId] || [];
   document.getElementById('cm-total').textContent = catArr.length ? Math.round(catArr[catArr.length-1]).toLocaleString() : '-';
-  var pctEl = document.getElementById('sec-pct-' + catId);
+
+  // תשואה שנה אחורה – 12 חודשים אחורה מהאחרון
   var retEl = document.getElementById('cm-ret');
-  if (pctEl && pctEl.textContent) {
-    retEl.textContent = pctEl.textContent;
-    retEl.className = 'cm-stat-val ' + (pctEl.classList.contains('pos') ? 'pos' : 'neg');
-  } else retEl.textContent = '-';
+  var lastIdx = catArr.length - 1;
+  while (lastIdx >= 0 && !(catArr[lastIdx] > 0)) lastIdx--;
+  var yearAgoIdx = lastIdx - 12;
+  if (yearAgoIdx < 0) yearAgoIdx = 0;
+  var lastVal2 = lastIdx >= 0 ? catArr[lastIdx] : 0;
+  var yearAgoVal = catArr[yearAgoIdx] || 0;
+  if (yearAgoVal > 0 && lastVal2 > 0) {
+    var retPct = ((lastVal2 - yearAgoVal) / yearAgoVal * 100);
+    retEl.textContent = (retPct >= 0 ? '+' : '') + retPct.toFixed(1) + '%';
+    retEl.className = 'cm-stat-val ' + (retPct >= 0 ? 'pos' : 'neg');
+  } else { retEl.textContent = '-'; retEl.className = 'cm-stat-val'; }
+
+  // YTD
   var ytdEl = document.getElementById('sec-ytd-' + catId);
   document.getElementById('cm-ytd').textContent = (ytdEl && ytdEl.textContent) ? ytdEl.textContent : '-';
 
+  // בנה רשימת קרנות
+  cmCatFundKeys = Object.keys(FUNDS).filter(function(k){ return FUNDS[k].cat === catId; });
   cmBuildFundList(catId, color);
   cmShowList();
   document.getElementById('cat-modal').classList.add('open');
@@ -2809,116 +2840,130 @@ function openCatModal(catId) {
 
 function cmBuildFundList(catId, color) {
   var list = document.getElementById('cm-fund-list');
-  // העתק את הטבלה הקיימת מהדשבורד
   var srcBody = document.getElementById('body-' + catId);
-  if (srcBody) {
-    list.innerHTML = srcBody.innerHTML;
-    // bind לחיצות על שורות קרן
-    list.querySelectorAll('tr[data-fund]').forEach(function(row) {
-      var key = row.getAttribute('data-fund');
-      row.style.cursor = 'pointer';
-      row.addEventListener('click', function(e) {
-        e.stopPropagation();
-        cmOpenFund(key, color);
-      });
+  if (!srcBody) return;
+
+  list.innerHTML = srcBody.innerHTML;
+
+  // bind לחיצות על שורות קרן בלבד
+  list.querySelectorAll('tr[data-fund]').forEach(function(row) {
+    var key = row.getAttribute('data-fund');
+    row.addEventListener('click', function(e) {
+      e.stopPropagation();
+      cmOpenFund(key);
     });
-    // מנע לחיצה על delta-row ו-total-row
-    list.querySelectorAll('tr.delta-row, tr.total-row').forEach(function(row) {
-      row.style.cursor = 'default';
-    });
-  }
+  });
+  list.querySelectorAll('tr.delta-row, tr.total-row').forEach(function(row) {
+    row.style.cursor = 'default';
+    row.onclick = null;
+  });
 }
 
-function cmOpenFund(fundKey, color) {
+function cmOpenFund(fundKey) {
   var fund = FUNDS[fundKey];
   if (!fund) return;
-  var clr = CAT_COLORS[fund.cat] || color || '#2563eb';
+  cmCurrentFundKey = fundKey;
 
-  // צבע כותרת לפי גוף מנהל
-  var fundClr = FUND_COLORS[fundKey] || clr;
+  var catColor = CAT_COLORS[fund.cat] || '#2563eb';
+  var fundClr = FUND_COLORS[fundKey] || catColor;
+
+  // כותרת – שם הקרן בצבע הגוף המנהל
   var nameEl = document.getElementById('cm-name');
-  // אם יש ← בשם – שני גופים, חלק את הכותרת
   if (fund.name.indexOf('←') >= 0) {
     var parts = fund.name.split('←');
-    var clr2 = CAT_COLORS[fund.cat] || clr;
-    nameEl.innerHTML = '<span style="color:' + clr2 + '">' + parts[0].trim() + '</span>' +
-      ' <span style="color:#94a3b8;font-size:13px;font-weight:400">←</span> ' +
+    nameEl.innerHTML =
+      '<span style="color:' + catColor + '">' + parts[0].trim() + '</span>' +
+      ' <span style="color:#ccc;font-size:12px">←</span> ' +
       '<span style="color:' + fundClr + '">' + parts[1].trim() + '</span>';
   } else {
     nameEl.style.color = fundClr;
     nameEl.textContent = fund.name;
   }
-  document.getElementById('cm-sub').textContent = 'לחץ חזרה לרשימת הקרנות';
+
+  // סטטיסטיקות קרן
+  var ffData = ffFundData(fund.data);
+  var firstV = 0, lastV = 0;
+  for (var i=0;i<ffData.length;i++) { if (ffData[i] > 0) { firstV = ffData[i]; break; } }
+  for (var j=ffData.length-1;j>=0;j--) { if (ffData[j] > 0) { lastV = ffData[j]; break; } }
+  document.getElementById('cm-total').textContent = lastV > 0 ? Math.round(lastV).toLocaleString() : '-';
+
+  // תשואה שנה אחורה לקרן
+  var retEl2 = document.getElementById('cm-ret');
+  var lastFIdx = ffData.length - 1;
+  while (lastFIdx >= 0 && !(ffData[lastFIdx] > 0)) lastFIdx--;
+  var yearAgoFIdx = lastFIdx - 12;
+  if (yearAgoFIdx < 0) yearAgoFIdx = 0;
+  var lastFV = lastFIdx >= 0 ? ffData[lastFIdx] : 0;
+  var yearAgoFV = ffData[yearAgoFIdx] || 0;
+  if (yearAgoFV > 0 && lastFV > 0) {
+    var rp = ((lastFV - yearAgoFV) / yearAgoFV * 100);
+    retEl2.textContent = (rp >= 0 ? '+' : '') + rp.toFixed(1) + '%';
+    retEl2.className = 'cm-stat-val ' + (rp >= 0 ? 'pos' : 'neg');
+  } else { retEl2.textContent = '-'; retEl2.className = 'cm-stat-val'; }
+
+  // YTD של קרן – ינו׳ 26 לעומת אחרון
+  var jan26idx = LABELS.indexOf("יָנוּ׳ 26");
+  if (jan26idx < 0) jan26idx = LABELS.findIndex(function(l){ return l.indexOf('26') >= 0 && (l.indexOf('ינ') >= 0 || l.indexOf('jan') >= 0 || l.indexOf('ינו') >= 0); });
+  var ytdEl2 = document.getElementById('cm-ytd');
+  if (jan26idx >= 0 && ffData[jan26idx] > 0 && lastV > 0) {
+    var ytdP = ((lastV - ffData[jan26idx]) / ffData[jan26idx] * 100);
+    ytdEl2.textContent = (ytdP >= 0 ? '+' : '') + ytdP.toFixed(1) + '%';
+    ytdEl2.className = 'cm-stat-val ' + (ytdP >= 0 ? 'pos' : 'neg');
+  } else { ytdEl2.textContent = '-'; ytdEl2.className = 'cm-stat-val'; }
+
+  // ניווט
+  cmUpdateNavButtons();
+  document.getElementById('cm-fund-nav').classList.add('visible');
   document.getElementById('cm-back').classList.add('visible');
 
-  // עדכן סטטיסטיקות לקרן
-  var ffData = ffFundData(fund.data);
-  var lastVal = 0;
-  for (var i = ffData.length-1; i >= 0; i--) { if (ffData[i] != null) { lastVal = Math.round(ffData[i]); break; } }
-  document.getElementById('cm-total').textContent = lastVal > 0 ? lastVal.toLocaleString() : '-';
-  document.getElementById('cm-ret').textContent = '-';
-  document.getElementById('cm-ytd').textContent = '-';
-
-  cmDrawMiniChart(fundKey, clr);
-  // הצג גרף + טבלת שורת קרן + שורת דלתא
-  cmBuildFundTableFromDashboard(fundKey);
+  // גרף + טבלה
+  cmDrawChart(fundKey, fundClr);
+  cmBuildTable(fundKey, fundClr);
   cmShowDetail();
-  selectFund(fundKey, clr);
 }
 
-function cmBuildFundTableFromDashboard(fundKey) {
-  var fund = FUNDS[fundKey];
-  var ffData = ffFundData(fund.data);
-  var clrFund = FUND_COLORS[fundKey] || CAT_COLORS[fund.cat] || '#2563eb';
-
-  // טבלה: חודש | כמות | תשואה %
-  var wrap = document.getElementById('cm-table-wrap');
-  var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:Heebo,sans-serif;">' +
-    '<thead><tr style="background:#f8fafc;">' +
-    '<th style="padding:8px 16px;text-align:right;font-size:11px;color:#94a3b8;border-bottom:1px solid #eee;">חודש</th>' +
-    '<th style="padding:8px 16px;text-align:right;font-size:11px;color:#94a3b8;border-bottom:1px solid #eee;">כמות</th>' +
-    '<th style="padding:8px 16px;text-align:right;font-size:11px;color:#94a3b8;border-bottom:1px solid #eee;">תשואה</th>' +
-    '</tr></thead><tbody>';
-
-  LABELS.forEach(function(lbl, i) {
-    var val = ffData[i];
-    var prev = i > 0 ? ffData[i-1] : null;
-    var isFF = (fund.data[i] == null && val != null);
-    if (val == null) return;
-    var pct = (prev != null && prev > 0) ? ((val - prev) / prev * 100) : null;
-    var pctStr = pct != null ? (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%' : '—';
-    var pctColor = pct != null ? (parseFloat(pct) >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
-    html += '<tr style="border-bottom:1px solid #f4f4f4;' + (isFF ? 'opacity:0.5' : '') + '">' +
-      '<td style="padding:9px 16px;color:#64748b;">' + lbl + (isFF ? ' <span style="font-size:9px;color:#aaa">ff</span>' : '') + '</td>' +
-      '<td style="padding:9px 16px;font-weight:600;color:' + clrFund + ';">' + Math.round(val).toLocaleString() + '</td>' +
-      '<td style="padding:9px 16px;font-weight:700;color:' + pctColor + ';">' + pctStr + '</td>' +
-      '</tr>';
-  });
-  html += '</tbody></table>';
-  wrap.innerHTML = html;
-
-  // שורת % מתחת לגרף – רנדר ללא כפילות
-  document.getElementById('cm-delta-row').innerHTML = '';
+function cmUpdateNavButtons() {
+  var idx = cmCatFundKeys.indexOf(cmCurrentFundKey);
+  document.getElementById('cm-prev-fund').disabled = (idx <= 0);
+  document.getElementById('cm-next-fund').disabled = (idx >= cmCatFundKeys.length - 1);
 }
 
-function cmDrawMiniChart(fundKey, color) {
+function cmNavFund(dir) {
+  var idx = cmCatFundKeys.indexOf(cmCurrentFundKey);
+  var newIdx = idx + dir;
+  if (newIdx >= 0 && newIdx < cmCatFundKeys.length) {
+    cmOpenFund(cmCatFundKeys[newIdx]);
+  }
+}
+
+function cmDrawChart(fundKey, color) {
   var fund = FUNDS[fundKey];
   var ffData = ffFundData(fund.data);
   var canvas = document.getElementById('cm-mini-chart');
   if (cmChartInstance) { cmChartInstance.destroy(); cmChartInstance = null; }
   var ctx = canvas.getContext('2d');
-  var gradient = ctx.createLinearGradient(0, 0, 0, 160);
+  var gradient = ctx.createLinearGradient(0, 0, 0, 155);
   gradient.addColorStop(0, color + '44');
   gradient.addColorStop(1, color + '00');
   cmChartInstance = new Chart(canvas, {
     type: 'line',
     data: {
       labels: LABELS,
-      datasets: [{ data: ffData, borderColor: color, backgroundColor: gradient, borderWidth: 2, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 4 }]
+      datasets: [{ data: ffData, borderColor: color, backgroundColor: gradient, borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { rtl: true, bodyFont: { family: 'Heebo', size: 12 }, callbacks: {
+          label: function(ctx) {
+            var val = ctx.raw;
+            var prev = ctx.dataIndex > 0 ? ffData[ctx.dataIndex-1] : null;
+            var pct = (prev && prev > 0) ? ' (' + ((val-prev)/prev*100).toFixed(1) + '%)' : '';
+            return Math.round(val).toLocaleString() + pct;
+          }
+        }}
+      },
       scales: {
         x: { ticks: { font: { family: 'Heebo', size: 10 }, maxRotation: 0 }, grid: { display: false } },
         y: { ticks: { font: { family: 'Heebo', size: 10 } }, grid: { color: '#f0f0f0' } }
@@ -2927,26 +2972,43 @@ function cmDrawMiniChart(fundKey, color) {
   });
 }
 
-function cmBuildFundTable(fundKey) {
+function cmBuildTable(fundKey, color) {
   var fund = FUNDS[fundKey];
   var ffData = ffFundData(fund.data);
-  var wrap = document.getElementById('cm-table-wrap');
-  var html = '<table><thead><tr><th>חודש</th><th>ערך</th><th>שינוי</th></tr></thead><tbody>';
+  var wrap = document.getElementById('cm-table-area');
+  // מחשב cumStart = ערך 12 חודשים לפני האחרון (לתשואה מצטברת שנה אחורה)
+  var lastFundIdx = ffData.length - 1;
+  while (lastFundIdx >= 0 && !(ffData[lastFundIdx] > 0)) lastFundIdx--;
+  var cumStartIdx = Math.max(0, lastFundIdx - 12);
+  var cumStart = ffData[cumStartIdx] || 0;
+
+  var html = '<table><thead><tr>' +
+    '<th>חודש</th><th>כמות</th><th>שינוי מחודש מקביל</th><th>% YoY</th>' +
+    '</tr></thead><tbody>';
+
   LABELS.forEach(function(lbl, i) {
     var val = ffData[i];
-    var prev = i > 0 ? ffData[i-1] : null;
     var isFF = (fund.data[i] == null && val != null);
     if (val == null) return;
-    var change = (prev != null) ? Math.round(val - prev) : null;
-    var pct = (prev != null && prev > 0) ? ((val - prev) / prev * 100).toFixed(1) : null;
-    var pctColor = pct != null ? (parseFloat(pct) >= 0 ? '#16a34a' : '#dc2626') : '#888';
-    html += '<tr style="' + (isFF ? 'opacity:0.45' : '') + '">' +
-      '<td>' + lbl + (isFF ? ' <span style="font-size:9px;color:#aaa">ff</span>' : '') + '</td>' +
-      '<td style="font-weight:600">' + Math.round(val).toLocaleString() + '</td>' +
-      '<td style="color:' + pctColor + ';font-weight:600">' +
-        (change != null ? (change >= 0 ? '+' : '') + change.toLocaleString() : '') +
-        (pct != null ? ' <span style="font-size:10px">(' + (parseFloat(pct) >= 0 ? '+' : '') + pct + '%)</span>' : '') +
-      '</td></tr>';
+
+    // חודש מקביל שנה קודמת = 12 חודשים אחורה
+    var yoyIdx = i - 12;
+    var yoyVal = (yoyIdx >= 0) ? ffData[yoyIdx] : null;
+
+    var yoyChange = (yoyVal != null && yoyVal > 0) ? Math.round(val - yoyVal) : null;
+    var yoyPct = (yoyVal != null && yoyVal > 0) ? ((val - yoyVal) / yoyVal * 100) : null;
+
+    var yoyChangeStr = yoyChange != null ? (yoyChange >= 0 ? '+' : '') + yoyChange.toLocaleString() : '—';
+    var yoyPctStr = yoyPct != null ? (yoyPct >= 0 ? '+' : '') + yoyPct.toFixed(1) + '%' : '—';
+    var yoyColor = yoyPct != null ? (yoyPct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
+
+    html += '<tr style="border-bottom:1px solid #f4f4f4;' + (isFF ? 'opacity:0.5' : '') + '">' +
+      '<td style="color:#64748b;white-space:nowrap;">' + lbl + (isFF ? ' <span style="font-size:9px;color:#aaa">ff</span>' : '') + '</td>' +
+      '<td style="font-weight:600;color:' + color + ';">' + Math.round(val).toLocaleString() + '</td>' +
+      '<td style="font-weight:600;color:' + yoyColor + ';">' + yoyChangeStr +
+        (yoyIdx >= 0 ? ' <span style="font-size:10px;color:#94a3b8">vs ' + LABELS[yoyIdx] + '</span>' : '') + '</td>' +
+      '<td style="font-weight:700;color:' + yoyColor + ';">' + yoyPctStr + '</td>' +
+      '</tr>';
   });
   html += '</tbody></table>';
   wrap.innerHTML = html;
@@ -2954,25 +3016,32 @@ function cmBuildFundTable(fundKey) {
 
 function cmShowList() {
   document.getElementById('cm-fund-list').style.display = 'block';
-  document.getElementById('cm-fund-detail').style.display = 'none';
+  var det = document.getElementById('cm-fund-detail');
+  det.style.display = 'none';
+  det.classList.remove('visible');
   document.getElementById('cm-back').classList.remove('visible');
+  document.getElementById('cm-fund-nav').classList.remove('visible');
 }
 
 function cmShowDetail() {
   document.getElementById('cm-fund-list').style.display = 'none';
-  document.getElementById('cm-fund-detail').style.display = 'block';
+  var det = document.getElementById('cm-fund-detail');
+  det.style.display = 'flex';
+  det.classList.add('visible');
 }
 
 function cmBackToList() {
   if (cmChartInstance) { cmChartInstance.destroy(); cmChartInstance = null; }
-  if (cmCurrentCat) selectView(cmCurrentCat);
-  openCatModal(cmCurrentCat);
+  cmCurrentFundKey = null;
+  // שחזר כותרת קטגוריה
+  if (cmCurrentCat) openCatModal(cmCurrentCat);
 }
 
 function closeCatModal() {
   document.getElementById('cat-modal').classList.remove('open');
   document.body.style.overflow = '';
   if (cmChartInstance) { cmChartInstance.destroy(); cmChartInstance = null; }
+  cmCurrentFundKey = null;
 }
 
 document.addEventListener('keydown', function(e) {
@@ -2981,31 +3050,32 @@ document.addEventListener('keydown', function(e) {
 
 </script>
 
-<!-- CATEGORY MODAL v2 -->
+<!-- CATEGORY MODAL v3 -->
 <div id="cat-modal" onclick="if(event.target===this)closeCatModal()">
   <div id="cat-modal-box">
     <div id="cm-header">
       <div id="cm-title-row">
         <div id="cm-icon">📊</div>
-        <div>
-          <div id="cm-name">קטגוריה</div>
-          <div id="cm-sub"></div>
-        </div>
+        <div id="cm-name">קטגוריה</div>
       </div>
-      <div id="cm-header-actions">
+      <div id="cm-header-right">
         <div id="cm-stats">
           <div class="cm-stat">
             <div class="cm-stat-lbl">סה״כ</div>
             <div class="cm-stat-val" id="cm-total">—</div>
           </div>
           <div class="cm-stat">
-            <div class="cm-stat-lbl">מינו׳ 25</div>
+            <div class="cm-stat-lbl">YoY</div>
             <div class="cm-stat-val pos" id="cm-ret">—</div>
           </div>
           <div class="cm-stat">
-            <div class="cm-stat-lbl">YTD 2026</div>
+            <div class="cm-stat-lbl">YTD</div>
             <div class="cm-stat-val pos" id="cm-ytd">—</div>
           </div>
+        </div>
+        <div id="cm-fund-nav">
+          <button class="cm-nav-btn" id="cm-prev-fund" onclick="cmNavFund(-1)">→</button>
+          <button class="cm-nav-btn" id="cm-next-fund" onclick="cmNavFund(1)">←</button>
         </div>
         <button id="cm-back" onclick="cmBackToList()">← רשימה</button>
         <button id="cm-close" onclick="closeCatModal()">✕</button>
@@ -3014,12 +3084,12 @@ document.addEventListener('keydown', function(e) {
     <div id="cm-body">
       <div id="cm-fund-list"></div>
       <div id="cm-fund-detail">
-        <div id="cm-mini-chart-wrap">
-          <div class="chart-container" dir="ltr" id="cm-mini-chart-container">
+        <div id="cm-chart-area">
+          <div id="cm-chart-container" dir="ltr">
             <canvas id="cm-mini-chart"></canvas>
           </div>
         </div>
-        <div id="cm-table-wrap"></div>
+        <div id="cm-table-area"></div>
       </div>
     </div>
   </div>
