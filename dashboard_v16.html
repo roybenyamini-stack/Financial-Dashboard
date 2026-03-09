@@ -2998,14 +2998,14 @@ function cmUpdateNavBtns() {
 // ---- רשימת קרנות ----
 function cmBuildFundList(catId, color) {
   var listEl = document.getElementById('cm-fund-list');
-  // וודא שהסקשן פתוח כדי שניתן לגשת ל-tbody
-  var sec = document.getElementById('sec-' + catId);
-  if (sec && sec.style.display === 'none') sec.style.display = '';
   var srcBody = document.getElementById('body-' + catId);
   if (!srcBody) { listEl.innerHTML = '<p style="padding:20px;color:#888;text-align:center">לא נמצאו נתונים</p>'; return; }
+  // וודא שה-category-body פתוח זמנית כדי שניתן לשכפל
+  var wasHidden = !srcBody.classList.contains('open');
+  if (wasHidden) srcBody.classList.add('open');
   // שכפל טבלה מהדשבורד
-  var srcTable = srcBody.closest('table');
-  if (!srcTable) { listEl.innerHTML = ''; return; }
+  var srcTable = srcBody.querySelector('table');
+  if (!srcTable) { if (wasHidden) srcBody.classList.remove('open'); listEl.innerHTML = ''; return; }
   var newTable = document.createElement('table');
   newTable.style.cssText = 'width:100%;border-collapse:collapse;';
   var thead = srcTable.querySelector('thead');
@@ -3029,6 +3029,8 @@ function cmBuildFundList(catId, color) {
   newTable.appendChild(tbody);
   listEl.innerHTML = '';
   listEl.appendChild(newTable);
+  // סגור חזרה אם היה סגור
+  if (wasHidden) srcBody.classList.remove('open');
   // סנכרן עמודות לחלון הנוכחי
   cmSyncListColumns();
 }
