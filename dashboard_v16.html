@@ -2998,8 +2998,11 @@ function cmUpdateNavBtns() {
 // ---- רשימת קרנות ----
 function cmBuildFundList(catId, color) {
   var listEl = document.getElementById('cm-fund-list');
+  // וודא שהסקשן פתוח כדי שניתן לגשת ל-tbody
+  var sec = document.getElementById('sec-' + catId);
+  if (sec && sec.style.display === 'none') sec.style.display = '';
   var srcBody = document.getElementById('body-' + catId);
-  if (!srcBody) return;
+  if (!srcBody) { listEl.innerHTML = '<p style="padding:20px;color:#888;text-align:center">לא נמצאו נתונים</p>'; return; }
   // שכפל טבלה מהדשבורד
   var srcTable = srcBody.closest('table');
   if (!srcTable) { listEl.innerHTML = ''; return; }
@@ -3198,9 +3201,9 @@ document.addEventListener('keydown', function(e) {
     <div id="cm-body">
       <div id="cm-chart-section">
         <div id="cm-chart-nav-row">
-          <button id="cm-btn-prev" onclick="cmSlide(-1)" title="חדש יותר">←</button>
-          <span id="cm-win-label">—</span>
           <button id="cm-btn-next" onclick="cmSlide(1)" title="ישן יותר">→</button>
+          <span id="cm-win-label">—</span>
+          <button id="cm-btn-prev" onclick="cmSlide(-1)" title="חדש יותר">←</button>
         </div>
         <div id="cm-chart-wrap"><canvas id="cm-mini-chart"></canvas></div>
       </div>
