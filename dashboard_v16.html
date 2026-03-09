@@ -3015,8 +3015,8 @@ function cmSyncTablePadding() {
   if (!wrap) return;
   var inner = wrap.querySelector('div');
   if (inner) {
-    inner.style.paddingRight = w + 'px';
-    inner.style.paddingLeft = '4px';
+    inner.style.paddingLeft = w + 'px';
+    inner.style.paddingRight = '4px';
   }
 }
 
@@ -3075,7 +3075,7 @@ function cmBuildFundTable(fundKey, color) {
   var yCell = '<td style="width:' + yAxisW + 'px;min-width:' + yAxisW + 'px;flex-shrink:0;"></td>';
 
   wrap.innerHTML =
-    '<div style="direction:ltr;font-family:Heebo,sans-serif;border-top:1px solid #e8eaf0;padding-right:' + (window.cmYAxisWidth || yAxisW) + 'px;">' +
+    '<div style="direction:ltr;font-family:Heebo,sans-serif;border-top:1px solid #e8eaf0;padding-left:' + (window.cmYAxisWidth || yAxisW) + 'px;padding-right:4px;">' +
     '<table style="width:100%;border-collapse:collapse;table-layout:fixed;">' +
     '<tbody>' +
     '<tr style="background:#f0f4ff;">' + rowLbl + '</tr>' +
