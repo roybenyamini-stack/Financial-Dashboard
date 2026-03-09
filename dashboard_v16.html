@@ -204,7 +204,7 @@ body{background:var(--bg,#f0f2f5);}
 #cm-chart-nav-row button:hover:not(:disabled) { background:#e2e8f0; }
 #cm-chart-nav-row button:disabled { opacity:0.25; cursor:default; }
 #cm-win-label { font-weight:600; color:#475569; font-size:11px; min-width:160px; text-align:center; font-family:Heebo,sans-serif; }
-#cm-chart-wrap { height:180px; position:relative; direction:ltr; }
+#cm-chart-wrap { height:160px; position:relative; direction:ltr; }
 
 /* טבלת קרן */
 #cm-fund-table { overflow:auto; min-height:0; border-top:1px solid #f0f0f0; }
@@ -2996,7 +2996,7 @@ function cmDrawChart(data, color, label) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { rtl: true, bodyFont: { family: 'Heebo', size: 12 }, callbacks: { label: function(c) { var v = c.raw; if (!v) return ''; var prev = c.dataIndex > 0 ? wData[c.dataIndex-1] : null; var pct = (prev && prev > 0) ? ' (' + ((v-prev)/prev*100).toFixed(1) + '%)' : ''; return Math.round(v).toLocaleString() + pct; } } } },
-      scales: { x: { ticks: { font: { family: 'Heebo', size: 10 }, maxRotation: 0 }, grid: { display: false } }, y: { ticks: { font: { family: 'Heebo', size: 10 } }, grid: { color: '#f0f0f0' } } }
+      layout: { padding: { left: 0, right: 0, bottom: 0 } }, scales: { x: { display: false, grid: { display: false } }, y: { ticks: { font: { family: 'Heebo', size: 10 } }, grid: { color: '#f0f0f0' } } }
     }
   });
   cmChartData = { data: data, color: color, label: label };
@@ -3025,18 +3025,21 @@ function cmUpdateNavBtns() {
   document.getElementById('cm-btn-prev').disabled = cmWinStart <= 0;
 }
 
-// ---- טבלת קרן אופקית ----
+// ---- טבלת קרן מיושרת עם גרף ----
 function cmBuildFundTable(fundKey, color) {
   var fund = FUNDS[fundKey];
   var ff = ffFundData(fund.data);
   var wrap = document.getElementById('cm-fund-table');
   var endIdx = Math.min(cmWinStart + CM_WINDOW - 1, LABELS.length - 1);
+  var count = endIdx - cmWinStart + 1;
 
-  // שלוש שורות: חודש | סכום | %
-  var rowLbl = '<tr style="background:#f0f4ff;"><td style="padding:7px 12px;font-size:10px;color:#94a3b8;font-weight:700;white-space:nowrap;border-left:2px solid #e0e7ff;">חודש</td>';
-  var rowVal = '<tr><td style="padding:7px 12px;font-size:10px;color:#94a3b8;font-weight:700;white-space:nowrap;border-left:2px solid #e0e7ff;">סכום</td>';
-  var rowPct = '<tr style="background:#fafbff;"><td style="padding:7px 12px;font-size:10px;color:#94a3b8;font-weight:700;white-space:nowrap;border-left:2px solid #e0e7ff;">%</td>';
+  // חישוב רוחב Y-axis של Chart.js (בד"כ ~50-55px משמאל)
+  var yAxisW = 52;
 
+  // בנה 3 שורות עם עמודות שוות
+  var cellStyle = 'width:' + (100/count).toFixed(2) + '%;text-align:center;padding:5px 2px;box-sizing:border-box;';
+
+  var rowLbl = '', rowVal = '', rowPct = '';
   for (var m = cmWinStart; m <= endIdx; m++) {
     var val = ff[m];
     var prev = m > 0 ? ff[m-1] : null;
@@ -3044,18 +3047,23 @@ function cmBuildFundTable(fundKey, color) {
     var isFF = (fund.data[m] == null && val != null);
     var pClr = chgPct != null ? (chgPct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
     var pStr = chgPct != null ? (chgPct >= 0 ? '+' : '') + chgPct.toFixed(1) + '%' : '—';
-    var cell = 'padding:7px 10px;text-align:center;border-left:1px solid #eef0f8;';
-    rowLbl += '<td style="' + cell + 'font-size:11px;color:#64748b;white-space:nowrap;">' + (LABELS[m]||'') + (isFF ? '<span style="font-size:8px;color:#aaa"> ff</span>' : '') + '</td>';
-    rowVal += '<td style="' + cell + 'font-size:13px;font-weight:700;color:' + color + ';">' + (val > 0 ? Math.round(val).toLocaleString() : '—') + '</td>';
-    rowPct += '<td style="' + cell + 'font-size:12px;font-weight:700;color:' + pClr + ';">' + pStr + '</td>';
+
+    rowLbl += '<td style="' + cellStyle + 'font-size:10px;color:#64748b;white-space:nowrap;overflow:hidden;">' + (LABELS[m]||'') + '</td>';
+    rowVal += '<td style="' + cellStyle + 'font-size:12px;font-weight:700;color:' + color + ';">' + (val > 0 ? Math.round(val).toLocaleString() : '—') + (isFF ? '<span style="font-size:8px;color:#aaa"> ff</span>' : '') + '</td>';
+    rowPct += '<td style="' + cellStyle + 'font-size:11px;font-weight:700;color:' + pClr + ';">' + pStr + '</td>';
   }
-  rowLbl += '</tr>'; rowVal += '</tr>'; rowPct += '</tr>';
+
+  // תא ריק בצד ימין – מקביל ל-Y axis של הגרף
+  var yCell = '<td style="width:' + yAxisW + 'px;min-width:' + yAxisW + 'px;flex-shrink:0;"></td>';
 
   wrap.innerHTML =
-    '<div style="overflow-x:auto;direction:rtl;border-top:2px solid #e0e7ff;">' +
-    '<table style="border-collapse:collapse;font-family:Heebo,sans-serif;min-width:100%;">' +
-    '<tbody>' + rowLbl + rowVal + rowPct + '</tbody>' +
-    '</table></div>';
+    '<div style="direction:ltr;font-family:Heebo,sans-serif;border-top:1px solid #e8eaf0;padding-right:' + yAxisW + 'px;">' +
+    '<table style="width:100%;border-collapse:collapse;table-layout:fixed;">' +
+    '<tbody>' +
+    '<tr style="background:#f0f4ff;">' + rowLbl + '</tr>' +
+    '<tr>' + rowVal + '</tr>' +
+    '<tr style="background:#fafbff;">' + rowPct + '</tr>' +
+    '</tbody></table></div>';
   wrap.style.flex = '0 0 auto';
   wrap.style.overflowY = 'visible';
 }
