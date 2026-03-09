@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:9px;font-weight:400;opacity:0.4;margin-right:6px;font-family:monospace;">v16.09f</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:9px;font-weight:600;color:#ef4444;margin-right:6px;font-family:monospace;">v16.09g</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2847,20 +2847,20 @@ function cmSetCatStats(catId) {
   document.getElementById('cm-total').textContent = Math.round(last).toLocaleString();
   var growth = last - first;
   var gEl = document.getElementById('cm-growth');
-  gEl.textContent = (growth >= 0 ? '+' : '') + Math.abs(Math.round(growth)).toLocaleString();
+  gEl.textContent = Math.abs(Math.round(growth)).toLocaleString();
   gEl.className = 'cm-stat-val ' + (growth >= 0 ? 'pos' : 'neg');
   var excl = (typeof EXCLUDE_FROM_PCT !== 'undefined' && EXCLUDE_FROM_PCT[catId]) ? EXCLUDE_FROM_PCT[catId] : [];
   var endIdx = cmWinStart + wData.length - 1;
   var measEnd = Object.entries(FUNDS).filter(function(e){ return e[1].cat===catId && !excl.includes(e[0]) && (e[1].data[endIdx]||0)>0; }).reduce(function(s,e){ return s+(e[1].data[endIdx]||0); },0);
   var measStart = Object.entries(FUNDS).filter(function(e){ return e[1].cat===catId && !excl.includes(e[0]) && (e[1].data[endIdx]||0)>0; }).reduce(function(s,e){ return s+(e[1].data[cmWinStart]||0); },0);
   var retEl = document.getElementById('cm-ret');
-  if (measStart > 0) { var ret = ((measEnd-measStart)/measStart*100).toFixed(1); retEl.textContent=(parseFloat(ret)>=0?'+':'')+ret+'%'; retEl.className='cm-stat-val '+(parseFloat(ret)>=0?'pos':'neg'); }
+  if (measStart > 0) { var ret = ((measEnd-measStart)/measStart*100).toFixed(1); retEl.textContent=Math.abs(parseFloat(ret)).toFixed(1)+'%'; retEl.className='cm-stat-val '+(parseFloat(ret)>=0?'pos':'neg'); }
   var janIdx = LABELS.findIndex(function(l){ return l.indexOf('ינ') >= 0 && l.indexOf('26') >= 0; });
   var ytdEl = document.getElementById('cm-ytd');
   if (janIdx >= 0 && endIdx >= janIdx) {
     var ytdEnd = Object.entries(FUNDS).filter(function(e){ return e[1].cat===catId && !excl.includes(e[0]) && (e[1].data[endIdx]||0)>0; }).reduce(function(s,e){ return s+(e[1].data[endIdx]||0); },0);
     var ytdStart = Object.entries(FUNDS).filter(function(e){ return e[1].cat===catId && !excl.includes(e[0]) && (e[1].data[endIdx]||0)>0; }).reduce(function(s,e){ return s+(e[1].data[janIdx]||0); },0);
-    if (ytdStart > 0 && ytdEnd > 0) { var ytd=((ytdEnd-ytdStart)/ytdStart*100).toFixed(1); ytdEl.textContent=(parseFloat(ytd)>=0?'+':'')+ytd+'%'; ytdEl.className='cm-stat-val '+(parseFloat(ytd)>=0?'pos':'neg'); }
+    if (ytdStart > 0 && ytdEnd > 0) { var ytd=((ytdEnd-ytdStart)/ytdStart*100).toFixed(1); ytdEl.textContent=Math.abs(parseFloat(ytd)).toFixed(1)+'%'; ytdEl.className='cm-stat-val '+(parseFloat(ytd)>=0?'pos':'neg'); }
   }
 }
 
@@ -2874,16 +2874,16 @@ function cmSetFundStats(fundKey) {
   document.getElementById('cm-total').textContent = Math.round(last).toLocaleString();
   var growth = last - first;
   var gEl = document.getElementById('cm-growth');
-  gEl.textContent = (growth >= 0 ? '+' : '') + Math.abs(Math.round(growth)).toLocaleString();
+  gEl.textContent = Math.abs(Math.round(growth)).toLocaleString();
   gEl.className = 'cm-stat-val ' + (growth >= 0 ? 'pos' : 'neg');
   var retEl = document.getElementById('cm-ret');
-  if (first > 0) { var ret=((last-first)/first*100).toFixed(1); retEl.textContent=(parseFloat(ret)>=0?'+':'')+ret+'%'; retEl.className='cm-stat-val '+(parseFloat(ret)>=0?'pos':'neg'); }
+  if (first > 0) { var ret=((last-first)/first*100).toFixed(1); retEl.textContent=Math.abs(parseFloat(ret)).toFixed(1)+'%'; retEl.className='cm-stat-val '+(parseFloat(ret)>=0?'pos':'neg'); }
   var janIdx = LABELS.findIndex(function(l){ return l.indexOf('ינ') >= 0 && l.indexOf('26') >= 0; });
   var endIdx = Math.min(cmWinStart + CM_WINDOW - 1, LABELS.length - 1);
   var ytdEl = document.getElementById('cm-ytd');
   var decIdx = janIdx >= 1 ? janIdx - 1 : -1;
   if (decIdx >= 0 && endIdx >= janIdx && ff[decIdx] > 0 && ff[endIdx] > 0) {
-    var ytd=((ff[endIdx]-ff[decIdx])/ff[decIdx]*100).toFixed(1); ytdEl.textContent=(parseFloat(ytd)>=0?'+':'')+ytd+'%'; ytdEl.className='cm-stat-val '+(parseFloat(ytd)>=0?'pos':'neg');
+    var ytd=((ff[endIdx]-ff[decIdx])/ff[decIdx]*100).toFixed(1); ytdEl.textContent=Math.abs(parseFloat(ytd)).toFixed(1)+'%'; ytdEl.className='cm-stat-val '+(parseFloat(ytd)>=0?'pos':'neg');
   } else { ytdEl.textContent='—'; ytdEl.className='cm-stat-val'; }
 }
 
@@ -3074,8 +3074,7 @@ function cmBuildFundTable(fundKey, color) {
     var pStr = chgPct != null ? Math.abs(chgPct).toFixed(1) + '%' : '—';
 
     rowLbl += '<td style="' + cellStyle + 'font-size:10px;color:#64748b;white-space:nowrap;overflow:hidden;">' + (LABELS[m]||'') + '</td>';
-    var valClr = chgPct == null ? '#94a3b8' : (chgPct > 0.05 ? '#16a34a' : (chgPct < -0.05 ? '#dc2626' : '#94a3b8'));
-    rowVal += '<td style="' + cellStyle + 'font-size:12px;font-weight:700;color:' + valClr + ';">' + (val > 0 ? Math.round(val).toLocaleString() : '—') + (isFF ? '<span style="font-size:8px;color:#aaa"> ff</span>' : '') + '</td>';
+    rowVal += '<td style="' + cellStyle + 'font-size:12px;font-weight:700;color:' + color + ';">' + (val > 0 ? Math.round(val).toLocaleString() : '—') + (isFF ? '<span style="font-size:8px;color:#aaa"> ff</span>' : '') + '</td>';
     rowPct += '<td style="' + cellStyle + 'font-size:11px;font-weight:700;color:' + pClr + ';">' + pStr + '</td>';
   }
 
