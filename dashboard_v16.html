@@ -3002,46 +3002,70 @@ function cmUpdateNavBtns() {
   document.getElementById('cm-btn-next').disabled = cmWinStart + CM_WINDOW >= LABELS.length;
 }
 
-// ---- רשימת קרנות ----
+// ---- רשימת קרנות (בנייה מ-FUNDS ישירות) ----
 function cmBuildFundList(catId, color) {
   var listEl = document.getElementById('cm-fund-list');
-  var srcBody = document.getElementById('body-' + catId);
-  if (!srcBody) { listEl.innerHTML = '<p style="padding:20px;color:#888;text-align:center">לא נמצאו נתונים</p>'; return; }
-  // וודא שה-category-body פתוח זמנית כדי שניתן לשכפל
-  var wasHidden = !srcBody.classList.contains('open');
-  if (wasHidden) srcBody.classList.add('open');
-  // שכפל טבלה מהדשבורד
-  var srcTable = srcBody.querySelector('table');
-  if (!srcTable) { if (wasHidden) srcBody.classList.remove('open'); listEl.innerHTML = ''; return; }
-  var newTable = document.createElement('table');
-  newTable.style.cssText = 'width:100%;border-collapse:collapse;';
-  var thead = srcTable.querySelector('thead');
-  if (thead) newTable.appendChild(thead.cloneNode(true));
-  var tbody = document.createElement('tbody');
-  var srcTbody = srcTable.querySelector('tbody');
-  if (!srcTbody) { if (wasHidden) srcBody.classList.remove('open'); listEl.innerHTML = ''; return; }
-  // העתק שורות מה-tbody
-  Array.from(srcTbody.rows).forEach(function(row) {
-    var newRow = row.cloneNode(true);
-    if (row.classList.contains('total-row') || row.classList.contains('delta-row')) {
-      tbody.appendChild(newRow);
-      return;
+  var funds = Object.entries(FUNDS).filter(function(e){ return e[1].cat === catId; });
+  if (!funds.length) { listEl.innerHTML = '<p style="padding:20px;color:#888;text-align:center">לא נמצאו נתונים</p>'; return; }
+
+  // כותרת עמודות
+  var thCols = '';
+  for (var ci = cmWinStart; ci < Math.min(cmWinStart + CM_WINDOW, LABELS.length); ci++) {
+    thCols += '<th style="padding:8px 8px;font-size:11px;color:#94a3b8;white-space:nowrap;text-align:right;">' + LABELS[ci] + '</th>';
+  }
+  var html = '<table style="width:100%;border-collapse:collapse;">' +
+    '<thead><tr>' +
+    '<th style="text-align:right;padding:8px 13px;font-size:11px;color:#94a3b8;position:sticky;top:0;background:#f8fafc;z-index:2;border-bottom:2px solid #e8eaf0;min-width:180px;">קרן</th>' +
+    thCols + '</tr></thead><tbody>';
+
+  var catTotal = new Array(LABELS.length).fill(0);
+  var NO_DELTA = ['mezuman'];
+
+  funds.forEach(function(entry) {
+    var key = entry[0], fund = entry[1];
+    var ff = ffFundData(fund.data);
+    var fundClr = (typeof FUND_COLORS !== 'undefined' && FUND_COLORS[key]) ? FUND_COLORS[key] : color;
+
+    // שורת קרן
+    html += '<tr data-fund="' + key + '" style="cursor:pointer;border-bottom:1px solid #f0f0f0;">';
+    html += '<td style="padding:9px 13px;text-align:right;font-size:12px;color:#1a1a2e;white-space:nowrap;">' + fund.name + '</td>';
+    for (var i = cmWinStart; i < Math.min(cmWinStart + CM_WINDOW, LABELS.length); i++) {
+      var v = ff[i];
+      if (v > 0) catTotal[i] += v;
+      html += '<td style="padding:9px 8px;text-align:right;font-weight:600;color:' + fundClr + ';">' + (v > 0 ? Math.round(v).toLocaleString() : '—') + '</td>';
     }
-    // fund row – קשר לחיצה
-    var key = row.getAttribute('data-fund');
-    if (key) {
-      newRow.style.cursor = 'pointer';
-      newRow.addEventListener('click', function(e) { e.stopPropagation(); cmOpenFund(key); });
+    html += '</tr>';
+
+    // שורת דלתא
+    if (!NO_DELTA.includes(catId)) {
+      html += '<tr class="delta-row" style="background:#fafafa;cursor:default;">';
+      html += '<td style="padding:3px 13px;font-size:10px;color:#94a3b8;">שינוי חודשי</td>';
+      for (var j = cmWinStart; j < Math.min(cmWinStart + CM_WINDOW, LABELS.length); j++) {
+        var cur = ff[j], prev2 = j > 0 ? ff[j-1] : null;
+        var pct = (cur > 0 && prev2 > 0) ? ((cur - prev2) / prev2 * 100) : null;
+        var pStr = pct != null ? (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%' : '—';
+        var pClr = pct != null ? (pct >= 0 ? '#16a34a' : '#dc2626') : '#ccc';
+        html += '<td style="padding:3px 8px;text-align:right;font-size:11px;font-weight:700;color:' + pClr + ';">' + pStr + '</td>';
+      }
+      html += '</tr>';
     }
-    tbody.appendChild(newRow);
   });
-  newTable.appendChild(tbody);
-  listEl.innerHTML = '';
-  listEl.appendChild(newTable);
-  // סגור חזרה אם היה סגור
-  if (wasHidden) srcBody.classList.remove('open');
-  // סנכרן עמודות לחלון הנוכחי
-  cmSyncListColumns();
+
+  // שורת סה"כ
+  html += '<tr class="total-row" style="background:#f0f4ff;font-weight:700;border-top:2px solid #e0e7ff;">';
+  html += '<td style="padding:9px 13px;text-align:right;">סה"כ קטגוריה</td>';
+  for (var k = cmWinStart; k < Math.min(cmWinStart + CM_WINDOW, LABELS.length); k++) {
+    html += '<td style="padding:9px 8px;text-align:right;">' + (catTotal[k] > 0 ? Math.round(catTotal[k]).toLocaleString() : '—') + '</td>';
+  }
+  html += '</tr></tbody></table>';
+
+  listEl.innerHTML = html;
+
+  // bind לחיצות
+  listEl.querySelectorAll('tr[data-fund]').forEach(function(row) {
+    var k = row.getAttribute('data-fund');
+    row.addEventListener('click', function(e) { e.stopPropagation(); cmOpenFund(k); });
+  });
 }
 
 function cmSyncListColumns() {
