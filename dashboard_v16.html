@@ -152,7 +152,7 @@ body{background:var(--bg,#f0f2f5);}
 /* ===== CATEGORY MODAL v5 ===== */
 #cat-modal { display:none; position:fixed; inset:0; z-index:1100; background:rgba(10,10,30,0.55); backdrop-filter:blur(4px); justify-content:center; align-items:center; padding:16px; }
 #cat-modal.open { display:flex; }
-#cat-modal-box { background:#f8fafc; border-radius:18px; width:100%; max-width:1300px; height:calc(100vh - 32px); max-height:900px; display:flex; flex-direction:column; box-shadow:0 24px 70px rgba(0,0,0,0.22); overflow:hidden; animation:cmSlideIn .2s ease; border-right:5px solid var(--cm-color,#2563eb); }
+#cat-modal-box { background:#f8fafc; border-radius:18px; width:100%; max-width:1300px; height:auto; max-height:calc(100vh - 32px); display:flex; flex-direction:column; box-shadow:0 24px 70px rgba(0,0,0,0.22); overflow:hidden; animation:cmSlideIn .2s ease; border-right:5px solid var(--cm-color,#2563eb); }
 @keyframes cmSlideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
 /* כותרת */
@@ -179,10 +179,10 @@ body{background:var(--bg,#f0f2f5);}
 #cm-close:hover { background:#fee2e2; color:#dc2626; }
 
 /* גוף */
-#cm-body { flex:1; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+#cm-body { display:flex; flex-direction:column; overflow:hidden; }
 
 /* רשימת קרנות */
-#cm-fund-list { flex:1; overflow:auto; min-height:0; }
+#cm-fund-list { overflow:auto; max-height:calc(100vh - 200px); }
 #cm-fund-list table { width:100%; border-collapse:collapse; }
 #cm-fund-list th { padding:8px 13px; font-size:11px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; border-bottom:2px solid #e8eaf0; white-space:nowrap; font-family:Heebo,sans-serif; }
 #cm-fund-list td { padding:9px 13px; text-align:right; border-bottom:1px solid #f0f0f0; font-family:Heebo,sans-serif; font-size:13px; }
@@ -194,7 +194,7 @@ body{background:var(--bg,#f0f2f5);}
 #cm-fund-list tr.total-row td { background:#f0f4ff; font-weight:700; border-top:2px solid #e0e7ff; cursor:default; position:sticky; bottom:0; z-index:1; }
 
 /* תצוגת קרן */
-#cm-fund-view { display:none; flex-direction:column; flex:1; min-height:0; }
+#cm-fund-view { display:none; flex-direction:column; }
 #cm-fund-view.visible { display:flex; }
 
 /* אזור גרף */
@@ -3052,7 +3052,7 @@ function cmBuildFundTable(fundKey, color) {
   var count = endIdx - cmWinStart + 1;
 
   // חישוב רוחב Y-axis של Chart.js (בד"כ ~50-55px משמאל)
-  var yAxisW = 52;
+  var yAxisW = window.cmYAxisWidth || 58;
 
   // בנה 3 שורות עם עמודות שוות
   var cellStyle = 'width:' + (100/count).toFixed(2) + '%;text-align:center;padding:5px 2px;box-sizing:border-box;';
