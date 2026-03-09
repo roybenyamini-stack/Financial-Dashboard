@@ -2823,7 +2823,7 @@ function openCatModal(catId) {
   nameEl.style.color = color;
   nameEl.textContent = nameText;
 
-  cmWinStart = winStart;
+  cmWinStart = Math.max(0, LABELS.length - CM_WINDOW);
   cmCatFundKeys = Object.keys(FUNDS).filter(function(k){ return FUNDS[k].cat === catId; });
 
   // סטטיסטיקות קטגוריה
@@ -3064,10 +3064,11 @@ function cmBuildFundTable(fundKey, color) {
     var chgPct = (val > 0 && prev && prev > 0) ? ((val - prev) / prev * 100) : null;
     var isFF = (fund.data[m] == null && val != null);
     var pClr = chgPct != null ? (chgPct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
-    var pStr = chgPct != null ? (chgPct >= 0 ? '+' : '') + chgPct.toFixed(1) + '%' : '—';
+    var pStr = chgPct != null ? chgPct.toFixed(1) + '%' : '—';
 
     rowLbl += '<td style="' + cellStyle + 'font-size:10px;color:#64748b;white-space:nowrap;overflow:hidden;">' + (LABELS[m]||'') + '</td>';
-    rowVal += '<td style="' + cellStyle + 'font-size:12px;font-weight:700;color:' + color + ';">' + (val > 0 ? Math.round(val).toLocaleString() : '—') + (isFF ? '<span style="font-size:8px;color:#aaa"> ff</span>' : '') + '</td>';
+    var valClr = chgPct == null ? '#94a3b8' : (chgPct > 0.05 ? '#16a34a' : (chgPct < -0.05 ? '#dc2626' : '#94a3b8'));
+    rowVal += '<td style="' + cellStyle + 'font-size:12px;font-weight:700;color:' + valClr + ';">' + (val > 0 ? Math.round(val).toLocaleString() : '—') + (isFF ? '<span style="font-size:8px;color:#aaa"> ff</span>' : '') + '</td>';
     rowPct += '<td style="' + cellStyle + 'font-size:11px;font-weight:700;color:' + pClr + ';">' + pStr + '</td>';
   }
 
@@ -3150,10 +3151,7 @@ document.addEventListener('keydown', function(e) {
           <div class="cm-stat"><div class="cm-stat-lbl">שנתי</div><div class="cm-stat-val" id="cm-ret">—</div></div>
           <div class="cm-stat"><div class="cm-stat-lbl">2026</div><div class="cm-stat-val" id="cm-ytd">—</div></div>
         </div>
-        <div id="cm-fund-nav">
-          <button class="cm-nav-btn" id="cm-prev-fund" onclick="cmNavFund(-1)">→</button>
-          <button class="cm-nav-btn" id="cm-next-fund" onclick="cmNavFund(1)">←</button>
-        </div>
+<div id="cm-fund-nav" style="display:none!important"></div>
         <button id="cm-back" onclick="cmBackToList()">← רשימה</button>
         <button id="cm-close" onclick="closeCatModal()">✕</button>
       </div>
