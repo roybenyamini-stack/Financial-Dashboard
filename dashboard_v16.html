@@ -149,6 +149,49 @@ body{background:var(--bg,#f0f2f5);}
 #top-fixed{background:var(--bg,#f0f2f5)!important;}
 /* END THEMES */
 
+/* ===== CATEGORY MODAL v2 ===== */
+#cat-modal { display:none; position:fixed; inset:0; z-index:1100; background:rgba(10,10,30,0.5); backdrop-filter:blur(4px); justify-content:center; align-items:flex-start; padding:20px 16px; }
+#cat-modal.open { display:flex; }
+#cat-modal-box { background:#fff; border-radius:18px; width:100%; max-width:1200px; max-height:calc(100vh - 40px); display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.2); overflow:hidden; animation:cmSlideIn .2s ease; border-right:5px solid var(--cm-color,#1a1a2e); }
+@keyframes cmSlideIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+#cm-header { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid #f0f0f0; flex-shrink:0; }
+#cm-title-row { display:flex; align-items:center; gap:10px; }
+#cm-icon { width:38px; height:38px; border-radius:11px; background:var(--cm-color-light,#f0f2f5); display:flex; align-items:center; justify-content:center; font-size:17px; }
+#cm-name { font-size:17px; font-weight:800; color:#1a1a2e; font-family:Heebo,sans-serif; }
+#cm-sub  { font-size:11px; color:#94a3b8; margin-top:2px; font-family:Heebo,sans-serif; }
+#cm-header-actions { display:flex; align-items:center; gap:8px; }
+#cm-stats { display:flex; gap:24px; align-items:center; }
+.cm-stat { text-align:center; }
+.cm-stat-lbl { font-size:10px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; font-family:Heebo,sans-serif; }
+.cm-stat-val { font-size:18px; font-weight:800; color:#1a1a2e; font-family:Heebo,sans-serif; }
+.cm-stat-val.pos { color:#16a34a; }
+.cm-stat-val.neg { color:#dc2626; }
+#cm-back { display:none; background:#f1f5f9; border:none; border-radius:8px; padding:6px 12px; font-size:12px; font-family:Heebo,sans-serif; cursor:pointer; color:#475569; font-weight:600; transition:all .15s; }
+#cm-back:hover { background:#e2e8f0; color:#1a1a2e; }
+#cm-back.visible { display:inline-flex; align-items:center; gap:4px; }
+#cm-close { width:34px; height:34px; border-radius:50%; border:none; background:#f1f5f9; cursor:pointer; font-size:16px; color:#64748b; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+#cm-close:hover { background:#fee2e2; color:#dc2626; }
+#cm-body { overflow:auto; flex:1; }
+/* תצוגת רשימה */
+#cm-fund-list { padding:8px 0; }
+.cm-fund-row { display:flex; justify-content:space-between; align-items:center; padding:12px 24px; cursor:pointer; border-bottom:1px solid #f8f8f8; transition:background .12s; font-family:Heebo,sans-serif; }
+.cm-fund-row:hover { background:#f8faff; }
+.cm-fund-name { font-size:14px; font-weight:600; color:#1a1a2e; }
+.cm-fund-meta { font-size:11px; color:#94a3b8; margin-top:2px; }
+.cm-fund-val { font-size:15px; font-weight:700; color:#1a1a2e; text-align:left; }
+.cm-fund-pct { font-size:11px; font-weight:600; color:#16a34a; text-align:left; }
+.cm-fund-pct.neg { color:#dc2626; }
+/* תצוגת גרף + טבלה */
+#cm-fund-detail { display:none; }
+#cm-fund-detail.visible { display:block; }
+#cm-mini-chart-wrap { padding:16px 24px 0; }
+#cm-mini-chart { width:100%; height:160px; }
+#cm-table-wrap { padding:0; }
+#cm-table-wrap table { width:100%; font-size:12px; border-collapse:collapse; }
+#cm-table-wrap th { padding:8px 12px; font-size:10px; color:#94a3b8; position:sticky; top:0; background:#f8fafc; z-index:2; text-align:right; font-family:Heebo,sans-serif; }
+#cm-table-wrap td { padding:9px 12px; text-align:right; font-family:Heebo,sans-serif; border-bottom:1px solid #f4f4f4; }
+.cm-zoom-btn { background:none; border:1px solid rgba(0,0,0,0.12); cursor:pointer; font-size:13px; opacity:0.5; padding:3px 7px; border-radius:6px; transition:all .15s; line-height:1; }
+.cm-zoom-btn:hover { opacity:1; background:rgba(0,0,0,0.06); }
 </style>
 </head>
 <body>
@@ -363,7 +406,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-mezuman"></div>
       <div class="cat-pct" id="sec-ytd-mezuman" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="chevron" id="chev-mezuman">▼</div>
+    <div style="display:flex;align-items:center;gap:6px;"><button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('mezuman')" title="פתח בחלון">⛶</button><div class="chevron" id="chev-mezuman">▼</div></div>
   </div>
   <div class="category-body" id="body-mezuman">
     <table>
@@ -407,7 +450,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-hishtalmut">+16.9%</div>
       <div class="cat-pct" id="sec-ytd-hishtalmut" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="chevron" id="chev-hishtalmut">▼</div>
+    <div style="display:flex;align-items:center;gap:6px;"><button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('hishtalmut')" title="פתח בחלון">⛶</button><div class="chevron" id="chev-hishtalmut">▼</div></div>
   </div>
   <div class="category-body" id="body-hishtalmut">
     <table>
@@ -460,7 +503,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-gemel">+17.6%</div>
       <div class="cat-pct" id="sec-ytd-gemel" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="chevron" id="chev-gemel">▼</div>
+    <div style="display:flex;align-items:center;gap:6px;"><button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('gemel')" title="פתח בחלון">⛶</button><div class="chevron" id="chev-gemel">▼</div></div>
   </div>
   <div class="category-body" id="body-gemel">
     <table>
@@ -517,7 +560,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-gemel_invest">+21.8%</div>
       <div class="cat-pct" id="sec-ytd-gemel_invest" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="chevron" id="chev-gemel_invest">▼</div>
+    <div style="display:flex;align-items:center;gap:6px;"><button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('gemel_invest')" title="פתח בחלון">⛶</button><div class="chevron" id="chev-gemel_invest">▼</div></div>
   </div>
   <div class="category-body" id="body-gemel_invest">
     <table>
@@ -558,7 +601,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-harel">+11.4%</div>
       <div class="cat-pct" id="sec-ytd-harel" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="chevron" id="chev-harel">▼</div>
+    <div style="display:flex;align-items:center;gap:6px;"><button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('harel')" title="פתח בחלון">⛶</button><div class="chevron" id="chev-harel">▼</div></div>
   </div>
   <div class="category-body" id="body-harel">
     <table>
@@ -604,7 +647,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct pos" id="sec-pct-meitav">+13.2%</div>
       <div class="cat-pct" id="sec-ytd-meitav" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="chevron" id="chev-meitav">▼</div>
+    <div style="display:flex;align-items:center;gap:6px;"><button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('meitav')" title="פתח בחלון">⛶</button><div class="chevron" id="chev-meitav">▼</div></div>
   </div>
   <div class="category-body" id="body-meitav">
     <table>
@@ -641,7 +684,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-arbitrage"></div>
       <div class="cat-pct" id="sec-ytd-arbitrage" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="chevron" id="chev-arbitrage">▼</div>
+    <div style="display:flex;align-items:center;gap:6px;"><button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('arbitrage')" title="פתח בחלון">⛶</button><div class="chevron" id="chev-arbitrage">▼</div></div>
   </div>
   <div class="category-body" id="body-arbitrage">
     <table>
@@ -674,6 +717,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-ytd-dira" style="font-size:10px;opacity:0.8;"></div>
     </div>
 
+  <button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('dira')" title="פתח בחלון" style="margin-right:8px;">⛶</button>
   </div>
 </div>
 
@@ -692,7 +736,7 @@ body{background:var(--bg,#f0f2f5);}
       <div class="cat-pct" id="sec-pct-chov"></div>
       <div class="cat-pct" id="sec-ytd-chov" style="font-size:10px;opacity:0.8;"></div>
     </div>
-    <div class="chevron" id="chev-chov">▼</div>
+    <div style="display:flex;align-items:center;gap:6px;"><button class="cm-zoom-btn" onclick="event.stopPropagation();openCatModal('chov')" title="פתח בחלון">⛶</button><div class="chevron" id="chev-chov">▼</div></div>
   </div>
   <div class="category-body" id="body-chov">
     <table>
@@ -2697,7 +2741,223 @@ function closeCharts() {
   document.getElementById('charts-modal').style.display = 'none';
 }
 
+// ===== CATEGORY MODAL v2 =====
+var cmChartInstance = null;
+var cmCurrentCat = null;
+
+function openCatModal(catId) {
+  cmCurrentCat = catId;
+  var sec = document.getElementById('sec-' + catId);
+  if (!sec) return;
+
+  var color = getComputedStyle(sec).getPropertyValue('--cat-color').trim() || '#2563eb';
+  var colorLight = getComputedStyle(sec).getPropertyValue('--cat-color-light').trim() || '#f0f4ff';
+  var box = document.getElementById('cat-modal-box');
+  box.style.setProperty('--cm-color', color);
+  box.style.setProperty('--cm-color-light', colorLight);
+
+  var hdr = document.getElementById('hdr-' + catId);
+  var icon = hdr ? hdr.querySelector('.cat-icon') : null;
+  var name = hdr ? (hdr.querySelector('.cat-name') ? hdr.querySelector('.cat-name').textContent : catId) : catId;
+  var sub  = hdr ? (hdr.querySelector('.cat-count') ? hdr.querySelector('.cat-count').textContent : '') : '';
+  document.getElementById('cm-icon').textContent = icon ? icon.textContent : 'folder';
+  document.getElementById('cm-icon').style.background = colorLight;
+  document.getElementById('cm-name').textContent = name;
+  document.getElementById('cm-sub').textContent = sub;
+
+  var catArr = CAT_CHART_TOTALS[catId] || CAT_TOTALS[catId] || [];
+  document.getElementById('cm-total').textContent = catArr.length ? Math.round(catArr[catArr.length-1]).toLocaleString() : '-';
+  var pctEl = document.getElementById('sec-pct-' + catId);
+  var retEl = document.getElementById('cm-ret');
+  if (pctEl && pctEl.textContent) {
+    retEl.textContent = pctEl.textContent;
+    retEl.className = 'cm-stat-val ' + (pctEl.classList.contains('pos') ? 'pos' : 'neg');
+  } else retEl.textContent = '-';
+  var ytdEl = document.getElementById('sec-ytd-' + catId);
+  document.getElementById('cm-ytd').textContent = (ytdEl && ytdEl.textContent) ? ytdEl.textContent : '-';
+
+  cmBuildFundList(catId, color);
+  cmShowList();
+  document.getElementById('cat-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function cmBuildFundList(catId, color) {
+  var list = document.getElementById('cm-fund-list');
+  list.innerHTML = '';
+  var catFunds = Object.entries(FUNDS).filter(function(e){ return e[1].cat === catId; });
+  catFunds.forEach(function(entry) {
+    var key = entry[0], fund = entry[1];
+    var ffData = ffFundData(fund.data);
+    var lastVal = 0;
+    for (var i = ffData.length-1; i >= 0; i--) { if (ffData[i] != null) { lastVal = Math.round(ffData[i]); break; } }
+
+    var row = document.createElement('div');
+    row.className = 'cm-fund-row';
+    row.innerHTML =
+      '<div>' +
+        '<div class="cm-fund-name">' + fund.name + '</div>' +
+      '</div>' +
+      '<div style="text-align:left">' +
+        '<div class="cm-fund-val">' + (lastVal > 0 ? lastVal.toLocaleString() : '-') + '</div>' +
+      '</div>';
+    row.addEventListener('click', function() { cmOpenFund(key, color); });
+    list.appendChild(row);
+  });
+
+  var catArr = CAT_CHART_TOTALS[catId] || [];
+  var catTotal = catArr.length ? Math.round(catArr[catArr.length-1]) : 0;
+  var totRow = document.createElement('div');
+  totRow.className = 'cm-fund-row';
+  totRow.style.cssText = 'background:#f8faff;font-weight:700;border-top:2px solid #e8eaf0;cursor:default;';
+  totRow.innerHTML =
+    '<div class="cm-fund-name" style="color:' + color + '">סה"כ קטגוריה</div>' +
+    '<div class="cm-fund-val" style="color:' + color + '">' + catTotal.toLocaleString() + '</div>';
+  list.appendChild(totRow);
+}
+
+function cmOpenFund(fundKey, color) {
+  var fund = FUNDS[fundKey];
+  if (!fund) return;
+  var clr = CAT_COLORS[fund.cat] || color || '#2563eb';
+
+  document.getElementById('cm-name').textContent = fund.name;
+  document.getElementById('cm-sub').textContent = 'לחץ חזרה לרשימת הקרנות';
+  document.getElementById('cm-back').classList.add('visible');
+
+  // עדכן סטטיסטיקות לקרן
+  var ffData = ffFundData(fund.data);
+  var lastVal = 0;
+  for (var i = ffData.length-1; i >= 0; i--) { if (ffData[i] != null) { lastVal = Math.round(ffData[i]); break; } }
+  document.getElementById('cm-total').textContent = lastVal > 0 ? lastVal.toLocaleString() : '-';
+  document.getElementById('cm-ret').textContent = '-';
+  document.getElementById('cm-ytd').textContent = '-';
+
+  cmDrawMiniChart(fundKey, clr);
+  cmBuildFundTable(fundKey);
+  cmShowDetail();
+  selectFund(fundKey, clr);
+}
+
+function cmDrawMiniChart(fundKey, color) {
+  var fund = FUNDS[fundKey];
+  var ffData = ffFundData(fund.data);
+  var canvas = document.getElementById('cm-mini-chart');
+  if (cmChartInstance) { cmChartInstance.destroy(); cmChartInstance = null; }
+  var ctx = canvas.getContext('2d');
+  var gradient = ctx.createLinearGradient(0, 0, 0, 160);
+  gradient.addColorStop(0, color + '44');
+  gradient.addColorStop(1, color + '00');
+  cmChartInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: LABELS,
+      datasets: [{ data: ffData, borderColor: color, backgroundColor: gradient, borderWidth: 2, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { family: 'Heebo', size: 10 }, maxRotation: 0 }, grid: { display: false } },
+        y: { ticks: { font: { family: 'Heebo', size: 10 } }, grid: { color: '#f0f0f0' } }
+      }
+    }
+  });
+}
+
+function cmBuildFundTable(fundKey) {
+  var fund = FUNDS[fundKey];
+  var ffData = ffFundData(fund.data);
+  var wrap = document.getElementById('cm-table-wrap');
+  var html = '<table><thead><tr><th>חודש</th><th>ערך</th><th>שינוי</th></tr></thead><tbody>';
+  LABELS.forEach(function(lbl, i) {
+    var val = ffData[i];
+    var prev = i > 0 ? ffData[i-1] : null;
+    var isFF = (fund.data[i] == null && val != null);
+    if (val == null) return;
+    var change = (prev != null) ? Math.round(val - prev) : null;
+    var pct = (prev != null && prev > 0) ? ((val - prev) / prev * 100).toFixed(1) : null;
+    var pctColor = pct != null ? (parseFloat(pct) >= 0 ? '#16a34a' : '#dc2626') : '#888';
+    html += '<tr style="' + (isFF ? 'opacity:0.45' : '') + '">' +
+      '<td>' + lbl + (isFF ? ' <span style="font-size:9px;color:#aaa">ff</span>' : '') + '</td>' +
+      '<td style="font-weight:600">' + Math.round(val).toLocaleString() + '</td>' +
+      '<td style="color:' + pctColor + ';font-weight:600">' +
+        (change != null ? (change >= 0 ? '+' : '') + change.toLocaleString() : '') +
+        (pct != null ? ' <span style="font-size:10px">(' + (parseFloat(pct) >= 0 ? '+' : '') + pct + '%)</span>' : '') +
+      '</td></tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function cmShowList() {
+  document.getElementById('cm-fund-list').style.display = 'block';
+  document.getElementById('cm-fund-detail').style.display = 'none';
+  document.getElementById('cm-back').classList.remove('visible');
+}
+
+function cmShowDetail() {
+  document.getElementById('cm-fund-list').style.display = 'none';
+  document.getElementById('cm-fund-detail').style.display = 'block';
+}
+
+function cmBackToList() {
+  if (cmChartInstance) { cmChartInstance.destroy(); cmChartInstance = null; }
+  if (cmCurrentCat) selectView(cmCurrentCat);
+  openCatModal(cmCurrentCat);
+}
+
+function closeCatModal() {
+  document.getElementById('cat-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  if (cmChartInstance) { cmChartInstance.destroy(); cmChartInstance = null; }
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeCatModal();
+});
 
 </script>
 
+<!-- CATEGORY MODAL v2 -->
+<div id="cat-modal" onclick="if(event.target===this)closeCatModal()">
+  <div id="cat-modal-box">
+    <div id="cm-header">
+      <div id="cm-title-row">
+        <div id="cm-icon">📊</div>
+        <div>
+          <div id="cm-name">קטגוריה</div>
+          <div id="cm-sub"></div>
+        </div>
+      </div>
+      <div id="cm-header-actions">
+        <div id="cm-stats">
+          <div class="cm-stat">
+            <div class="cm-stat-lbl">סה״כ</div>
+            <div class="cm-stat-val" id="cm-total">—</div>
+          </div>
+          <div class="cm-stat">
+            <div class="cm-stat-lbl">מינו׳ 25</div>
+            <div class="cm-stat-val pos" id="cm-ret">—</div>
+          </div>
+          <div class="cm-stat">
+            <div class="cm-stat-lbl">YTD 2026</div>
+            <div class="cm-stat-val pos" id="cm-ytd">—</div>
+          </div>
+        </div>
+        <button id="cm-back" onclick="cmBackToList()">← רשימה</button>
+        <button id="cm-close" onclick="closeCatModal()">✕</button>
+      </div>
+    </div>
+    <div id="cm-body">
+      <div id="cm-fund-list"></div>
+      <div id="cm-fund-detail">
+        <div id="cm-mini-chart-wrap">
+          <canvas id="cm-mini-chart"></canvas>
+        </div>
+        <div id="cm-table-wrap"></div>
+      </div>
+    </div>
+  </div>
+</div>
 </body></html>
