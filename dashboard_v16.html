@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:9px;font-weight:400;opacity:0.4;margin-right:6px;font-family:monospace;">v16.09c</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:9px;font-weight:400;opacity:0.4;margin-right:6px;font-family:monospace;">v16.09e</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2952,14 +2952,15 @@ function cmClickFund(fundKey) {
   // הצג view (canvas חייב להיות גלוי לפני Chart.js)
   cmShowFundView();
 
-  // גרף – requestAnimationFrame מבטיח שה-canvas גלוי ב-DOM
+  // גרף – setTimeout מבטיח שה-canvas מרונדר לגמרי לפני Chart.js
   var ff = ffFundData(fund.data);
-  requestAnimationFrame(function() {
-    cmDrawChart(ff, fundClr, fund.name);
+  var _fundClr = fundClr, _fundName = fund.name, _fundKey = fundKey;
+  setTimeout(function() {
+    cmDrawChart(ff, _fundClr, _fundName);
     cmUpdateWinLabel();
     cmUpdateNavBtns();
-    cmBuildFundTable(fundKey, fundClr);
-  });
+    cmBuildFundTable(_fundKey, _fundClr);
+  }, 50);
 }
 
 // ---- ניווט בין קרנות ----
@@ -2974,9 +2975,12 @@ function cmNavFund(dir) {
 }
 
 function cmUpdateFundNavBtns() {
+  var prev = document.getElementById('cm-prev-fund');
+  var next = document.getElementById('cm-next-fund');
+  if (!prev || !next) return;
   var idx = cmCatFundKeys.indexOf(cmCurrentFundKey);
-  document.getElementById('cm-prev-fund').disabled = (idx <= 0);
-  document.getElementById('cm-next-fund').disabled = (idx >= cmCatFundKeys.length - 1);
+  prev.disabled = (idx <= 0);
+  next.disabled = (idx >= cmCatFundKeys.length - 1);
 }
 
 // ---- גרף ----
