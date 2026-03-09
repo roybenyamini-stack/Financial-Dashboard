@@ -2996,10 +2996,28 @@ function cmDrawChart(data, color, label) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { rtl: true, bodyFont: { family: 'Heebo', size: 12 }, callbacks: { label: function(c) { var v = c.raw; if (!v) return ''; var prev = c.dataIndex > 0 ? wData[c.dataIndex-1] : null; var pct = (prev && prev > 0) ? ' (' + ((v-prev)/prev*100).toFixed(1) + '%)' : ''; return Math.round(v).toLocaleString() + pct; } } } },
-      layout: { padding: { left: 0, right: 0, bottom: 0 } }, scales: { x: { display: false, grid: { display: false } }, y: { ticks: { font: { family: 'Heebo', size: 10 } }, grid: { color: '#f0f0f0' } } }
+      layout: { padding: { left: 0, right: 4, bottom: 0 } },
+      scales: {
+        x: { display: false, grid: { display: false }, offset: false },
+        y: {
+          ticks: { font: { family: 'Heebo', size: 10 } }, grid: { color: '#f0f0f0' },
+          afterFit: function(scaleInstance) { window.cmYAxisWidth = scaleInstance.width; cmSyncTablePadding(); }
+        }
+      }
     }
   });
   cmChartData = { data: data, color: color, label: label };
+}
+
+function cmSyncTablePadding() {
+  var w = window.cmYAxisWidth || 52;
+  var wrap = document.getElementById('cm-fund-table');
+  if (!wrap) return;
+  var inner = wrap.querySelector('div');
+  if (inner) {
+    inner.style.paddingRight = w + 'px';
+    inner.style.paddingLeft = '4px';
+  }
 }
 
 function cmSlide(dir) {
@@ -3057,7 +3075,7 @@ function cmBuildFundTable(fundKey, color) {
   var yCell = '<td style="width:' + yAxisW + 'px;min-width:' + yAxisW + 'px;flex-shrink:0;"></td>';
 
   wrap.innerHTML =
-    '<div style="direction:ltr;font-family:Heebo,sans-serif;border-top:1px solid #e8eaf0;padding-right:' + yAxisW + 'px;">' +
+    '<div style="direction:ltr;font-family:Heebo,sans-serif;border-top:1px solid #e8eaf0;padding-right:' + (window.cmYAxisWidth || yAxisW) + 'px;">' +
     '<table style="width:100%;border-collapse:collapse;table-layout:fixed;">' +
     '<tbody>' +
     '<tr style="background:#f0f4ff;">' + rowLbl + '</tr>' +
@@ -3129,8 +3147,8 @@ document.addEventListener('keydown', function(e) {
         <div id="cm-stats">
           <div class="cm-stat"><div class="cm-stat-lbl">סה״כ</div><div class="cm-stat-val" id="cm-total">—</div></div>
           <div class="cm-stat"><div class="cm-stat-lbl">גידול</div><div class="cm-stat-val" id="cm-growth">—</div></div>
-          <div class="cm-stat"><div class="cm-stat-lbl">תשואה</div><div class="cm-stat-val" id="cm-ret">—</div></div>
-          <div class="cm-stat"><div class="cm-stat-lbl">YTD</div><div class="cm-stat-val" id="cm-ytd">—</div></div>
+          <div class="cm-stat"><div class="cm-stat-lbl">שנתי</div><div class="cm-stat-val" id="cm-ret">—</div></div>
+          <div class="cm-stat"><div class="cm-stat-lbl">2026</div><div class="cm-stat-val" id="cm-ytd">—</div></div>
         </div>
         <div id="cm-fund-nav">
           <button class="cm-nav-btn" id="cm-prev-fund" onclick="cmNavFund(-1)">→</button>
