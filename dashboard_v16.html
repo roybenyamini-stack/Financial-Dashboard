@@ -2881,9 +2881,10 @@ function cmSetFundStats(fundKey) {
   var janIdx = LABELS.findIndex(function(l){ return l.indexOf('ינ') >= 0 && l.indexOf('26') >= 0; });
   var endIdx = Math.min(cmWinStart + CM_WINDOW - 1, LABELS.length - 1);
   var ytdEl = document.getElementById('cm-ytd');
-  if (janIdx >= 0 && endIdx >= janIdx && ff[janIdx] > 0 && ff[endIdx] > 0) {
-    var ytd=((ff[endIdx]-ff[janIdx])/ff[janIdx]*100).toFixed(1); ytdEl.textContent=(parseFloat(ytd)>=0?'+':'')+ytd+'%'; ytdEl.className='cm-stat-val '+(parseFloat(ytd)>=0?'pos':'neg');
-  }
+  var decIdx = janIdx >= 1 ? janIdx - 1 : -1;
+  if (decIdx >= 0 && endIdx >= janIdx && ff[decIdx] > 0 && ff[endIdx] > 0) {
+    var ytd=((ff[endIdx]-ff[decIdx])/ff[decIdx]*100).toFixed(1); ytdEl.textContent=(parseFloat(ytd)>=0?'+':'')+ytd+'%'; ytdEl.className='cm-stat-val '+(parseFloat(ytd)>=0?'pos':'neg');
+  } else { ytdEl.textContent='—'; ytdEl.className='cm-stat-val'; }
 }
 
 // ---- בניית רשימת קרנות ----
@@ -3024,58 +3025,39 @@ function cmUpdateNavBtns() {
   document.getElementById('cm-btn-prev').disabled = cmWinStart <= 0;
 }
 
-// ---- טבלת קרן מלאה ----
+// ---- טבלת קרן אופקית ----
 function cmBuildFundTable(fundKey, color) {
   var fund = FUNDS[fundKey];
   var ff = ffFundData(fund.data);
   var wrap = document.getElementById('cm-fund-table');
-
   var endIdx = Math.min(cmWinStart + CM_WINDOW - 1, LABELS.length - 1);
 
-  // שורת סיכום בראש
-  var firstVal = 0, lastVal = 0;
-  for (var i = cmWinStart; i <= endIdx; i++) { if (ff[i] > 0) { firstVal = ff[i]; break; } }
-  for (var j = endIdx; j >= cmWinStart; j--) { if (ff[j] > 0) { lastVal = ff[j]; break; } }
-  var growth = lastVal - firstVal;
-  var growthPct = firstVal > 0 ? ((lastVal - firstVal) / firstVal * 100) : null;
-  var sumClr = growth >= 0 ? '#16a34a' : '#dc2626';
-  var growthStr = (growth >= 0 ? '+' : '') + Math.abs(Math.round(growth)).toLocaleString();
-  var pctStr = growthPct != null ? (growthPct >= 0 ? '+' : '') + growthPct.toFixed(1) + '%' : '\u2014';
-
-  var html =
-    '<div style="display:flex;gap:24px;padding:12px 20px;background:#f8fafc;border-top:2px solid #e8eaf0;font-family:Heebo,sans-serif;direction:rtl;flex-wrap:wrap;align-items:center;">' +
-    '<div><div style="font-size:10px;color:#94a3b8;">\u05e1\u05db\u05d5\u05dd \u05e0\u05d5\u05db\u05d7\u05d9</div><div style="font-size:20px;font-weight:800;color:' + color + ';">' + Math.round(lastVal).toLocaleString() + '</div></div>' +
-    '<div><div style="font-size:10px;color:#94a3b8;">\u05d2\u05d9\u05d3\u05d5\u05dc \u05d1\u05ea\u05e7\u05d5\u05e4\u05d4</div><div style="font-size:20px;font-weight:800;color:' + sumClr + ';">' + growthStr + '</div></div>' +
-    '<div><div style="font-size:10px;color:#94a3b8;">\u05e6\u05d1\u05d9\u05e8\u05d4 %</div><div style="font-size:20px;font-weight:800;color:' + sumClr + ';">' + pctStr + '</div></div>' +
-    '</div>' +
-    '<table style="width:100%;border-collapse:collapse;font-family:Heebo,sans-serif;font-size:13px;">' +
-    '<thead><tr style="background:#f8fafc;">' +
-    '<th style="padding:8px 16px;text-align:right;border-bottom:1px solid #eee;color:#94a3b8;font-size:11px;">\u05d7\u05d5\u05d3\u05e9</th>' +
-    '<th style="padding:8px 16px;text-align:right;border-bottom:1px solid #eee;color:#94a3b8;font-size:11px;">\u05e1\u05db\u05d5\u05dd</th>' +
-    '<th style="padding:8px 16px;text-align:right;border-bottom:1px solid #eee;color:#94a3b8;font-size:11px;">\u05e6\u05d1\u05d9\u05e8\u05d4 \u05d7\u05d5\u05d3\u05e9\u05d9\u05ea</th>' +
-    '<th style="padding:8px 16px;text-align:right;border-bottom:1px solid #eee;color:#94a3b8;font-size:11px;">%</th>' +
-    '</tr></thead><tbody>';
+  // שלוש שורות: חודש | סכום | %
+  var rowLbl = '<tr style="background:#f0f4ff;"><td style="padding:7px 12px;font-size:10px;color:#94a3b8;font-weight:700;white-space:nowrap;border-left:2px solid #e0e7ff;">חודש</td>';
+  var rowVal = '<tr><td style="padding:7px 12px;font-size:10px;color:#94a3b8;font-weight:700;white-space:nowrap;border-left:2px solid #e0e7ff;">סכום</td>';
+  var rowPct = '<tr style="background:#fafbff;"><td style="padding:7px 12px;font-size:10px;color:#94a3b8;font-weight:700;white-space:nowrap;border-left:2px solid #e0e7ff;">%</td>';
 
   for (var m = cmWinStart; m <= endIdx; m++) {
-    var val = ff[m]; if (!val || val <= 0) continue;
-    var isFF = (fund.data[m] == null);
+    var val = ff[m];
     var prev = m > 0 ? ff[m-1] : null;
-    var chg = (prev && prev > 0) ? Math.round(val - prev) : null;
-    var chgPct = (prev && prev > 0) ? ((val - prev) / prev * 100) : null;
-    var clr = chgPct != null ? (chgPct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
-    var chgStr = chg != null ? (chg >= 0 ? '+' : '') + chg.toLocaleString() : '\u2014';
-    var mPct = chgPct != null ? (chgPct >= 0 ? '+' : '') + chgPct.toFixed(1) + '%' : '\u2014';
-    html += '<tr style="border-bottom:1px solid #f4f4f4;' + (isFF ? 'opacity:0.55' : '') + '">' +
-      '<td style="padding:8px 16px;color:#64748b;white-space:nowrap;">' + LABELS[m] + (isFF ? ' <span style="font-size:9px;color:#aaa">ff</span>' : '') + '</td>' +
-      '<td style="padding:8px 16px;font-weight:700;color:' + color + ';">' + Math.round(val).toLocaleString() + '</td>' +
-      '<td style="padding:8px 16px;font-weight:600;color:' + clr + ';">' + chgStr + '</td>' +
-      '<td style="padding:8px 16px;font-weight:700;color:' + clr + ';">' + mPct + '</td>' +
-      '</tr>';
+    var chgPct = (val > 0 && prev && prev > 0) ? ((val - prev) / prev * 100) : null;
+    var isFF = (fund.data[m] == null && val != null);
+    var pClr = chgPct != null ? (chgPct >= 0 ? '#16a34a' : '#dc2626') : '#94a3b8';
+    var pStr = chgPct != null ? (chgPct >= 0 ? '+' : '') + chgPct.toFixed(1) + '%' : '—';
+    var cell = 'padding:7px 10px;text-align:center;border-left:1px solid #eef0f8;';
+    rowLbl += '<td style="' + cell + 'font-size:11px;color:#64748b;white-space:nowrap;">' + (LABELS[m]||'') + (isFF ? '<span style="font-size:8px;color:#aaa"> ff</span>' : '') + '</td>';
+    rowVal += '<td style="' + cell + 'font-size:13px;font-weight:700;color:' + color + ';">' + (val > 0 ? Math.round(val).toLocaleString() : '—') + '</td>';
+    rowPct += '<td style="' + cell + 'font-size:12px;font-weight:700;color:' + pClr + ';">' + pStr + '</td>';
   }
-  html += '</tbody></table>';
-  wrap.innerHTML = html;
-  wrap.style.flex = '1';
-  wrap.style.overflowY = 'auto';
+  rowLbl += '</tr>'; rowVal += '</tr>'; rowPct += '</tr>';
+
+  wrap.innerHTML =
+    '<div style="overflow-x:auto;direction:rtl;border-top:2px solid #e0e7ff;">' +
+    '<table style="border-collapse:collapse;font-family:Heebo,sans-serif;min-width:100%;">' +
+    '<tbody>' + rowLbl + rowVal + rowPct + '</tbody>' +
+    '</table></div>';
+  wrap.style.flex = '0 0 auto';
+  wrap.style.overflowY = 'visible';
 }
 
 // ---- מעברים ----
