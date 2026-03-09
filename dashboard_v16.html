@@ -3054,8 +3054,8 @@ function cmUpdateWinLabel() {
 }
 
 function cmUpdateNavBtns() {
-  document.getElementById('cm-btn-next').disabled = cmWinStart <= 0;
-  document.getElementById('cm-btn-prev').disabled = cmWinStart + CM_WINDOW >= LABELS.length;
+  document.getElementById('cm-btn-next').disabled = cmWinStart + CM_WINDOW >= LABELS.length;
+  document.getElementById('cm-btn-prev').disabled = cmWinStart <= 0;
 }
 
 // ---- טבלת קרן ----
