@@ -2727,10 +2727,8 @@ function openCatModal(catId) {
     // bind click events on cloned rows
     body.querySelectorAll('tr[data-fund]').forEach(function(row) {
       var key = row.getAttribute('data-fund');
-      // extract color from original onclick attr
-      var origOC = row.getAttribute('onclick') || '';
-      var colorMatch = origOC.match(/'(#[^']+)'/);
-      var clr = colorMatch ? colorMatch[1] : '#2563eb';
+      var fund = FUNDS[key];
+      var clr = (fund && CAT_COLORS[fund.cat]) ? CAT_COLORS[fund.cat] : '#2563eb';
       row.removeAttribute('onclick');
       row.style.cursor = 'pointer';
       row.addEventListener('click', function() {
@@ -2740,8 +2738,12 @@ function openCatModal(catId) {
     });
     body.querySelectorAll('tr.total-row').forEach(function(row) {
       var origOC = row.getAttribute('onclick') || '';
-      var catMatch = origOC.match(/selectView\('([^']+)'\)/);
-      var cat = catMatch ? catMatch[1] : null;
+      var i1 = origOC.indexOf("selectView('");
+      var cat = null;
+      if (i1 >= 0) {
+        var i2 = origOC.indexOf("')", i1 + 12);
+        if (i2 >= 0) cat = origOC.substring(i1 + 12, i2);
+      }
       row.removeAttribute('onclick');
       row.style.cursor = 'pointer';
       if (cat) row.addEventListener('click', function() {
