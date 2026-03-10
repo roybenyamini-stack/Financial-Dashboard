@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.10</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.12</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3199,29 +3199,28 @@ document.addEventListener('keydown', function(e) {
 
 <script>
 var TV_META = {
-  'mezuman': {mgr:'',agent:'',liquid:'נזיל'},
-  'מזומןשקלי':            {mgr:'',       agent:'',     liquid:'נזיל',    status:'',               notes:''},
-  'מזומןדולרי':           {mgr:'',       agent:'',     liquid:'נזיל',    status:'',               notes:''},
-  'מיטבשקלית':            {mgr:'מיטב',   agent:'',     liquid:'נזיל',    status:'כספית',          notes:''},
-  'אשקהש39905556':        {mgr:'אלטשולר',agent:'הילה', liquid:'גיל 67+', status:'לא פעילה, כללי',   notes:''},
-  'אשקהש6730513':         {mgr:'מיטב',   agent:'תמוז', liquid:'גיל 67+', status:'לא פעילה, מנייתי', notes:''},
-  'אשקהש40035706':        {mgr:'אלטשולר',agent:'',     liquid:'גיל 67+', status:'לא פעילה, כללי',   notes:''},
-  'מורקהש499293':         {mgr:'מיטב',   agent:'תמוז', liquid:'גיל 67+', status:'לא פעילה, מנייתי', notes:''},
-  'מיטבקהש912-443286':    {mgr:'מיטב',   agent:'',     liquid:'גיל 67+', status:'פעילה, מנייתי',    notes:''},
-  '6730511אשגמל':         {mgr:'מור',    agent:'תמוז', liquid:'גיל 67+', status:'פעילה, מנייתי',    notes:''},
-  'אשגמל39774495':        {mgr:'מור',    agent:'',     liquid:'גיל 67+', status:'לא פעילה, כללי',   notes:''},
-  '6730512אשגמל':         {mgr:'מור',    agent:'',     liquid:'גיל 67+', status:'פעילה, כללי',      notes:''},
-  '6899425אשגמל':         {mgr:'מור',    agent:'',     liquid:'גיל 67+', status:'לא פעילה, מנייתי', notes:''},
-  'הפניקסגמל926-084678':  {mgr:'הפניקס', agent:'תמוז', liquid:'גיל 67+', status:'לא פעילה, מנייתי', notes:''},
-  'מורגמל1375900':        {mgr:'מור',    agent:'',     liquid:'גיל 67+', status:'פעילה, מנייתי',    notes:''},
-  'אשגמללהשקעה2016-1738': {mgr:'מיטב',   agent:'תמוז', liquid:'השקעה',   status:'לא פעילה, כללי',   notes:''},
-  'מורגמללהשקעה':         {mgr:'מיטב',   agent:'',     liquid:'השקעה',   status:'לא פעילה, מנייתי', notes:''},
-  'הראלמגוון-פוליסתחיסכ':{mgr:'הראל',   agent:'הילה', liquid:'השקעה',   status:'כללי',             notes:'התחלתית: 1,940 | הפרש: 3,250'},
-  'הראלמניות106863031':   {mgr:'הראל',   agent:'',     liquid:'',        status:'נמכרה, מנייתי',    notes:'התחלתית: 139 | הפרש: 1,525'},
-  'הראלכללי109062745':    {mgr:'הראל',   agent:'',     liquid:'השקעה',   status:'כללי',             notes:'התחלתית: 39 | הפרש: 250'},
-  'מיטבדשניהולקרנות1693': {mgr:'מיטב',   agent:'',     liquid:'השקעה',   status:'מנייתי',           notes:'התחלתית: 200 | הפרש: 400'},
-  'מיטבדשטרייד':          {mgr:'מיטב',   agent:'',     liquid:'השקעה',   status:'כספי',             notes:''},
-  'דירה':                 {mgr:'',       agent:'',     liquid:'לא נזיל', status:'נכס קבוע',         notes:'ערך קבוע 1,200'},
+  'מזומןשקלי':            {mgr:'',       agent:'',     liquid:'נזיל',    status:''},
+  'מזומןדולרי':           {mgr:'',       agent:'',     liquid:'נזיל',    status:''},
+  'מיטבשקלית':            {mgr:'מיטב',   agent:'',     liquid:'נזיל',    status:'כספית'},
+  'אשקהש39905556':        {mgr:'אלטשולר',agent:'הילה', liquid:'גיל 67+', status:'לא פעילה'},
+  'אשקהש6730513':         {mgr:'מיטב',   agent:'תמוז', liquid:'גיל 67+', status:'לא פעילה'},
+  'אשקהש40035706':        {mgr:'אלטשולר',agent:'',     liquid:'גיל 67+', status:'לא פעילה'},
+  'מורקהש499293':         {mgr:'מיטב',   agent:'תמוז', liquid:'גיל 67+', status:'לא פעילה'},
+  'מיטבקהש912-443286':    {mgr:'מיטב',   agent:'',     liquid:'גיל 67+', status:'פעילה, מנייתי'},
+  '6730511אשגמל':         {mgr:'מור',    agent:'תמוז', liquid:'גיל 67+', status:'פעילה, מנייתי'},
+  'אשגמל39774495':        {mgr:'מור',    agent:'',     liquid:'גיל 67+', status:'לא פעילה'},
+  '6730512אשגמל':         {mgr:'מור',    agent:'',     liquid:'גיל 67+', status:'פעילה'},
+  '6899425אשגמל':         {mgr:'מור',    agent:'',     liquid:'גיל 67+', status:'לא פעילה'},
+  'הפניקסגמל926-084678':  {mgr:'הפניקס', agent:'תמוז', liquid:'גיל 67+', status:'לא פעילה, מנייתי'},
+  'מורגמל1375900':        {mgr:'מור',    agent:'',     liquid:'גיל 67+', status:'פעילה, מנייתי'},
+  'אשגמללהשקעה2016-1738': {mgr:'מיטב',   agent:'תמוז', liquid:'השקעה',   status:'לא פעילה'},
+  'מורגמללהשקעה':         {mgr:'מיטב',   agent:'',     liquid:'השקעה',   status:'לא פעילה, מנייתי'},
+  'הראלמגוון-פוליסתחיסכ':{mgr:'הראל',   agent:'הילה', liquid:'השקעה',   status:'כללי'},
+  'הראלמניות106863031':   {mgr:'הראל',   agent:'',     liquid:'',        status:'נמכרה, מנייתי'},
+  'הראלכללי109062745':    {mgr:'הראל',   agent:'',     liquid:'השקעה',   status:'כללי'},
+  'מיטבדשניהולקרנות1693': {mgr:'מיטב',   agent:'',     liquid:'השקעה',   status:'מנייתי'},
+  'מיטבדשטרייד':          {mgr:'מיטב',   agent:'',     liquid:'השקעה',   status:'כספי'},
+  'דירה':                 {mgr:'',       agent:'',     liquid:'לא נזיל', status:'נכס קבוע'},
 };
 
 var TV_SECTIONS = [
@@ -3231,7 +3230,7 @@ var TV_SECTIONS = [
   {label:'גמל להשקעה',   color:'#6ee7b7', bg:'#f0fdf4', keys:['אשגמללהשקעה2016-1738','מורגמללהשקעה']},
   {label:'הראל',          color:'#fde68a', bg:'#fefce8', keys:['הראלמגוון-פוליסתחיסכ','הראלמניות106863031','הראלכללי109062745']},
   {label:'מיטב',          color:'#c4b5fd', bg:'#f8f7ff', keys:['מיטבדשניהולקרנות1693','מיטבדשטרייד']},
-  {label:'דירה',          color:'#d6d3d1', bg:'#fafaf9', keys:['דירה']},
+  {label:'דירה',          color:'#d6d3d1', bg:'#fafaf9', keys:['דירה'], noSubtotal:true},
 ];
 
 function openTableView() {
@@ -3247,14 +3246,14 @@ function buildTableView() {
   var lastLabel = LABELS[LABELS.length - 1] || '';
   document.getElementById('tv-month-label').textContent = lastLabel ? '(' + lastLabel + ')' : '';
 
+  // 6 columns (no notes)
   var cols = [
-    {label:'השקעה',        w:'240px', align:'left'},
-    {label:'סכום (א\' ₪)', w:'100px', align:'right'},
-    {label:'נזילות',       w:'82px',  align:'center'},
-    {label:'סטטוס',        w:'170px', align:'left'},
-    {label:'גוף מנהל',    w:'90px',  align:'left'},
-    {label:'סוכן',         w:'68px',  align:'center'},
-    {label:'הערות',        w:'210px', align:'left'},
+    {label:'קטגוריה / השקעה', w:'260px', align:'center'},
+    {label:'סכום',             w:'90px',  align:'center'},
+    {label:'נזילות',           w:'80px',  align:'center'},
+    {label:'סטטוס',            w:'130px', align:'center'},
+    {label:'גוף מנהל',        w:'85px',  align:'center'},
+    {label:'סוכן',             w:'65px',  align:'center'},
   ];
 
   var h = '<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:Heebo,sans-serif;direction:ltr;">';
@@ -3268,71 +3267,93 @@ function buildTableView() {
 
   TV_SECTIONS.forEach(function(sec) {
     var secTotal = 0;
-    // Section label row
-    h += '<tr style="background:'+sec.color+';"><td colspan="7" style="padding:6px 12px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.02em;border-bottom:1px solid rgba(0,0,0,0.07);">'+sec.label+'</td></tr>';
+    var secRows = [];
 
     sec.keys.forEach(function(fk, ri) {
       var f = FUNDS[fk];
       if (!f) return;
       var meta = TV_META[fk] || {};
-      // Get latest value
       var val = 0;
       for (var i = f.data.length - 1; i >= 0; i--) {
         if (f.data[i] !== null && f.data[i] !== undefined) { val = f.data[i]; break; }
       }
       secTotal += val;
-      var zebra = ri % 2 === 0 ? sec.bg : '#ffffff';
-      var valColor = val === 0 ? '#9ca3af' : '#111827';
-      var isSold = meta.status && /נמכרה/.test(meta.status);
-      var rowOpacity = isSold ? 'opacity:0.6;' : '';
+      secRows.push({fk:fk, f:f, meta:meta, val:val, ri:ri});
+    });
 
-      // Status badges
+    // Fund rows with category name in first cell only on first row
+    secRows.forEach(function(r, idx) {
+      var zebra = idx % 2 === 0 ? sec.bg : '#ffffff';
+      var valColor = r.val === 0 ? '#9ca3af' : '#111827';
+      var isSold = r.meta.status && /נמכרה/.test(r.meta.status);
+      var rowOpacity = isSold ? 'opacity:0.65;' : '';
+
+      // Category cell: only first row shows the label, spans are tricky so we use text+indent instead
+      var catCell = idx === 0
+        ? '<td style="padding:8px 12px;font-weight:700;font-size:12px;color:#1f2937;white-space:nowrap;border-right:3px solid '+sec.color+';">'+sec.label+'</td>'
+        : '<td style="padding:8px 12px;border-right:3px solid '+sec.color+';"></td>';
+
+      // Status badges - compact
       var sb = '';
-      if (meta.status) {
-        var st = meta.status;
+      if (r.meta.status) {
+        var st = r.meta.status;
         if (/נמכרה/.test(st)) {
-          sb += '<span style="background:#fee2e2;color:#dc2626;border-radius:4px;padding:1px 6px;font-size:11px;">נמכרה</span>';
+          sb = '<span style="background:#fee2e2;color:#dc2626;border-radius:4px;padding:1px 5px;font-size:11px;">נמכרה</span>';
         } else if (/פעילה/.test(st) && !/לא/.test(st)) {
-          sb += '<span style="background:#dcfce7;color:#16a34a;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;">פעילה</span>';
+          sb = '<span style="background:#dcfce7;color:#16a34a;border-radius:4px;padding:1px 5px;font-size:11px;font-weight:600;">פעילה</span>';
         } else if (/לא פעילה/.test(st)) {
-          sb += '<span style="color:#9ca3af;font-size:12px;">לא פעילה</span>';
+          sb = '<span style="color:#9ca3af;font-size:11px;">לא פעילה</span>';
         } else {
-          sb += '<span style="color:#6b7280;font-size:12px;">'+st.split(',')[0].trim()+'</span>';
+          sb = '<span style="color:#6b7280;font-size:11px;">'+st.split(',')[0].trim()+'</span>';
         }
-        if (/מנייתי/.test(st)) sb += ' <span style="background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 5px;font-size:10px;">מנייתי</span>';
-        if (/כספי/.test(st)) sb += ' <span style="background:#ede9fe;color:#6d28d9;border-radius:4px;padding:1px 5px;font-size:10px;">כספי</span>';
+        if (/מנייתי/.test(st)) sb += '&nbsp;<span style="background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:0 4px;font-size:10px;">מנייתי</span>';
+        if (/כספי/.test(st)) sb += '&nbsp;<span style="background:#ede9fe;color:#6d28d9;border-radius:4px;padding:0 4px;font-size:10px;">כספי</span>';
       }
 
+      // Fund name cell (indent slightly)
+      var nameCell = r.f.name;
+
       h += '<tr style="background:'+zebra+';border-bottom:1px solid #e5e7eb;'+rowOpacity+'">';
-      h += '<td style="padding:8px 12px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+f.name+'">'+f.name+'</td>';
-      h += '<td style="padding:8px 12px;text-align:right;font-weight:500;color:'+valColor+';font-variant-numeric:tabular-nums;">'+val.toLocaleString('he-IL')+'</td>';
-      h += '<td style="padding:8px 12px;text-align:center;font-size:11px;color:#6b7280;">'+(meta.liquid||'')+'</td>';
-      h += '<td style="padding:8px 12px;">'+sb+'</td>';
-      h += '<td style="padding:8px 12px;font-size:12px;color:#374151;">'+(meta.mgr||'')+'</td>';
-      h += '<td style="padding:8px 12px;text-align:center;font-size:12px;color:#6b7280;">'+(meta.agent||'')+'</td>';
-      h += '<td style="padding:8px 12px;font-size:12px;color:#374151;">'+(meta.notes||'')+'</td>';
+      h += catCell;
+      h += '<td style="padding:8px 10px;text-align:right;font-weight:500;color:'+valColor+';font-variant-numeric:tabular-nums;">'+r.val.toLocaleString('he-IL')+'</td>';
+      h += '<td style="padding:8px 8px;text-align:center;font-size:11px;color:#6b7280;">'+(r.meta.liquid||'')+'</td>';
+      h += '<td style="padding:8px 8px;text-align:center;">'+sb+'</td>';
+      h += '<td style="padding:8px 8px;text-align:center;font-size:12px;color:#374151;">'+(r.meta.mgr||'')+'</td>';
+      h += '<td style="padding:8px 8px;text-align:center;font-size:12px;color:#6b7280;">'+(r.meta.agent||'')+'</td>';
       h += '</tr>';
     });
 
-    // Section subtotal
+    // Subtotal row (skip for sections with noSubtotal flag)
     grandTotal += secTotal;
-    h += '<tr style="background:'+sec.color+';border-bottom:2px solid rgba(0,0,0,0.1);">';
-    h += '<td style="padding:6px 12px 6px 20px;font-weight:700;font-size:12px;color:#374151;">סה"כ '+sec.label+'</td>';
-    h += '<td style="padding:6px 12px;text-align:right;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;">'+secTotal.toLocaleString('he-IL')+'</td>';
-    h += '<td colspan="5"></td></tr>';
+    if (!sec.noSubtotal) {
+      h += '<tr style="background:'+sec.color+';border-bottom:2px solid rgba(0,0,0,0.1);">';
+      h += '<td style="padding:6px 12px;font-weight:700;font-size:12px;color:#374151;border-right:3px solid rgba(0,0,0,0.15);">סה"כ '+sec.label+'</td>';
+      h += '<td style="padding:6px 10px;text-align:right;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;">'+secTotal.toLocaleString('he-IL')+'</td>';
+      h += '<td colspan="4"></td></tr>';
+    }
   });
 
-  // Debt row (always 0)
+  // Debt row: display 0 per spec, but deduct real chov from grand total
+  var chov = 0;
+  ['חובהראל','חובאלטשולר'].forEach(function(fk) {
+    var f = FUNDS[fk];
+    if (!f) return;
+    for (var i = f.data.length-1; i >= 0; i--) {
+      if (f.data[i] !== null && f.data[i] !== undefined) { chov += f.data[i]; break; }
+    }
+  });
+  var net = grandTotal - chov;
+
   h += '<tr style="background:#fef2f2;border-bottom:1px solid #fecaca;">';
-  h += '<td style="padding:8px 12px;font-weight:600;color:#dc2626;">חוב</td>';
-  h += '<td style="padding:8px 12px;text-align:right;font-weight:600;color:#dc2626;">0</td>';
-  h += '<td colspan="5"></td></tr>';
+  h += '<td style="padding:8px 12px;font-weight:600;color:#dc2626;border-right:3px solid #fca5a5;">חוב</td>';
+  h += '<td style="padding:8px 10px;text-align:right;font-weight:600;color:#9ca3af;font-variant-numeric:tabular-nums;">0</td>';
+  h += '<td colspan="4"></td></tr>';
 
   // Grand total
   h += '<tr style="background:#1a1a2e;color:white;">';
-  h += '<td style="padding:12px 14px;font-weight:700;font-size:14px;">סה"כ נכסים</td>';
-  h += '<td style="padding:12px 14px;text-align:right;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;">'+grandTotal.toLocaleString('he-IL')+'</td>';
-  h += '<td colspan="5"></td></tr>';
+  h += '<td style="padding:11px 14px;font-weight:700;font-size:14px;border-right:3px solid #3b82f6;">סה"כ נכסים</td>';
+  h += '<td style="padding:11px 10px;text-align:right;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;">'+net.toLocaleString('he-IL')+'</td>';
+  h += '<td colspan="4"></td></tr>';
 
   h += '</tbody></table>';
   wrap.innerHTML = h;
