@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.18</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.19</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3189,7 +3189,7 @@ document.addEventListener('keydown', function(e) {
       <span style="font-size:15px;font-weight:700;">&#x1F4CB; תצוגת טבלה
         <span id="tv-month-label" style="font-size:12px;font-weight:400;opacity:0.75;margin-right:6px;"></span>
       </span>
-      <span style="width:32px;"></span>
+      <span style="font-size:13px;font-weight:600;background:rgba(255,255,255,0.12);border-radius:8px;padding:5px 14px;letter-spacing:0.01em;">סה"כ נכסים: <span id="tv-total-label" style="font-size:15px;font-weight:800;">—</span></span>
     </div>
     <div style="overflow:auto;flex:1;padding:0 16px;">
       <div id="tv-wrap" style="padding:0 0 16px 0;display:inline-block;min-width:unset;"></div>
@@ -3340,17 +3340,15 @@ function buildTableView() {
     }
   });
   var net = grandTotal - chov;
+  var tvTotalEl = document.getElementById('tv-total-label');
+  if (tvTotalEl) tvTotalEl.textContent = net.toLocaleString('he-IL');
 
   h += '<tr style="background:#fef2f2;border-bottom:1px solid #fecaca;">';
   h += '<td style="padding:8px 12px;font-weight:600;color:#dc2626;text-align:left;border-left:3px solid #fca5a5;">חוב</td>';
   h += '<td style="padding:8px 10px;text-align:right;font-weight:600;color:#9ca3af;font-variant-numeric:tabular-nums;">0</td>';
   h += '<td colspan="4"></td></tr>';
 
-  // Grand total
-  h += '<tr style="background:#1a1a2e;color:white;">';
-  h += '<td style="padding:11px 12px;font-weight:700;font-size:14px;text-align:left;border-left:3px solid #3b82f6;">סה"כ נכסים</td>';
-  h += '<td style="padding:11px 10px;text-align:right;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;">'+net.toLocaleString('he-IL')+'</td>';
-  h += '<td colspan="4"></td></tr>';
+
 
   h += '</tbody></table>';
   wrap.innerHTML = h;
