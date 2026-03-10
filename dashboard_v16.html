@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.16</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.17</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3191,8 +3191,8 @@ document.addEventListener('keydown', function(e) {
       </span>
       <span style="width:32px;"></span>
     </div>
-    <div style="overflow:auto;flex:1;">
-      <div id="tv-wrap" style="padding:0 0 16px 0;min-width:680px;"></div>
+    <div style="overflow:auto;flex:1;padding:0 16px;">
+      <div id="tv-wrap" style="padding:0 0 16px 0;display:inline-block;min-width:unset;"></div>
     </div>
   </div>
 </div>
@@ -3248,15 +3248,15 @@ function buildTableView() {
 
   // 6 columns (no notes)
   var cols = [
-    {label:'השקעה',     w:'185px'},
-    {label:'סכום',      w:'72px'},
-    {label:'נזילות',    w:'66px'},
-    {label:'סטטוס',     w:'115px'},
-    {label:'גוף מנהל', w:'76px'},
-    {label:'סוכן',      w:'56px'},
+    {label:'השקעה',     w:'200px'},
+    {label:'סכום',      w:'58px'},
+    {label:'נזילות',    w:'58px'},
+    {label:'סטטוס',     w:'100px'},
+    {label:'גוף מנהל', w:'68px'},
+    {label:'סוכן',      w:'48px'},
   ];
 
-  var h = '<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:Heebo,sans-serif;direction:ltr;">';
+  var h = '<table style="width:auto;min-width:580px;border-collapse:collapse;font-size:13px;font-family:Heebo,sans-serif;direction:ltr;">';
   h += '<thead><tr style="background:#1a1a2e;color:white;position:sticky;top:0;z-index:5;">';
   cols.forEach(function(c) {
     h += '<th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap;min-width:'+c.w+';border-right:1px solid rgba(255,255,255,0.07);">'+c.label+'</th>';
