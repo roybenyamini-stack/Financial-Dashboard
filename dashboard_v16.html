@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.13</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.14</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3248,7 +3248,7 @@ function buildTableView() {
 
   // 6 columns (no notes)
   var cols = [
-    {label:'קטגוריה / השקעה', w:'260px', align:'center'},
+    {label:'השקעה',            w:'200px', align:'center'},
     {label:'סכום',             w:'90px',  align:'center'},
     {label:'נזילות',           w:'80px',  align:'center'},
     {label:'סטטוס',            w:'130px', align:'center'},
@@ -3283,7 +3283,7 @@ function buildTableView() {
 
     // Category header row (above all fund rows)
     h += '<tr style="background:'+sec.color+';">';
-    h += '<td colspan="6" style="padding:6px 14px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.08);">'+sec.label+'</td>';
+    h += '<td colspan="6" style="padding:7px 14px 7px 22px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.1);text-align:left;">'+sec.label+'</td>';
     h += '</tr>';
 
     // Fund rows
