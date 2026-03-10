@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.12</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.13</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3281,17 +3281,17 @@ function buildTableView() {
       secRows.push({fk:fk, f:f, meta:meta, val:val, ri:ri});
     });
 
-    // Fund rows with category name in first cell only on first row
+    // Category header row (above all fund rows)
+    h += '<tr style="background:'+sec.color+';">';
+    h += '<td colspan="6" style="padding:6px 14px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.08);">'+sec.label+'</td>';
+    h += '</tr>';
+
+    // Fund rows
     secRows.forEach(function(r, idx) {
       var zebra = idx % 2 === 0 ? sec.bg : '#ffffff';
       var valColor = r.val === 0 ? '#9ca3af' : '#111827';
       var isSold = r.meta.status && /נמכרה/.test(r.meta.status);
       var rowOpacity = isSold ? 'opacity:0.65;' : '';
-
-      // Category cell: only first row shows the label, spans are tricky so we use text+indent instead
-      var catCell = idx === 0
-        ? '<td style="padding:8px 12px;font-weight:700;font-size:12px;color:#1f2937;white-space:nowrap;border-right:3px solid '+sec.color+';">'+sec.label+'</td>'
-        : '<td style="padding:8px 12px;border-right:3px solid '+sec.color+';"></td>';
 
       // Status badges - compact
       var sb = '';
@@ -3310,11 +3310,8 @@ function buildTableView() {
         if (/כספי/.test(st)) sb += '&nbsp;<span style="background:#ede9fe;color:#6d28d9;border-radius:4px;padding:0 4px;font-size:10px;">כספי</span>';
       }
 
-      // Fund name cell (indent slightly)
-      var nameCell = r.f.name;
-
       h += '<tr style="background:'+zebra+';border-bottom:1px solid #e5e7eb;'+rowOpacity+'">';
-      h += catCell;
+      h += '<td style="padding:8px 12px 8px 22px;color:#374151;font-size:13px;border-left:3px solid '+sec.color+';">'+r.f.name+'</td>';
       h += '<td style="padding:8px 10px;text-align:right;font-weight:500;color:'+valColor+';font-variant-numeric:tabular-nums;">'+r.val.toLocaleString('he-IL')+'</td>';
       h += '<td style="padding:8px 8px;text-align:center;font-size:11px;color:#6b7280;">'+(r.meta.liquid||'')+'</td>';
       h += '<td style="padding:8px 8px;text-align:center;">'+sb+'</td>';
@@ -3327,7 +3324,7 @@ function buildTableView() {
     grandTotal += secTotal;
     if (!sec.noSubtotal) {
       h += '<tr style="background:'+sec.color+';border-bottom:2px solid rgba(0,0,0,0.1);">';
-      h += '<td style="padding:6px 12px;font-weight:700;font-size:12px;color:#374151;border-right:3px solid rgba(0,0,0,0.15);">סה"כ '+sec.label+'</td>';
+      h += '<td style="padding:6px 14px;font-weight:700;font-size:12px;color:#374151;border-left:3px solid rgba(0,0,0,0.15);">סה"כ '+sec.label+'</td>';
       h += '<td style="padding:6px 10px;text-align:right;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;">'+secTotal.toLocaleString('he-IL')+'</td>';
       h += '<td colspan="4"></td></tr>';
     }
@@ -3345,13 +3342,13 @@ function buildTableView() {
   var net = grandTotal - chov;
 
   h += '<tr style="background:#fef2f2;border-bottom:1px solid #fecaca;">';
-  h += '<td style="padding:8px 12px;font-weight:600;color:#dc2626;border-right:3px solid #fca5a5;">חוב</td>';
+  h += '<td style="padding:8px 14px;font-weight:600;color:#dc2626;border-left:3px solid #fca5a5;">חוב</td>';
   h += '<td style="padding:8px 10px;text-align:right;font-weight:600;color:#9ca3af;font-variant-numeric:tabular-nums;">0</td>';
   h += '<td colspan="4"></td></tr>';
 
   // Grand total
   h += '<tr style="background:#1a1a2e;color:white;">';
-  h += '<td style="padding:11px 14px;font-weight:700;font-size:14px;border-right:3px solid #3b82f6;">סה"כ נכסים</td>';
+  h += '<td style="padding:11px 14px;font-weight:700;font-size:14px;border-left:3px solid #3b82f6;">סה"כ נכסים</td>';
   h += '<td style="padding:11px 10px;text-align:right;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;">'+net.toLocaleString('he-IL')+'</td>';
   h += '<td colspan="4"></td></tr>';
 
