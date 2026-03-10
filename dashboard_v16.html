@@ -223,7 +223,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.14</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.15</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3248,18 +3248,18 @@ function buildTableView() {
 
   // 6 columns (no notes)
   var cols = [
-    {label:'השקעה',            w:'200px', align:'center'},
-    {label:'סכום',             w:'90px',  align:'center'},
-    {label:'נזילות',           w:'80px',  align:'center'},
-    {label:'סטטוס',            w:'130px', align:'center'},
-    {label:'גוף מנהל',        w:'85px',  align:'center'},
-    {label:'סוכן',             w:'65px',  align:'center'},
+    {label:'השקעה',     w:'180px', align:'right'},
+    {label:'סכום',      w:'70px',  align:'right'},
+    {label:'נזילות',    w:'65px',  align:'right'},
+    {label:'סטטוס',     w:'110px', align:'right'},
+    {label:'גוף מנהל', w:'75px',  align:'right'},
+    {label:'סוכן',      w:'55px',  align:'right'},
   ];
 
-  var h = '<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:Heebo,sans-serif;direction:ltr;">';
+  var h = '<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:Heebo,sans-serif;direction:rtl;">';
   h += '<thead><tr style="background:#1a1a2e;color:white;position:sticky;top:0;z-index:5;">';
   cols.forEach(function(c) {
-    h += '<th style="padding:10px 12px;text-align:'+c.align+';font-weight:600;white-space:nowrap;min-width:'+c.w+';border-right:1px solid rgba(255,255,255,0.07);">'+c.label+'</th>';
+    h += '<th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap;min-width:'+c.w+';border-left:1px solid rgba(255,255,255,0.07);">'+c.label+'</th>';
   });
   h += '</tr></thead><tbody>';
 
@@ -3283,7 +3283,7 @@ function buildTableView() {
 
     // Category header row (above all fund rows)
     h += '<tr style="background:'+sec.color+';">';
-    h += '<td colspan="6" style="padding:7px 14px 7px 22px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.1);text-align:left;">'+sec.label+'</td>';
+    h += '<td colspan="6" style="padding:7px 12px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.1);text-align:right;">'+sec.label+'</td>';
     h += '</tr>';
 
     // Fund rows
@@ -3311,12 +3311,12 @@ function buildTableView() {
       }
 
       h += '<tr style="background:'+zebra+';border-bottom:1px solid #e5e7eb;'+rowOpacity+'">';
-      h += '<td style="padding:8px 12px 8px 22px;color:#374151;font-size:13px;border-left:3px solid '+sec.color+';">'+r.f.name+'</td>';
-      h += '<td style="padding:8px 10px;text-align:right;font-weight:500;color:'+valColor+';font-variant-numeric:tabular-nums;">'+r.val.toLocaleString('he-IL')+'</td>';
-      h += '<td style="padding:8px 8px;text-align:center;font-size:11px;color:#6b7280;">'+(r.meta.liquid||'')+'</td>';
-      h += '<td style="padding:8px 8px;text-align:center;">'+sb+'</td>';
-      h += '<td style="padding:8px 8px;text-align:center;font-size:12px;color:#374151;">'+(r.meta.mgr||'')+'</td>';
-      h += '<td style="padding:8px 8px;text-align:center;font-size:12px;color:#6b7280;">'+(r.meta.agent||'')+'</td>';
+      h += '<td style="padding:7px 12px;color:#374151;font-size:13px;text-align:right;border-right:3px solid '+sec.color+';">'+r.f.name+'</td>';
+      h += '<td style="padding:7px 10px;text-align:right;font-weight:500;color:'+valColor+';font-variant-numeric:tabular-nums;">'+r.val.toLocaleString('he-IL')+'</td>';
+      h += '<td style="padding:7px 8px;text-align:right;font-size:11px;color:#6b7280;">'+(r.meta.liquid||'')+'</td>';
+      h += '<td style="padding:7px 8px;text-align:right;">'+sb+'</td>';
+      h += '<td style="padding:7px 8px;text-align:right;font-size:12px;color:#374151;">'+(r.meta.mgr||'')+'</td>';
+      h += '<td style="padding:7px 8px;text-align:right;font-size:12px;color:#6b7280;">'+(r.meta.agent||'')+'</td>';
       h += '</tr>';
     });
 
@@ -3324,7 +3324,7 @@ function buildTableView() {
     grandTotal += secTotal;
     if (!sec.noSubtotal) {
       h += '<tr style="background:'+sec.color+';border-bottom:2px solid rgba(0,0,0,0.1);">';
-      h += '<td style="padding:6px 14px;font-weight:700;font-size:12px;color:#374151;border-left:3px solid rgba(0,0,0,0.15);">סה"כ '+sec.label+'</td>';
+      h += '<td style="padding:6px 12px;font-weight:700;font-size:12px;color:#374151;text-align:right;border-right:3px solid rgba(0,0,0,0.15);">סה"כ '+sec.label+'</td>';
       h += '<td style="padding:6px 10px;text-align:right;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;">'+secTotal.toLocaleString('he-IL')+'</td>';
       h += '<td colspan="4"></td></tr>';
     }
@@ -3342,13 +3342,13 @@ function buildTableView() {
   var net = grandTotal - chov;
 
   h += '<tr style="background:#fef2f2;border-bottom:1px solid #fecaca;">';
-  h += '<td style="padding:8px 14px;font-weight:600;color:#dc2626;border-left:3px solid #fca5a5;">חוב</td>';
+  h += '<td style="padding:8px 12px;font-weight:600;color:#dc2626;text-align:right;border-right:3px solid #fca5a5;">חוב</td>';
   h += '<td style="padding:8px 10px;text-align:right;font-weight:600;color:#9ca3af;font-variant-numeric:tabular-nums;">0</td>';
   h += '<td colspan="4"></td></tr>';
 
   // Grand total
   h += '<tr style="background:#1a1a2e;color:white;">';
-  h += '<td style="padding:11px 14px;font-weight:700;font-size:14px;border-left:3px solid #3b82f6;">סה"כ נכסים</td>';
+  h += '<td style="padding:11px 12px;font-weight:700;font-size:14px;text-align:right;border-right:3px solid #3b82f6;">סה"כ נכסים</td>';
   h += '<td style="padding:11px 10px;text-align:right;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;">'+net.toLocaleString('he-IL')+'</td>';
   h += '<td colspan="4"></td></tr>';
 
