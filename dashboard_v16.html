@@ -248,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.45d</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.45d2</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2301,8 +2301,27 @@ function cfParseWorkbook(wb) {
   };
   var result = [];
 
+  // Helper: convert SheetJS serial number or Date to {y,m}
+  function parseHdr(hdr) {
+    if (hdr == null) return null;
+    if (typeof hdr === 'number' && hdr > 40000 && hdr < 60000) {
+      // Excel serial date: days since 1900-01-01
+      var d = new Date(Math.round((hdr - 25569) * 86400 * 1000));
+      return {y: d.getUTCFullYear(), m: d.getUTCMonth() + 1};
+    }
+    if (hdr instanceof Date) {
+      return {y: hdr.getFullYear(), m: hdr.getMonth() + 1};
+    }
+    // String like "Mars 2025" or "01/01/2025"
+    var s = String(hdr);
+    var ym = s.match(/(\d{4})/);
+    if (!ym) return null;
+    var y = parseInt(ym[1]);
+    var mm = s.match(/^(\d{1,2})[\/\-]/);
+    return {y: y, m: mm ? parseInt(mm[1]) : null};
+  }
+
   wb.SheetNames.forEach(function(sheetName) {
-    console.log('[CF] sheet:', sheetName);
     if (sheetName.indexOf(MARKER) < 0) return;
     var yearMatch = sheetName.match(/(\d{4})/);
     if (!yearMatch) return;
@@ -2311,26 +2330,20 @@ function cfParseWorkbook(wb) {
 
     var ws = wb.Sheets[sheetName];
     var data = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:true});
-    console.log('[CF] rows in sheet:', data.length);
+    console.log('[CF] sheet', sheetName, 'rows:', data.length, 'row1 sample cols 16-22:', data[1] ? data[1].slice(16,23) : 'N/A');
 
     for (var mi = 0; mi < 12; mi++) {
       var colBase = 16 + mi * 3;
-      var hdr = (data[1] && data[1][colBase] != null) ? data[1][colBase] : null;
-      if (hdr == null) continue;
+      var hdrRaw = (data[1] && data[1].length > colBase) ? data[1][colBase] : null;
+      console.log('[CF] month', mi, 'colBase', colBase, 'hdr:', hdrRaw, typeof hdrRaw);
 
-      var yr, mo;
-      if (typeof hdr === 'number') {
-        var d = XLSX.SSF.parse_date_code(hdr);
-        yr = d.y; mo = d.m;
-      } else if (hdr instanceof Date) {
-        yr = hdr.getFullYear(); mo = hdr.getMonth() + 1;
-      } else {
-        var dm = String(hdr).match(/(\d{4})/);
-        if (!dm) continue;
-        yr = parseInt(dm[1]);
-        mo = mi + 1;
-      }
-      if (!yr || yr < 2025) continue;
+      if (hdrRaw == null) continue;
+      var parsed = parseHdr(hdrRaw);
+      if (!parsed) continue;
+
+      var yr = parsed.y;
+      var mo = parsed.m || (mi + 1);
+      if (yr < 2025) continue;
 
       var label = HEB_MONTHS[mo - 1] + ' ' + String(yr).slice(2);
       var mObj = {label:label, year:yr, month:mo, rows:{}};
@@ -2338,10 +2351,10 @@ function cfParseWorkbook(wb) {
       Object.keys(ROW_MAP).forEach(function(ri) {
         var rowIdx = parseInt(ri);
         var row  = data[rowIdx];
-        var val  = (row && row[colBase]     != null) ? row[colBase]     : null;
-        var note = (row && row[colBase + 1] != null) ? row[colBase + 1] : null;
+        var val  = (row && row.length > colBase)     ? row[colBase]     : null;
+        var note = (row && row.length > colBase + 1) ? row[colBase + 1] : null;
         var num  = null;
-        if (val !== null) {
+        if (val !== null && val !== undefined) {
           var p = typeof val === 'number' ? val : parseFloat(String(val).replace(/,/g,''));
           if (!isNaN(p)) num = Math.round(p * 10) / 10;
         }
@@ -2353,7 +2366,7 @@ function cfParseWorkbook(wb) {
     }
   });
 
-  console.log('[CF] total months parsed:', result.length);
+  console.log('[CF] total parsed:', result.length);
   result.sort(function(a,b){ return (a.year*100+a.month)-(b.year*100+b.month); });
   return result;
 }
