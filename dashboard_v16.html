@@ -247,7 +247,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.36</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.37</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3402,12 +3402,321 @@ function buildTableView() {
 
 </div>
 <div class="tab-panel" id="tab-overview"><div class="tab-coming-soon"><div class="tcs-icon">🗺️</div><div class="tcs-text">מבט על</div><div class="tcs-sub">בבנייה...</div></div></div>
-<div class="tab-panel" id="tab-cashflow"><div class="tab-coming-soon"><div class="tcs-icon">💸</div><div class="tcs-text">תזרים שוטף</div><div class="tcs-sub">בבנייה...</div></div></div>
+<div class="tab-panel" id="tab-cashflow">
+<!-- ===== CASHFLOW TAB CONTENT ===== -->
+<div style="padding:20px 20px 40px 20px; font-family:Heebo,sans-serif; direction:rtl;">
+
+  <!-- Privacy toggle + upload button -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <h2 style="margin:0;font-size:18px;font-weight:700;color:#1a1a2e;">תזרים שוטף חודשי</h2>
+      <span style="font-size:12px;color:#9ca3af;background:#f3f4f6;padding:3px 8px;border-radius:10px;">אלפי ש״ח</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:#1a1a2e;color:white;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;user-select:none;" id="cf-privacy-label">
+        <input type="checkbox" id="cf-privacy-toggle" style="display:none;" onchange="cfTogglePrivacy(this.checked)">
+        <span id="cf-privacy-icon">👁️</span>
+        <span id="cf-privacy-text">הסתר הערות</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;background:#f1f5f9;color:#374151;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid #e2e8f0;" title="עדכן נתוני תזרים מאקסל">
+        <input type="file" accept=".xlsx" style="display:none;" onchange="cfLoadExcel(this)">
+        📂 עדכן תזרים
+      </label>
+    </div>
+  </div>
+
+  <!-- KPI Cards - last 3 months with real data -->
+  <div id="cf-kpi-row" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;"></div>
+
+  <!-- Bar Chart -->
+  <div style="background:#fff;border-radius:16px;padding:18px 20px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <span style="font-size:14px;font-weight:700;color:#1a1a2e;">מגמת תזרים – 12 חודשים אחרונים</span>
+      <div style="display:flex;gap:12px;font-size:11px;">
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#22c55e;display:inline-block;"></span>הכנסות</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#ef4444;display:inline-block;"></span>הוצאות</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#3b82f6;display:inline-block;"></span>נטו</span>
+      </div>
+    </div>
+    <div style="position:relative;height:220px;" dir="ltr">
+      <canvas id="cf-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Detailed Table -->
+  <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="overflow-x:auto;">
+      <table id="cf-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:700px;"></table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== CASHFLOW DATA =====
+var CF_DATA = [{"label": "ינו׳ 25", "year": 2025, "month": 1, "rows": {"salary": {"val": 97, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 103, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 71"}, "yotam": {"val": 12, "note": "יותם"}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 58, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 45, "note": null}, "salary_usd": {"val": 12, "note": null}, "exp_usd": {"val": -10, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 47, "note": null}, "profit_loss": {"val": 63, "note": "רווח / הפסד"}}}, {"label": "פבר׳ 25", "year": 2025, "month": 2, "rows": {"salary": {"val": 103, "note": "תמרוץ רבעון 4"}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 109, "note": null}, "visa": {"val": 17, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 72"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 38, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 71, "note": null}, "salary_usd": {"val": 9, "note": null}, "exp_usd": {"val": -2, "note": null}, "yotam_usd": {"val": -21, "note": "רכב יותם"}, "total_usd": {"val": -14, "note": null}, "delta": {"val": 57, "note": null}, "profit_loss": {"val": 73, "note": "רווח / הפסד"}}}, {"label": "מרץ 25", "year": 2025, "month": 3, "rows": {"salary": {"val": 70, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 76, "note": null}, "visa": {"val": 16, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 73"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 37, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 39, "note": null}, "salary_usd": {"val": 9, "note": null}, "exp_usd": {"val": -6, "note": null}, "yotam_usd": {"val": -72, "note": "20K$ ליותם"}, "total_usd": {"val": 3, "note": null}, "delta": {"val": -30, "note": null}, "profit_loss": {"val": -14, "note": "רווח / הפסד"}}}, {"label": "אפר׳ 25", "year": 2025, "month": 4, "rows": {"salary": {"val": 168, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 174, "note": null}, "visa": {"val": 24, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 74"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": 6, "note": "אינטרקום מקדמה"}, "total_exp": {"val": 51, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 123, "note": null}, "salary_usd": {"val": 1, "note": null}, "exp_usd": {"val": -20, "note": "סקי סנט מוריץ"}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": -19, "note": null}, "delta": {"val": 104, "note": null}, "profit_loss": {"val": 120, "note": "רווח / הפסד"}}}, {"label": "מאי 25", "year": 2025, "month": 5, "rows": {"salary": {"val": 98, "note": "תמרוץ רבעון 1"}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 104, "note": null}, "visa": {"val": 19, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 75"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 40, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 64, "note": null}, "salary_usd": {"val": 10, "note": null}, "exp_usd": {"val": -3, "note": null}, "yotam_usd": {"val": -90, "note": "25K$ ליותם"}, "total_usd": {"val": -83, "note": null}, "delta": {"val": -12, "note": null}, "profit_loss": {"val": 4, "note": "רווח / הפסד"}}}, {"label": "יוני 25", "year": 2025, "month": 6, "rows": {"salary": {"val": 86, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 92, "note": null}, "visa": {"val": 19, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 76"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 40, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 52, "note": null}, "salary_usd": {"val": 12, "note": null}, "exp_usd": {"val": -8, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 4, "note": null}, "delta": {"val": 56, "note": null}, "profit_loss": {"val": 72, "note": "רווח / הפסד"}}}, {"label": "יולי 25", "year": 2025, "month": 7, "rows": {"salary": {"val": 109, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 115, "note": null}, "visa": {"val": 20, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 77"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 41, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 74, "note": null}, "salary_usd": {"val": 2, "note": null}, "exp_usd": {"val": -1, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 1, "note": null}, "delta": {"val": 75, "note": null}, "profit_loss": {"val": 91, "note": "רווח / הפסד"}}}, {"label": "אוג׳ 25", "year": 2025, "month": 8, "rows": {"salary": {"val": 52, "note": "תמרוץ רבעון 2"}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 58, "note": null}, "visa": {"val": 20, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 78"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": 100, "note": "רכב יעל"}, "total_exp": {"val": 141, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": -83, "note": null}, "salary_usd": {"val": 7, "note": null}, "exp_usd": {"val": -6, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 1, "note": null}, "delta": {"val": -82, "note": null}, "profit_loss": {"val": -66, "note": "רווח / הפסד"}}}, {"label": "ספט׳ 25", "year": 2025, "month": 9, "rows": {"salary": {"val": 44, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": 5, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 55, "note": null}, "visa": {"val": 28, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 79"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 49, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 6, "note": null}, "salary_usd": {"val": 7, "note": null}, "exp_usd": {"val": 0, "note": null}, "yotam_usd": {"val": -68, "note": null}, "total_usd": {"val": -61, "note": null}, "delta": {"val": -55, "note": null}, "profit_loss": {"val": -39, "note": "רווח / הפסד"}}}, {"label": "אוק׳ 25", "year": 2025, "month": 10, "rows": {"salary": {"val": 118, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 124, "note": null}, "visa": {"val": 23, "note": null}, "cash_exp": {"val": 7, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 80"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 46, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 78, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -5, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 1, "note": null}, "delta": {"val": 79, "note": null}, "profit_loss": {"val": 95, "note": "רווח / הפסד"}}}, {"label": "נוב׳ 25", "year": 2025, "month": 11, "rows": {"salary": {"val": 95, "note": "תמרוץ רבעון 3"}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 101, "note": null}, "visa": {"val": 20, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 81"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": 10, "note": "טיפול לנדקרוזר"}, "total_exp": {"val": 51, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 50, "note": null}, "salary_usd": {"val": 9, "note": null}, "exp_usd": {"val": -7, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 52, "note": null}, "profit_loss": {"val": 68, "note": "רווח / הפסד"}}}, {"label": "דצמ׳ 25", "year": 2025, "month": 12, "rows": {"salary": {"val": 84, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": 84, "note": "החזר מס הכנסה"}, "buffer": {"val": null, "note": null}, "total_income": {"val": 174, "note": null}, "visa": {"val": 24, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 16, "note": "החזר הלוואה 82"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 45, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 129, "note": null}, "salary_usd": {"val": 7, "note": null}, "exp_usd": {"val": -2, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 5, "note": null}, "delta": {"val": 134, "note": null}, "profit_loss": {"val": 150, "note": "רווח / הפסד"}}}, {"label": "ינו׳ 26", "year": 2026, "month": 1, "rows": {"salary": {"val": 81, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 87, "note": null}, "visa": {"val": 21, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 15, "note": "החזר הלוואה 83"}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 41, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 46, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -1, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 5, "note": null}, "delta": {"val": 51, "note": null}, "profit_loss": {"val": 66, "note": "רווח / הפסד"}}}, {"label": "פבר׳ 26", "year": 2026, "month": 2, "rows": {"salary": {"val": 137, "note": "תמרוץ רבעון 4"}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 143, "note": null}, "visa": {"val": 26, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": 15, "note": "החזר הלוואה 84"}, "yotam": {"val": 62, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 108, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 35, "note": null}, "salary_usd": {"val": 10, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 6, "note": null}, "delta": {"val": 41, "note": null}, "profit_loss": {"val": 56, "note": "רווח / הפסד"}}}, {"label": "מרץ 26", "year": 2026, "month": 3, "rows": {"salary": {"val": 117, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 123, "note": null}, "visa": {"val": 16, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": 5, "note": "יעל"}, "other_exp": {"val": 6, "note": " MacBook"}, "total_exp": {"val": 32, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 91, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 93, "note": null}, "profit_loss": {"val": 93, "note": "רווח / הפסד"}}}, {"label": "אפר׳ 26", "year": 2026, "month": 4, "rows": {"salary": {"val": 36, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 3, "note": null}, "exp_usd": {"val": -1, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}, {"label": "מאי 26", "year": 2026, "month": 5, "rows": {"salary": {"val": 36, "note": "תמרוץ רבעון 1"}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}, {"label": "יוני 26", "year": 2026, "month": 6, "rows": {"salary": {"val": 36, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}, {"label": "יולי 26", "year": 2026, "month": 7, "rows": {"salary": {"val": 36, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}, {"label": "אוג׳ 26", "year": 2026, "month": 8, "rows": {"salary": {"val": 36, "note": "תמרוץ רבעון 2"}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}, {"label": "ספט׳ 26", "year": 2026, "month": 9, "rows": {"salary": {"val": 36, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}, {"label": "אוק׳ 26", "year": 2026, "month": 10, "rows": {"salary": {"val": 36, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}, {"label": "נוב׳ 26", "year": 2026, "month": 11, "rows": {"salary": {"val": 36, "note": "תמרוץ רבעון 3"}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}, {"label": "דצמ׳ 26", "year": 2026, "month": 12, "rows": {"salary": {"val": 36, "note": null}, "rent_income": {"val": 6, "note": null}, "other_income": {"val": null, "note": null}, "buffer": {"val": null, "note": null}, "total_income": {"val": 42, "note": null}, "visa": {"val": 25, "note": null}, "cash_exp": {"val": 5, "note": null}, "loans": {"val": null, "note": null}, "yotam": {"val": null, "note": null}, "other_exp": {"val": null, "note": null}, "total_exp": {"val": 30, "note": null}, "renovation": {"val": null, "note": null}, "net_cashflow": {"val": 12, "note": null}, "salary_usd": {"val": 6, "note": null}, "exp_usd": {"val": -4, "note": null}, "yotam_usd": {"val": null, "note": null}, "total_usd": {"val": 2, "note": null}, "delta": {"val": 14, "note": null}, "profit_loss": {"val": 14, "note": "רווח / הפסד"}}}];
+
+var CF_ROW_DEFS = [
+  {key:'salary',       label:'משכורת',                  block:'income',   total:false},
+  {key:'rent_income',  label:'שכר דירה',                block:'income',   total:false},
+  {key:'other_income', label:'הכנסות שונות',            block:'income',   total:false},
+  {key:'buffer',       label:'פריטה מ Buffer',          block:'income',   total:false},
+  {key:'total_income', label:'סה״כ הכנסות',             block:'income',   total:true},
+  {key:'visa',         label:'חיוב ויזה מחודש קודם',   block:'expenses', total:false},
+  {key:'cash_exp',     label:'הוצאות מזומן',            block:'expenses', total:false},
+  {key:'loans',        label:'החזר הלוואות',            block:'expenses', total:false},
+  {key:'yotam',        label:'הוצאות יותם',             block:'expenses', total:false},
+  {key:'other_exp',    label:'הוצאות שונות',            block:'expenses', total:false},
+  {key:'total_exp',    label:'סה״כ התחייבויות שקלי',   block:'expenses', total:true},
+  {key:'renovation',   label:'שיפוץ',                   block:'special',  total:false},
+  {key:'net_cashflow', label:'תזרים שקלי נטו',         block:'cashflow', total:true},
+  {key:'salary_usd',   label:'משכורת $ (בשקלים)',       block:'dollar',   total:false},
+  {key:'exp_usd',      label:'הוצאות $ (בשקלים)',       block:'dollar',   total:false},
+  {key:'yotam_usd',    label:'הוצאות יותם $ (בשקלים)', block:'dollar',   total:false},
+  {key:'total_usd',    label:'סך הכל $ (בשקלים)',       block:'dollar',   total:true},
+  {key:'delta',        label:'∆ תזרים שוטף',            block:'summary',  total:true},
+  {key:'profit_loss',  label:'רווח / הפסד',             block:'summary',  total:true},
+];
+
+var CF_BLOCK_META = {
+  'income':   {label:'הכנסות',               color:'#dcfce7', headerColor:'#16a34a'},
+  'expenses': {label:'התחייבויות שוטפות',    color:'#fee2e2', headerColor:'#dc2626'},
+  'special':  {label:'הוצאות חריגות / שיפוץ', color:'#fef9c3', headerColor:'#b45309'},
+  'cashflow': {label:'תזרים שקלי נטו',       color:'#dbeafe', headerColor:'#2563eb'},
+  'dollar':   {label:'חשבון דולרי',           color:'#f3e8ff', headerColor:'#7c3aed'},
+  'summary':  {label:'סיכום',                color:'#f1f5f9', headerColor:'#475569'},
+};
+
+var cfPrivacyOn = false;
+var cfChartInstance = null;
+
+function cfTogglePrivacy(on) {
+  cfPrivacyOn = on;
+  document.getElementById('cf-privacy-icon').textContent = on ? '🔒' : '👁️';
+  document.getElementById('cf-privacy-text').textContent = on ? 'הצג הערות' : 'הסתר הערות';
+  document.querySelectorAll('.cf-note-col').forEach(function(el) {
+    el.style.display = on ? 'none' : '';
+  });
+}
+
+function cfGetLastRealMonth() {
+  // Last month with actual income data (not just repeated estimates)
+  var today = new Date();
+  var cutoff = today.getFullYear() * 100 + (today.getMonth() + 1);
+  for (var i = CF_DATA.length - 1; i >= 0; i--) {
+    var m = CF_DATA[i];
+    var mKey = m.year * 100 + m.month;
+    if (mKey <= cutoff && m.rows.total_income && m.rows.total_income.val !== null) return i;
+  }
+  return CF_DATA.length - 1;
+}
+
+function cfRenderKPI() {
+  var lastIdx = cfGetLastRealMonth();
+  var m = CF_DATA[lastIdx];
+  var inc = m.rows.total_income.val || 0;
+  var exp = m.rows.total_exp.val || 0;
+  var net = m.rows.net_cashflow.val || 0;
+  var netColor = net >= 0 ? '#16a34a' : '#dc2626';
+  var netBg = net >= 0 ? '#f0fdf4' : '#fff5f5';
+
+  var cards = [
+    {label:'סך הכנסות', value:inc, color:'#16a34a', bg:'#f0fdf4', icon:'💰'},
+    {label:'סך הוצאות שוטפות', value:exp, color:'#dc2626', bg:'#fff5f5', icon:'💸'},
+    {label:'תזרים שקלי נטו', value:net, color:netColor, bg:netBg, icon:'📊', signed:true},
+  ];
+
+  var html = '';
+  cards.forEach(function(c) {
+    var sign = c.signed && c.value > 0 ? '+' : '';
+    html += '<div style="background:'+c.bg+';border-radius:14px;padding:16px 18px;border-right:4px solid '+c.color+';">';
+    html += '<div style="font-size:11px;color:#6b7280;font-weight:600;margin-bottom:4px;">'+c.icon+' '+c.label+' – '+m.label+'</div>';
+    html += '<div style="font-size:24px;font-weight:800;color:'+c.color+';">'+sign+(c.value).toLocaleString()+'</div>';
+    html += '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">אלפי ש״ח</div>';
+    html += '</div>';
+  });
+  document.getElementById('cf-kpi-row').innerHTML = html;
+}
+
+function cfRenderChart() {
+  var lastIdx = cfGetLastRealMonth();
+  var startIdx = Math.max(0, lastIdx - 11);
+  var months = CF_DATA.slice(startIdx, lastIdx + 1);
+
+  var labels = months.map(function(m){return m.label;});
+  var incomes = months.map(function(m){return m.rows.total_income.val||0;});
+  var expenses = months.map(function(m){return m.rows.total_exp.val||0;});
+  var nets = months.map(function(m){return m.rows.net_cashflow.val||0;});
+
+  var ctx = document.getElementById('cf-chart').getContext('2d');
+  if (cfChartInstance) cfChartInstance.destroy();
+  cfChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {label:'הכנסות', data:incomes, backgroundColor:'rgba(34,197,94,0.75)', borderRadius:4, order:2},
+        {label:'הוצאות', data:expenses, backgroundColor:'rgba(239,68,68,0.75)', borderRadius:4, order:2},
+        {label:'נטו', data:nets, type:'line', borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)', borderWidth:2, pointRadius:3, fill:false, order:1, tension:0.3},
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{rtl:true, textDirection:'rtl'}},
+      scales:{
+        x:{ticks:{font:{family:'Heebo',size:10}}, grid:{display:false}},
+        y:{ticks:{font:{family:'Heebo',size:10}}, grid:{color:'#f3f4f6'}}
+      }
+    }
+  });
+}
+
+function cfRenderTable() {
+  var table = document.getElementById('cf-table');
+  var heb_months_short = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+
+  // Build header
+  var h = '<thead>';
+  h += '<tr style="background:#1a1a2e;color:white;position:sticky;top:0;z-index:3;">';
+  h += '<th style="padding:9px 12px;text-align:right;font-size:12px;min-width:170px;position:sticky;right:0;background:#1a1a2e;z-index:4;">סעיף</th>';
+  CF_DATA.forEach(function(m) {
+    h += '<th style="padding:9px 8px;text-align:center;font-size:11px;white-space:nowrap;min-width:52px;">'+m.label+'</th>';
+    h += '<th class="cf-note-col" style="padding:9px 6px;text-align:center;font-size:10px;color:rgba(255,255,255,0.55);min-width:90px;">הערות</th>';
+  });
+  h += '</tr></thead>';
+
+  // Build body grouped by blocks
+  var body = '<tbody>';
+  var lastBlock = null;
+
+  CF_ROW_DEFS.forEach(function(rowDef) {
+    var block = rowDef.block;
+    var meta = CF_BLOCK_META[block];
+
+    // Block header separator
+    if (block !== lastBlock) {
+      lastBlock = block;
+      var colSpan = 1 + CF_DATA.length * 2;
+      body += '<tr style="background:'+meta.headerColor+';">';
+      body += '<td colspan="'+colSpan+'" style="padding:5px 12px;font-size:11px;font-weight:700;color:white;letter-spacing:0.05em;">'+meta.label+'</td>';
+      body += '</tr>';
+    }
+
+    // Row style
+    var isTotal = rowDef.total;
+    var rowBg = isTotal ? meta.color : '#ffffff';
+    var rowStyle = isTotal ? 'font-weight:700;' : '';
+
+    body += '<tr style="background:'+rowBg+';border-bottom:1px solid #f3f4f6;">';
+    body += '<td style="padding:7px 12px;text-align:right;'+rowStyle+'font-size:12px;color:#374151;position:sticky;right:0;background:'+rowBg+';border-left:3px solid '+meta.headerColor+';">'+rowDef.label+'</td>';
+
+    CF_DATA.forEach(function(m) {
+      var cell = m.rows[rowDef.key] || {val:null,note:null};
+      var val = cell.val;
+      var note = cell.note;
+
+      // Value color
+      var valColor = '#111827';
+      if (isTotal) {
+        if (block === 'cashflow' || block === 'summary') {
+          valColor = val > 0 ? '#16a34a' : val < 0 ? '#dc2626' : '#9ca3af';
+        }
+      }
+      if (block === 'expenses' && val > 0) valColor = '#dc2626';
+      if (block === 'dollar' && val < 0) valColor = '#dc2626';
+
+      var valStr = val !== null ? val.toLocaleString() : '—';
+      body += '<td style="padding:7px 8px;text-align:center;'+rowStyle+'font-size:12px;color:'+valColor+';font-variant-numeric:tabular-nums;">'+valStr+'</td>';
+      body += '<td class="cf-note-col" style="padding:7px 6px;text-align:right;font-size:10px;color:#6b7280;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(note||'')+'">'+( note ? note : '')+'</td>';
+    });
+
+    body += '</tr>';
+  });
+
+  body += '</tbody>';
+  table.innerHTML = h + body;
+}
+
+function cfLoadExcel(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
+      var newData = cfParseWorkbook(wb);
+      if (newData.length > 0) {
+        CF_DATA = newData;
+        cfRenderKPI();
+        cfRenderChart();
+        cfRenderTable();
+        alert('✅ תזרים עודכן בהצלחה – ' + newData.length + ' חודשים');
+      }
+    } catch(err) {
+      alert('שגיאה בקריאת קובץ: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function cfParseWorkbook(wb) {
+  var HEB_MONTHS = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+  var ROW_MAP = {3:'salary',4:'rent_income',5:'other_income',6:'buffer',7:'total_income',
+    9:'visa',10:'cash_exp',11:'loans',12:'yotam',13:'other_exp',16:'total_exp',
+    19:'renovation',22:'net_cashflow',25:'salary_usd',26:'exp_usd',27:'yotam_usd',
+    28:'total_usd',39:'delta',43:'profit_loss'};
+  var result = [];
+  wb.SheetNames.forEach(function(name) {
+    if (!name.includes('שוטף חדשי')) return;
+    var yearMatch = name.match(/(\d{4})/);
+    if (!yearMatch || parseInt(yearMatch[1]) < 2025) return;
+    var ws = wb.Sheets[name];
+    var data = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:false});
+    if (!data[1]) return;
+    for (var mi = 0; mi < 12; mi++) {
+      var colBase = 16 + mi * 3;
+      var headerCell = data[1] ? data[1][colBase] : null;
+      if (!headerCell) continue;
+      var d = headerCell instanceof Date ? headerCell : new Date(headerCell);
+      var yr, mo;
+      if (!isNaN(d)) { yr = d.getFullYear(); mo = d.getMonth() + 1; }
+      else { var m2 = String(headerCell).match(/(\d{4})/); if (!m2) continue; yr = parseInt(m2[1]); mo = 3; }
+      if (yr < 2025) continue;
+      var mObj = {label: HEB_MONTHS[mo-1]+' '+String(yr).slice(2), year:yr, month:mo, rows:{}};
+      Object.keys(ROW_MAP).forEach(function(ri) {
+        var row = data[parseInt(ri)];
+        if (!row) { mObj.rows[ROW_MAP[ri]] = {val:null,note:null}; return; }
+        var v = row[colBase]; var n = row[colBase+1];
+        var num = (v !== null && v !== '' && !isNaN(parseFloat(v))) ? parseFloat(v) : null;
+        mObj.rows[ROW_MAP[ri]] = {val:num, note:(n && String(n).trim()) ? String(n).trim() : null};
+      });
+      result.push(mObj);
+    }
+  });
+  result.sort(function(a,b){return (a.year*100+a.month)-(b.year*100+b.month);});
+  return result;
+}
+
+function cfInit() {
+  if (!document.getElementById('cf-kpi-row')) return;
+  cfRenderKPI();
+  cfRenderChart();
+  cfRenderTable();
+}
+
+// Run when tab is switched to cashflow, or on load
+document.addEventListener('DOMContentLoaded', function() {
+  // slight delay so Chart.js is ready
+  setTimeout(cfInit, 100);
+});
+</script>
+</div>
 <div class="tab-panel" id="tab-pension"><div class="tab-coming-soon"><div class="tcs-icon">🏥</div><div class="tcs-text">פנסיה וביטוחים</div><div class="tcs-sub">בבנייה...</div></div></div>
 <div class="tab-panel" id="tab-market"><div class="tab-coming-soon"><div class="tcs-icon">📈</div><div class="tcs-text">ניתוח שוק ומסחר</div><div class="tcs-sub">בבנייה...</div></div></div>
 <div class="tab-panel" id="tab-simulator"><div class="tab-coming-soon"><div class="tcs-icon">🧮</div><div class="tcs-text">סימולטור פיננסי</div><div class="tcs-sub">בבנייה...</div></div></div>
 <script>
 var TAB_NAMES={'overview':'מבט על','cashflow':'תזרים שוטף','investments':'השקעות','pension':'פנסיה וביטוחים','market':'ניתוח שוק ומסחר','simulator':'סימולטור פיננסי'};
+var cfInited = false;
 function switchTab(id){
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
   document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
@@ -3417,6 +3726,7 @@ function switchTab(id){
   if(panel)panel.classList.add('active');
   var t=document.getElementById('hdr-tab-title');
   if(t)t.textContent=TAB_NAMES[id]||id;
+  if(id==='cashflow' && !cfInited){ cfInited=true; setTimeout(cfInit,80); }
 }
 </script>
 </body></html>
