@@ -218,6 +218,54 @@ body{background:var(--bg,#f0f2f5);}
 /* כפתור פתיחה */
 .cm-zoom-btn { background:none; border:1px solid rgba(0,0,0,0.12); cursor:pointer; font-size:13px; opacity:0.5; padding:3px 7px; border-radius:6px; transition:all .15s; line-height:1; }
 .cm-zoom-btn:hover { opacity:1; background:rgba(0,0,0,0.06); }
+
+/* ===== TABS NAV ===== */
+#tabs-nav {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 2px;
+  background: #1a1a2e;
+  padding: 0 20px;
+  border-bottom: 2px solid rgba(255,255,255,0.08);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+#tabs-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  font-family: Heebo, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color .18s, border-color .18s;
+  white-space: nowrap;
+  margin-bottom: -2px;
+}
+.tab-btn:hover { color: rgba(255,255,255,0.85); }
+.tab-btn.active {
+  color: #ffffff;
+  border-bottom-color: #3b82f6;
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.tab-coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: #9ca3af;
+  font-family: Heebo, sans-serif;
+  gap: 10px;
+}
+.tab-coming-soon .tcs-icon { font-size: 40px; opacity: 0.4; }
+.tab-coming-soon .tcs-text { font-size: 16px; font-weight: 600; }
+.tab-coming-soon .tcs-sub { font-size: 13px; opacity: 0.7; }
 </style>
 </head>
 <body>
@@ -226,7 +274,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.24</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.25</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -355,6 +403,19 @@ body{background:var(--bg,#f0f2f5);}
   </div>
 </div>
 </div><!-- /top-fixed -->
+<!-- ===== TABS NAV ===== -->
+<div id="tabs-nav" dir="rtl">
+  <button class="tab-btn active"     onclick="switchTab('investments')"  id="tabn-investments">השקעות</button>
+  <button class="tab-btn"            onclick="switchTab('overview')"     id="tabn-overview">מבט על</button>
+  <button class="tab-btn"            onclick="switchTab('market')"       id="tabn-market">ניתוח שוק ומסחר</button>
+  <button class="tab-btn"            onclick="switchTab('cashflow')"     id="tabn-cashflow">תזרים שוטף</button>
+  <button class="tab-btn"            onclick="switchTab('pension')"      id="tabn-pension">פנסיה וביטוחים</button>
+  <button class="tab-btn"            onclick="switchTab('simulator')"    id="tabn-simulator">סימולטור פיננסי</button>
+</div>
+
+<!-- ===== TAB: השקעות (default, contains all existing content) ===== -->
+<div class="tab-panel active" id="tab-investments">
+
 
 <!-- NOTES MODAL -->
 <div id="notes-modal" onclick="if(event.target===this)closeNotes();" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
@@ -3368,5 +3429,63 @@ h += '<td style="padding:7px 10px;text-align:right;font-weight:700;font-size:13p
 }
 </script>
 
+
+</div>
+
+<!-- ===== TAB: מבט על ===== -->
+<div class="tab-panel" id="tab-overview">
+  <div class="tab-coming-soon">
+    <div class="tcs-icon">🗺️</div>
+    <div class="tcs-text">מבט על</div>
+    <div class="tcs-sub">בבנייה...</div>
+  </div>
+</div>
+
+<!-- ===== TAB: ניתוח שוק ומסחר ===== -->
+<div class="tab-panel" id="tab-market">
+  <div class="tab-coming-soon">
+    <div class="tcs-icon">📈</div>
+    <div class="tcs-text">ניתוח שוק ומסחר</div>
+    <div class="tcs-sub">בבנייה...</div>
+  </div>
+</div>
+
+<!-- ===== TAB: תזרים שוטף ===== -->
+<div class="tab-panel" id="tab-cashflow">
+  <div class="tab-coming-soon">
+    <div class="tcs-icon">💸</div>
+    <div class="tcs-text">תזרים שוטף</div>
+    <div class="tcs-sub">בבנייה...</div>
+  </div>
+</div>
+
+<!-- ===== TAB: פנסיה וביטוחים ===== -->
+<div class="tab-panel" id="tab-pension">
+  <div class="tab-coming-soon">
+    <div class="tcs-icon">🏥</div>
+    <div class="tcs-text">פנסיה וביטוחים</div>
+    <div class="tcs-sub">בבנייה...</div>
+  </div>
+</div>
+
+<!-- ===== TAB: סימולטור פיננסי ===== -->
+<div class="tab-panel" id="tab-simulator">
+  <div class="tab-coming-soon">
+    <div class="tcs-icon">🧮</div>
+    <div class="tcs-text">סימולטור פיננסי</div>
+    <div class="tcs-sub">בבנייה...</div>
+  </div>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  var btn = document.getElementById('tabn-' + id);
+  var panel = document.getElementById('tab-' + id);
+  if (btn) btn.classList.add('active');
+  if (panel) panel.classList.add('active');
+}
+</script>
 
 </body></html>
