@@ -175,6 +175,9 @@ body{background:var(--bg,#f0f2f5);}
 #cm-back { display:none; background:#f1f5f9; border:none; border-radius:8px; padding:5px 12px; font-size:12px; font-family:Heebo,sans-serif; cursor:pointer; color:#475569; font-weight:600; transition:all .15s; white-space:nowrap; }
 #cm-back:hover { background:#e2e8f0; }
 #cm-back.visible { display:inline-flex; align-items:center; gap:4px; }
+#cm-back-table { display:none; background:#f1f5f9; border:none; border-radius:8px; padding:5px 12px; font-size:12px; font-family:Heebo,sans-serif; cursor:pointer; color:#475569; font-weight:600; transition:all .15s; white-space:nowrap; }
+#cm-back-table:hover { background:#e2e8f0; }
+#cm-back-table.visible { display:inline-flex; align-items:center; gap:4px; }
 #cm-close { width:30px; height:30px; border-radius:50%; border:none; background:#f1f5f9; cursor:pointer; font-size:15px; color:#64748b; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0; }
 #cm-close:hover { background:#fee2e2; color:#dc2626; }
 
@@ -244,7 +247,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.34</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.35</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2826,7 +2829,11 @@ var CM_WINDOW = 13;
 var cmChartData = null;
 
 // ---- פתיחת מודאל ----
-function openCatModal(catId) {
+var cmOpenedFromTable = false;
+function openCatModal(catId, fromTable) {
+  cmOpenedFromTable = !!fromTable;
+  var btnT = document.getElementById('cm-back-table');
+  if (btnT) btnT.classList.toggle('visible', cmOpenedFromTable);
   cmCurrentCat = catId;
   cmCurrentFundKey = null;
   cmFundClickState = 0;
@@ -3150,8 +3157,14 @@ function cmBackToList() {
   cmBuildList(cmCurrentCat, CAT_COLORS[cmCurrentCat] || '#2563eb');
   cmShowList();
   cmSetCatStats(cmCurrentCat);
+  var btnT = document.getElementById('cm-back-table');
+  if (btnT) btnT.classList.toggle('visible', cmOpenedFromTable);
 }
 
+function cmBackToTable() {
+  closeCatModal();
+  document.getElementById('table-modal').style.display = 'flex';
+}
 function closeCatModal() {
   document.getElementById('cat-modal').classList.remove('open');
   document.body.style.overflow = '';
@@ -3159,6 +3172,9 @@ function closeCatModal() {
   cmCurrentFundKey = null;
   cmFundClickState = 0;
   cmChartData = null;
+  cmOpenedFromTable = false;
+  var btnT = document.getElementById('cm-back-table');
+  if (btnT) btnT.classList.remove('visible');
 }
 
 document.addEventListener('keydown', function(e) {
@@ -3184,6 +3200,7 @@ document.addEventListener('keydown', function(e) {
         </div>
 <div id="cm-fund-nav" style="display:none!important"></div>
         <button id="cm-back" onclick="cmBackToList()">← רשימה</button>
+        <button id="cm-back-table" onclick="cmBackToTable()">← טבלה</button>
         <button id="cm-close" onclick="closeCatModal()">✕</button>
       </div>
     </div>
@@ -3305,9 +3322,18 @@ function buildTableView() {
       secRows.push({fk:fk, f:f, meta:meta, val:val, ri:ri});
     });
 
-    // Category header row (above all fund rows)
-    h += '<tr style="background:'+sec.color+';">';
-    h += '<td colspan="6" style="padding:7px 12px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.1);text-align:left;">'+sec.label+'</td>';
+    // Category header row (above all fund rows) – clickable if catId exists
+    var rowStyle = sec.catId
+      ? 'background:'+sec.color+';cursor:pointer;'
+      : 'background:'+sec.color+';';
+    var rowClick = sec.catId
+      ? ' onclick="closeTableView();openCatModal(\'' + sec.catId + '\', true);"'
+      : '';
+    var rowLabel = sec.catId
+      ? '<span style="opacity:0.4;font-size:10px;margin-left:4px;">&#x2197;</span> '+sec.label
+      : sec.label;
+    h += '<tr style="'+rowStyle+'"'+rowClick+'>';
+    h += '<td colspan="6" style="padding:7px 12px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.1);text-align:left;">'+rowLabel+'</td>';
     h += '</tr>';
 
     // Fund rows
