@@ -248,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.46</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.47</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3781,25 +3781,25 @@ function cfRenderTable() {
   var months = CF_DATA.slice(startIdx, lastIdx + 1);
 
   var CF_ROW_DEFS_LOCAL = [
-    {key:'salary',       label:'משכורת',               block:'income',   total:false},
-    {key:'rent_income',  label:'שכר דירה',             block:'income',   total:false},
-    {key:'other_income', label:'הכנסות שונות',         block:'income',   total:false},
-    {key:'buffer',       label:'פריטה מ Buffer',       block:'income',   total:false},
-    {key:'total_income', label:'סה״כ הכנסות',          block:'income',   total:true},
-    {key:'visa',         label:'חיוב ויזה',            block:'expenses', total:false},
-    {key:'cash_exp',     label:'הוצאות מזומן',         block:'expenses', total:false},
-    {key:'loans',        label:'החזר הלוואות',         block:'expenses', total:false},
-    {key:'yotam',        label:'הוצאות יותם',          block:'expenses', total:false},
-    {key:'other_exp',    label:'הוצאות שונות',         block:'expenses', total:false},
-    {key:'total_exp',    label:'סה״כ הוצאות',          block:'expenses', total:true},
-    {key:'renovation',   label:'שיפוץ',                block:'special',  total:false},
-    {key:'net_cashflow', label:'תזרים שקלי נטו',       block:'cashflow', total:true},
-    {key:'salary_usd',   label:'משכורת $',             block:'dollar',   total:false},
-    {key:'exp_usd',      label:'הוצאות $',             block:'dollar',   total:false},
-    {key:'yotam_usd',    label:'הוצאות יותם $',        block:'dollar',   total:false},
-    {key:'total_usd',    label:'סך הכל $',             block:'dollar',   total:true},
-    {key:'delta',        label:'∆ תזרים שוטף',         block:'summary',  total:true},
-    {key:'profit_loss',  label:'רווח / הפסד',          block:'summary',  total:true},
+    {key:'salary',       label:'משכורת',           block:'income',   total:false},
+    {key:'rent_income',  label:'שכר דירה',         block:'income',   total:false},
+    {key:'other_income', label:'הכנסות שונות',     block:'income',   total:false},
+    {key:'buffer',       label:'פריטה מב Buffer',   block:'income',   total:false},
+    {key:'total_income', label:'סה״כ הכנסות',      block:'income',   total:true},
+    {key:'visa',         label:'חיוב ויזה',        block:'expenses', total:false},
+    {key:'cash_exp',     label:'הוצאות מזומן',     block:'expenses', total:false},
+    {key:'loans',        label:'החזר הלוואות',     block:'expenses', total:false},
+    {key:'yotam',        label:'הוצאות יותם',      block:'expenses', total:false},
+    {key:'other_exp',    label:'הוצאות שונות',     block:'expenses', total:false},
+    {key:'total_exp',    label:'סה״כ הוצאות',      block:'expenses', total:true},
+    {key:'renovation',   label:'שיפוץ',            block:'special',  total:false},
+    {key:'net_cashflow', label:'תזרים שקלי נטו',   block:'cashflow', total:true},
+    {key:'salary_usd',   label:'משכורת $',         block:'dollar',   total:false},
+    {key:'exp_usd',      label:'הוצאות $',         block:'dollar',   total:false},
+    {key:'yotam_usd',    label:'הוצאות יותם $',    block:'dollar',   total:false},
+    {key:'total_usd',    label:'סך הכל $',         block:'dollar',   total:true},
+    {key:'delta',        label:'∆ תזרים שוטף',     block:'summary',  total:true},
+    {key:'profit_loss',  label:'רווח / הפסד',      block:'summary',  total:true},
   ];
 
   var BLOCK_COLORS = {
@@ -3807,8 +3807,8 @@ function cfRenderTable() {
     cashflow:'#2563eb', dollar:'#7c3aed', summary:'#475569'
   };
   var BLOCK_LABELS = {
-    income:'הכנסות', expenses:'הוצ׳ שוטפות', special:'הוצ׳ חריגות',
-    cashflow:'תזרים', dollar:'דולרי', summary:'סיכום'
+    income:'הכנסות', expenses:'הוצאות שוטפות', special:'הוצאות חריגות',
+    cashflow:'תזרים נטו', dollar:'דולרי', summary:'סיכום'
   };
 
   var table = document.getElementById('cf-table');
@@ -3816,7 +3816,7 @@ function cfRenderTable() {
 
   // Header
   var h = '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">';
-  h += '<th style="padding:8px 10px;text-align:right;font-size:11px;font-weight:700;color:#374151;position:sticky;right:0;background:#f8fafc;min-width:160px;z-index:2;white-space:nowrap;">סעיף</th>';
+  h += '<th style="padding:8px 12px;text-align:right;font-size:11px;font-weight:700;color:#374151;position:sticky;right:0;background:#f8fafc;min-width:170px;z-index:2;white-space:nowrap;">סעיף</th>';
   months.forEach(function(m){
     h += '<th style="padding:8px 6px;text-align:center;font-size:11px;font-weight:700;color:#374151;min-width:70px;white-space:nowrap;">'+m.label+'</th>';
     h += '<th class="cf-note-col" style="display:none;padding:8px 4px;text-align:center;font-size:10px;font-weight:600;color:#9ca3af;min-width:90px;">הערות</th>';
@@ -3826,39 +3826,62 @@ function cfRenderTable() {
   // Body
   var body = '<tbody>';
   var lastBlock = null;
+  var rowIdx = 0;
 
   CF_ROW_DEFS_LOCAL.forEach(function(rowDef){
     var block = rowDef.block;
     var blockColor = BLOCK_COLORS[block];
     var isTotal = rowDef.total;
+    var isBlockStart = (block !== lastBlock);
 
-    // Alternating row bg
-    var rowBg = isTotal ? '#f8fafc' : 'white';
-    var labelStyle = 'padding:7px 10px;text-align:right;font-size:12px;position:sticky;right:0;z-index:1;white-space:nowrap;';
-    labelStyle += 'border-right:3px solid '+blockColor+';';
-    labelStyle += 'background:'+rowBg+';';
-    if(isTotal) labelStyle += 'font-weight:700;';
-
-    // Block label in first column
-    var blockLabel = (block !== lastBlock) ? '<span style="font-size:9px;font-weight:700;color:white;background:'+blockColor+';padding:1px 5px;border-radius:3px;margin-left:5px;">'+BLOCK_LABELS[block]+'</span>' : '';
+    // Block separator row
+    if(isBlockStart) {
+      body += '<tr style="background:#f1f5f9;">';
+      body += '<td colspan="999" style="padding:4px 12px;font-size:10px;font-weight:800;color:'+blockColor+';letter-spacing:0.5px;border-right:3px solid '+blockColor+';border-top:2px solid #e2e8f0;">'+BLOCK_LABELS[block].toUpperCase()+'</td>';
+      body += '</tr>';
+      rowIdx = 0;
+    }
     lastBlock = block;
 
+    // Zebra stripe: totals get light gray bg, others alternate white/near-white
+    var rowBg;
+    if(isTotal) {
+      rowBg = '#f8fafc';
+    } else {
+      rowBg = (rowIdx % 2 === 0) ? '#ffffff' : '#f9fafb';
+      rowIdx++;
+    }
+
+    // Sticky label cell - indent non-total rows
+    var labelPad = isTotal ? 'padding:7px 12px;' : 'padding:6px 12px 6px 22px;';
+    var labelStyle = labelPad+'text-align:right;font-size:12px;position:sticky;right:0;z-index:1;white-space:nowrap;border-right:2px solid '+blockColor+';background:'+rowBg+';';
+    if(isTotal) labelStyle += 'font-weight:700;color:#111827;';
+    else labelStyle += 'color:#4b5563;';
+
     body += '<tr style="background:'+rowBg+';border-bottom:1px solid #f3f4f6;">';
-    body += '<td style="'+labelStyle+'">'+rowDef.label+blockLabel+'</td>';
+    body += '<td style="'+labelStyle+'">'+rowDef.label+'</td>';
 
     months.forEach(function(m){
       var cell = m.rows[rowDef.key] || {val:null, note:null};
       var val = cell.val;
       var note = cell.note;
+
       var valColor = '#374151';
       if(isTotal){
-        if(block==='cashflow'||block==='summary') valColor = val>0?'#16a34a':val<0?'#dc2626':'#9ca3af';
+        if(block==='income') valColor = '#16a34a';
         else if(block==='expenses') valColor = '#dc2626';
-      } else if(block==='dollar' && val!==null && val<0) valColor='#dc2626';
-      var cellStyle = 'padding:7px 6px;text-align:center;font-size:12px;color:'+valColor+';font-variant-numeric:tabular-nums;';
+        else if(block==='cashflow'||block==='summary'||block==='dollar') valColor = val!==null&&val>0?'#16a34a':val!==null&&val<0?'#dc2626':'#9ca3af';
+      } else {
+        if(block==='income') valColor = '#16a34a';
+        else if(block==='expenses'||block==='special') valColor = '#dc2626';
+        else if(block==='dollar'&&val!==null&&val<0) valColor='#dc2626';
+        else if(block==='dollar'&&val!==null&&val>0) valColor='#7c3aed';
+      }
+
+      var cellStyle = 'padding:6px 6px;text-align:center;font-size:12px;color:'+valColor+';font-variant-numeric:tabular-nums;';
       if(isTotal) cellStyle += 'font-weight:700;';
       body += '<td style="'+cellStyle+'">'+(val!==null?val.toLocaleString():'—')+'</td>';
-      body += '<td class="cf-note-col" style="display:none;padding:7px 4px;text-align:right;font-size:10px;color:#6b7280;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(note||'')+'">'+( note||'')+'</td>';
+      body += '<td class="cf-note-col" style="display:none;padding:6px 4px;text-align:right;font-size:10px;color:#6b7280;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(note||'')+'">'+( note||'')+'</td>';
     });
 
     body += '</tr>';
