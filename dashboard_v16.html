@@ -222,7 +222,8 @@ body{background:var(--bg,#f0f2f5);}
 /* ===== TABS NAV ===== */
 #tabs-nav {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
+  justify-content: flex-end;
   gap: 2px;
   background: #1a1a2e;
   padding: 0 20px;
@@ -272,7 +273,7 @@ body{background:var(--bg,#f0f2f5);}
 
 <!-- HEADER -->
 <div id="top-fixed">
-<div class="header">
+<div id="header-investments-content"><div class="header">
   <div class="header-title">
     <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.25</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
@@ -402,17 +403,18 @@ body{background:var(--bg,#f0f2f5);}
     <canvas id="mainChart"></canvas>
   </div>
 </div>
-</div><!-- /top-fixed -->
-<!-- ===== TABS NAV ===== -->
-<div id="tabs-nav" dir="rtl">
-  <button class="tab-btn active"     onclick="switchTab('investments')"  id="tabn-investments">השקעות</button>
-  <button class="tab-btn"            onclick="switchTab('overview')"     id="tabn-overview">מבט על</button>
-  <button class="tab-btn"            onclick="switchTab('market')"       id="tabn-market">ניתוח שוק ומסחר</button>
-  <button class="tab-btn"            onclick="switchTab('cashflow')"     id="tabn-cashflow">תזרים שוטף</button>
-  <button class="tab-btn"            onclick="switchTab('pension')"      id="tabn-pension">פנסיה וביטוחים</button>
-  <button class="tab-btn"            onclick="switchTab('simulator')"    id="tabn-simulator">סימולטור פיננסי</button>
-</div>
+</div><!-- /header inner --></div><!-- /header-investments-content -->
 
+<!-- TABS NAV inside top-fixed -->
+<div id="tabs-nav">
+  <button class="tab-btn active"  onclick="switchTab('investments')" id="tabn-investments">השקעות</button>
+  <button class="tab-btn"         onclick="switchTab('overview')"    id="tabn-overview">מבט על</button>
+  <button class="tab-btn"         onclick="switchTab('market')"      id="tabn-market">ניתוח שוק ומסחר</button>
+  <button class="tab-btn"         onclick="switchTab('cashflow')"    id="tabn-cashflow">תזרים שוטף</button>
+  <button class="tab-btn"         onclick="switchTab('pension')"     id="tabn-pension">פנסיה וביטוחים</button>
+  <button class="tab-btn"         onclick="switchTab('simulator')"   id="tabn-simulator">סימולטור פיננסי</button>
+</div>
+</div><!-- /top-fixed -->
 <!-- ===== TAB: השקעות (default, contains all existing content) ===== -->
 <div class="tab-panel active" id="tab-investments">
 
@@ -3485,6 +3487,9 @@ function switchTab(id) {
   var panel = document.getElementById('tab-' + id);
   if (btn) btn.classList.add('active');
   if (panel) panel.classList.add('active');
+  // Show/hide the investments header (stats + cards + chart) only on investments tab
+  var hdrInv = document.getElementById('header-investments-content');
+  if (hdrInv) hdrInv.style.display = (id === 'investments') ? '' : 'none';
 }
 </script>
 
