@@ -248,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.45d2</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.46</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2299,75 +2299,74 @@ function cfParseWorkbook(wb) {
     25:'salary_usd', 26:'exp_usd', 27:'yotam_usd', 28:'total_usd',
     39:'delta', 43:'profit_loss'
   };
-  var result = [];
 
-  // Helper: convert SheetJS serial number or Date to {y,m}
-  function parseHdr(hdr) {
-    if (hdr == null) return null;
-    if (typeof hdr === 'number' && hdr > 40000 && hdr < 60000) {
-      // Excel serial date: days since 1900-01-01
-      var d = new Date(Math.round((hdr - 25569) * 86400 * 1000));
+  // Read a cell value directly by row/col (0-based)
+  function cellVal(ws, r, col) {
+    var addr = XLSX.utils.encode_cell({r: r, c: col});
+    var cell = ws[addr];
+    if (!cell) return null;
+    return cell.v;  // raw value: number for dates/numbers, string for text
+  }
+
+  // Parse Excel serial date or Date object -> {y, m}
+  function parseDate(v) {
+    if (v == null) return null;
+    if (typeof v === 'number' && v > 40000) {
+      // Excel serial: days since 1900-01-00
+      var d = new Date(Math.round((v - 25569) * 86400 * 1000));
       return {y: d.getUTCFullYear(), m: d.getUTCMonth() + 1};
     }
-    if (hdr instanceof Date) {
-      return {y: hdr.getFullYear(), m: hdr.getMonth() + 1};
+    if (v instanceof Date) {
+      return {y: v.getFullYear(), m: v.getMonth() + 1};
     }
-    // String like "Mars 2025" or "01/01/2025"
-    var s = String(hdr);
-    var ym = s.match(/(\d{4})/);
-    if (!ym) return null;
-    var y = parseInt(ym[1]);
-    var mm = s.match(/^(\d{1,2})[\/\-]/);
-    return {y: y, m: mm ? parseInt(mm[1]) : null};
+    // String fallback e.g. "Mars 2025"
+    var s = String(v);
+    var ym = s.match(/([12][0-9]{3})/);
+    if (ym) return {y: parseInt(ym[1]), m: null};
+    return null;
   }
+
+  var result = [];
 
   wb.SheetNames.forEach(function(sheetName) {
     if (sheetName.indexOf(MARKER) < 0) return;
-    var yearMatch = sheetName.match(/(\d{4})/);
-    if (!yearMatch) return;
-    var sheetYear = parseInt(yearMatch[1]);
-    if (sheetYear < 2025) return;
+    var yearMatch = sheetName.match(/([12][0-9]{3})/);
+    if (!yearMatch || parseInt(yearMatch[1]) < 2025) return;
 
     var ws = wb.Sheets[sheetName];
-    var data = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:true});
-    console.log('[CF] sheet', sheetName, 'rows:', data.length, 'row1 sample cols 16-22:', data[1] ? data[1].slice(16,23) : 'N/A');
 
+    // Each month: header at row=1 (0-based), col = 16 + mi*3
     for (var mi = 0; mi < 12; mi++) {
       var colBase = 16 + mi * 3;
-      var hdrRaw = (data[1] && data[1].length > colBase) ? data[1][colBase] : null;
-      console.log('[CF] month', mi, 'colBase', colBase, 'hdr:', hdrRaw, typeof hdrRaw);
+      var hdrVal = cellVal(ws, 1, colBase);
+      if (hdrVal == null) continue;
 
-      if (hdrRaw == null) continue;
-      var parsed = parseHdr(hdrRaw);
-      if (!parsed) continue;
-
-      var yr = parsed.y;
-      var mo = parsed.m || (mi + 1);
-      if (yr < 2025) continue;
+      var pd = parseDate(hdrVal);
+      if (!pd || !pd.y || pd.y < 2025) continue;
+      var yr = pd.y;
+      var mo = pd.m || (mi + 1);
 
       var label = HEB_MONTHS[mo - 1] + ' ' + String(yr).slice(2);
-      var mObj = {label:label, year:yr, month:mo, rows:{}};
+      var mObj = {label: label, year: yr, month: mo, rows: {}};
 
       Object.keys(ROW_MAP).forEach(function(ri) {
         var rowIdx = parseInt(ri);
-        var row  = data[rowIdx];
-        var val  = (row && row.length > colBase)     ? row[colBase]     : null;
-        var note = (row && row.length > colBase + 1) ? row[colBase + 1] : null;
-        var num  = null;
+        var val    = cellVal(ws, rowIdx, colBase);
+        var note   = cellVal(ws, rowIdx, colBase + 1);
+        var num    = null;
         if (val !== null && val !== undefined) {
-          var p = typeof val === 'number' ? val : parseFloat(String(val).replace(/,/g,''));
+          var p = typeof val === 'number' ? val : parseFloat(String(val).replace(/,/g, ''));
           if (!isNaN(p)) num = Math.round(p * 10) / 10;
         }
         var noteStr = (note != null && String(note).trim() !== '') ? String(note).trim() : null;
-        mObj.rows[ROW_MAP[ri]] = {val:num, note:noteStr};
+        mObj.rows[ROW_MAP[ri]] = {val: num, note: noteStr};
       });
 
       result.push(mObj);
     }
   });
 
-  console.log('[CF] total parsed:', result.length);
-  result.sort(function(a,b){ return (a.year*100+a.month)-(b.year*100+b.month); });
+  result.sort(function(a, b) { return (a.year * 100 + a.month) - (b.year * 100 + b.month); });
   return result;
 }
 
@@ -2382,7 +2381,6 @@ function smartUploadRouter(input) {
       var data = new Uint8Array(e.target.result);
       var wb = XLSX.read(data, {type:'array', cellDates:true});
       var isCF = wb.SheetNames.some(function(n){ return n.indexOf('שוטף חדשי') >= 0; });
-      console.log('[ROUTER] isCF:', isCF, 'sheets:', wb.SheetNames);
       if (isCF) {
         var newData = cfParseWorkbook(wb);
         if (newData.length > 0) {
