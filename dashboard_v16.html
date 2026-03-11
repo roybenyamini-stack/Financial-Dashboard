@@ -248,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.58</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.59</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3608,8 +3608,10 @@ function buildTableView() {
           </div>
         </div>
 
-        <!-- TABLE ROW: month cols scroll, label col sticky RIGHT -->
-        <table id="cf-table" style="border-collapse:collapse;font-size:12px;width:100%;direction:ltr;"></table>
+        <!-- TABLE ROW: own vertical scroll container so thead sticky:top works independently -->
+        <div id="cf-table-scroll" style="overflow-y:auto;max-height:520px;overflow-x:visible;">
+          <table id="cf-table" style="border-collapse:collapse;font-size:12px;width:100%;direction:ltr;"></table>
+        </div>
 
       </div>
     </div>
@@ -3831,14 +3833,16 @@ function cfRenderTable() {
   if (!table) return;
 
   // ── THEAD ─────────────────────────────────────────────
-  var h = '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;position:sticky;top:0;z-index:10;">';
+  // sticky top:0 on each <th> directly — tr sticky doesn't work cross-browser
+  var TH_STICKY = 'position:sticky;top:0;z-index:10;background:#f8fafc;';
+  var h = '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">';
   // month headers first (left = oldest)
   months.forEach(function(m){
-    h += '<th style="width:'+COL_W+'px;min-width:'+COL_W+'px;max-width:'+COL_W+'px;padding:8px 4px;text-align:center;font-size:11px;font-weight:700;color:#374151;white-space:nowrap;">'+m.label+'</th>';
+    h += '<th style="'+TH_STICKY+'width:'+COL_W+'px;min-width:'+COL_W+'px;max-width:'+COL_W+'px;padding:8px 4px;text-align:center;font-size:11px;font-weight:700;color:#374151;white-space:nowrap;border-bottom:2px solid #e2e8f0;">'+m.label+'</th>';
     h += '<th class="cf-note-col" style="display:none;padding:8px 4px;text-align:center;font-size:10px;font-weight:600;color:#9ca3af;min-width:90px;">\u05d4\u05e2\u05e8\u05d5\u05ea</th>';
   });
-  // sticky label header LAST (right)
-  h += '<th style="'+STICKY+'background:#f8fafc;padding:8px 12px;font-size:11px;font-weight:700;color:#374151;top:0;z-index:20;">\u05e1\u05e2\u05d9\u05e3</th>';
+  // corner cell: sticky right AND top — highest z-index
+  h += '<th style="'+STICKY+''+TH_STICKY+'padding:8px 12px;font-size:11px;font-weight:700;color:#374151;z-index:25;border-bottom:2px solid #e2e8f0;">\u05e1\u05e2\u05d9\u05e3</th>';
   h += '</tr></thead>';
 
   // ── TBODY ─────────────────────────────────────────────
