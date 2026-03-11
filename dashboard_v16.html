@@ -11,11 +11,11 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; min-height: 100vh; }
 
-#top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: #f0f2f5; width: 100%; box-sizing: border-box; }
+#top-fixed { padding: 0; position: sticky; top: 0; z-index: 100; background: #1a1a2e; width: 100%; box-sizing: border-box; }
 #categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; }
 
 /* HEADER */
-.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 18px; padding: 14px 24px; margin-bottom: 10px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(15,52,96,0.25); }
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 0; padding: 14px 24px; margin-bottom: 0; color: white; display: flex; justify-content: space-between; align-items: center; }
 .header-title h1 { font-size: 15px; font-weight: 800; color: #fff; }
 .header-title p   { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
 .header-stats { display: flex; align-items: center; gap: 0; }
@@ -217,7 +217,7 @@ body{background:var(--bg,#f0f2f5);}
 .cm-zoom-btn:hover { opacity:1; background:rgba(0,0,0,0.06); }
 
 /* ===== TABS NAV ===== */
-#tabs-nav { display:flex; flex-direction:row; direction:rtl; justify-content:flex-start; gap:2px; background:#1a1a2e; padding:0 20px; border-bottom:2px solid rgba(255,255,255,0.08); overflow-x:auto; scrollbar-width:none; position:sticky; top:0; z-index:99; }
+#tabs-nav { display:flex; flex-direction:row; direction:rtl; justify-content:flex-start; gap:2px; background:#1a1a2e; padding:0 20px; border-bottom:2px solid rgba(255,255,255,0.08); overflow-x:auto; scrollbar-width:none; }
 #tabs-nav::-webkit-scrollbar { display:none; }
 .tab-btn { flex-shrink:0; padding:10px 18px; font-family:Heebo,sans-serif; font-size:13px; font-weight:600; color:rgba(255,255,255,0.55); background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; transition:color .18s,border-color .18s; white-space:nowrap; margin-bottom:-2px; }
 .tab-btn:hover { color:rgba(255,255,255,0.85); }
@@ -232,6 +232,8 @@ body{background:var(--bg,#f0f2f5);}
 </head>
 <body>
 
+<!-- HEADER -->
+<div id="top-fixed">
 <div id="tabs-nav">
   <button class="tab-btn" onclick="switchTab('overview')" id="tabn-overview">מבט על</button>
   <button class="tab-btn" onclick="switchTab('cashflow')" id="tabn-cashflow">תזרים שוטף</button>
@@ -240,12 +242,9 @@ body{background:var(--bg,#f0f2f5);}
   <button class="tab-btn" onclick="switchTab('market')" id="tabn-market">ניתוח שוק ומסחר</button>
   <button class="tab-btn" onclick="switchTab('simulator')" id="tabn-simulator">סימולטור פיננסי</button>
 </div>
-
-<!-- HEADER -->
-<div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.33</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.34</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -375,7 +374,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 </div><!-- /top-fixed -->
 
-<div class="tab-panel active" id="tab-investments">
+<div class="tab-panel active" id="tab-investments" style="padding-top:12px;">
 
 
 <!-- NOTES MODAL -->
