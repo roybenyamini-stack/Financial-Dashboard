@@ -223,7 +223,8 @@ body{background:var(--bg,#f0f2f5);}
 #tabs-nav {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  direction: rtl;
+  justify-content: flex-start;
   gap: 2px;
   background: #1a1a2e;
   padding: 0 20px;
@@ -274,11 +275,20 @@ body{background:var(--bg,#f0f2f5);}
 </head>
 <body>
 
+<div id="tabs-nav">
+  <button class="tab-btn"         onclick="switchTab('overview')"    id="tabn-overview">מבט על</button>
+  <button class="tab-btn active"  onclick="switchTab('investments')" id="tabn-investments">השקעות</button>
+  <button class="tab-btn"         onclick="switchTab('market')"      id="tabn-market">ניתוח שוק ומסחר</button>
+  <button class="tab-btn"         onclick="switchTab('cashflow')"    id="tabn-cashflow">תזרים שוטף</button>
+  <button class="tab-btn"         onclick="switchTab('pension')"     id="tabn-pension">פנסיה וביטוחים</button>
+  <button class="tab-btn"         onclick="switchTab('simulator')"   id="tabn-simulator">סימולטור פיננסי</button>
+</div>
+
 <!-- HEADER -->
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.29</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.30</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -317,15 +327,6 @@ body{background:var(--bg,#f0f2f5);}
     <span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; min-height:16px; display:block;"></span>
   </div>
 </div><!-- /top-fixed -->
-
-<div id="tabs-nav">
-  <button class="tab-btn"         onclick="switchTab('overview')"    id="tabn-overview">מבט על</button>
-  <button class="tab-btn active"  onclick="switchTab('investments')" id="tabn-investments">השקעות</button>
-  <button class="tab-btn"         onclick="switchTab('market')"      id="tabn-market">ניתוח שוק ומסחר</button>
-  <button class="tab-btn"         onclick="switchTab('cashflow')"    id="tabn-cashflow">תזרים שוטף</button>
-  <button class="tab-btn"         onclick="switchTab('pension')"     id="tabn-pension">פנסיה וביטוחים</button>
-  <button class="tab-btn"         onclick="switchTab('simulator')"   id="tabn-simulator">סימולטור פיננסי</button>
-</div>
 
 <!-- ===== TAB: השקעות (default) ===== -->
 <div class="tab-panel active" id="tab-investments">
