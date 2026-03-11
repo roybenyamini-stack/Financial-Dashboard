@@ -31,7 +31,7 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 #upload-status { font-size: 11px; color: #94a3b8; }
 
 /* CARDS */
-.cards-row { display: grid; grid-template-columns: auto repeat(9, 1fr); gap: 10px; margin-bottom: 10px; }
+.cards-row { display: grid; grid-template-columns: auto repeat(9, 1fr); gap: 8px; margin-bottom: 0; padding: 10px 0 0 0; }
 .card-total { background: #1a1a2e; border-radius: 14px; padding: 10px 16px; color: white; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; justify-content: center; min-width: 120px; border: 2px solid transparent; }
 .card-total:hover  { background: #0f3460; transform: translateY(-1px); }
 .card-total.active { background: #0f3460; border-color: #7dd3fc; }
@@ -288,7 +288,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.31</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.32</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -326,10 +326,6 @@ body{background:var(--bg,#f0f2f5);}
     </div>
     <span id="excel-status" style="color:rgba(255,255,255,0.85); font-size:11px; min-height:16px; display:block;"></span>
   </div>
-</div><!-- /top-fixed -->
-
-<!-- ===== TAB: השקעות (default) ===== -->
-<div class="tab-panel active" id="tab-investments">
 
 <!-- CARDS -->
 <div class="cards-row">
@@ -368,7 +364,27 @@ body{background:var(--bg,#f0f2f5);}
     <div class="card-value" id="card-val-meitav">639</div>
     <div class="card-change pos" id="card-chg-meitav">▲ +13.2%</div>
   </div>
+  <div class="card" style="--cat-color:#78716c;--cat-color-alpha:#78716c20" id="card-dira" onclick="openCatModal('dira')">
+    <div class="card-label">דירה</div>
+    <div class="card-value" id="card-val-dira">—</div>
+    <div class="card-change" id="card-chg-dira"></div>
+  </div>
+  <div class="card" style="--cat-color:#0d9488;--cat-color-alpha:#0d948820" id="card-arbitrage" onclick="openCatModal('arbitrage')">
+    <div class="card-label">ארביטראז׳</div>
+    <div class="card-value" id="card-val-arbitrage">—</div>
+    <div class="card-change" id="card-chg-arbitrage"></div>
+  </div>
+  <div class="card" style="--cat-color:#64748b;--cat-color-alpha:#64748b20" id="card-chov" onclick="openCatModal('chov')">
+    <div class="card-label">חוב</div>
+    <div class="card-value" id="card-val-chov" style="color:#ef4444">—</div>
+    <div class="card-change" id="card-chg-chov"></div>
+  </div>
 </div>
+</div><!-- /top-fixed -->
+
+<!-- ===== TAB: השקעות (default) ===== -->
+<div class="tab-panel active" id="tab-investments">
+
 
 <!-- CHART -->
 <div class="chart-section">
