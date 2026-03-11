@@ -177,6 +177,9 @@ body{background:var(--bg,#f0f2f5);}
 #cm-back.visible { display:inline-flex; align-items:center; gap:4px; }
 #cm-close { width:30px; height:30px; border-radius:50%; border:none; background:#f1f5f9; cursor:pointer; font-size:15px; color:#64748b; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0; }
 #cm-close:hover { background:#fee2e2; color:#dc2626; }
+#cm-back-table { display:none; background:#f1f5f9; border:none; border-radius:8px; padding:5px 12px; font-size:12px; font-family:Heebo,sans-serif; cursor:pointer; color:#475569; font-weight:600; transition:all .15s; white-space:nowrap; }
+#cm-back-table:hover { background:#e2e8f0; }
+#cm-back-table.visible { display:inline-flex; align-items:center; gap:4px; }
 
 /* גוף */
 #cm-body { display:flex; flex-direction:column; overflow:hidden; }
@@ -223,7 +226,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.23</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.24</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2802,7 +2805,11 @@ var CM_WINDOW = 13;
 var cmChartData = null;
 
 // ---- פתיחת מודאל ----
-function openCatModal(catId) {
+var cmOpenedFromTable = false;
+function openCatModal(catId, fromTable) {
+  cmOpenedFromTable = !!fromTable;
+  var btnT = document.getElementById('cm-back-table');
+  if (btnT) btnT.classList.toggle('visible', cmOpenedFromTable);
   cmCurrentCat = catId;
   cmCurrentFundKey = null;
   cmFundClickState = 0;
@@ -3126,8 +3133,14 @@ function cmBackToList() {
   cmBuildList(cmCurrentCat, CAT_COLORS[cmCurrentCat] || '#2563eb');
   cmShowList();
   cmSetCatStats(cmCurrentCat);
+  var btnT = document.getElementById('cm-back-table');
+  if (btnT) btnT.classList.toggle('visible', cmOpenedFromTable);
 }
 
+function cmBackToTable() {
+  closeCatModal();
+  document.getElementById('table-modal').style.display = 'flex';
+}
 function closeCatModal() {
   document.getElementById('cat-modal').classList.remove('open');
   document.body.style.overflow = '';
@@ -3135,6 +3148,9 @@ function closeCatModal() {
   cmCurrentFundKey = null;
   cmFundClickState = 0;
   cmChartData = null;
+  cmOpenedFromTable = false;
+  var btnT = document.getElementById('cm-back-table');
+  if (btnT) btnT.classList.remove('visible');
 }
 
 document.addEventListener('keydown', function(e) {
@@ -3160,6 +3176,7 @@ document.addEventListener('keydown', function(e) {
         </div>
 <div id="cm-fund-nav" style="display:none!important"></div>
         <button id="cm-back" onclick="cmBackToList()">← רשימה</button>
+        <button id="cm-back-table" onclick="cmBackToTable()">← טבלה</button>
         <button id="cm-close" onclick="closeCatModal()">✕</button>
       </div>
     </div>
@@ -3224,13 +3241,13 @@ var TV_META = {
 };
 
 var TV_SECTIONS = [
-  {label:'מזומן',         color:'#b2ebf8', bg:'#f0fbff', keys:['מזומןשקלי','מזומןדולרי','מיטבשקלית']},
-  {label:'קרנות השתלמות', color:'#fca5a5', bg:'#fff5f5', keys:['אשקהש39905556','אשקהש40035706','אשקהש6730513','מורקהש499293','מיטבקהש912-443286']},
-  {label:'קופות גמל',     color:'#fcd34d', bg:'#fffdf5', keys:['6730511אשגמל','מורגמל1375900','אשגמל39774495','6730512אשגמל','6899425אשגמל','הפניקסגמל926-084678']},
-  {label:'גמל להשקעה',   color:'#6ee7b7', bg:'#f0fdf4', keys:['אשגמללהשקעה2016-1738','מורגמללהשקעה']},
-  {label:'הראל',          color:'#fde68a', bg:'#fefce8', keys:['הראלמגוון-פוליסתחיסכ','הראלמניות106863031','הראלכללי109062745']},
-  {label:'מיטב',          color:'#c4b5fd', bg:'#f8f7ff', keys:['מיטבדשניהולקרנות1693','מיטבדשטרייד']},
-  {label:'דירה',          color:'#d6d3d1', bg:'#fafaf9', keys:['דירה'], noSubtotal:true},
+  {label:'מזומן',         color:'#b2ebf8', bg:'#f0fbff', catId:'mezuman',     keys:['מזומןשקלי','מזומןדולרי','מיטבשקלית']},
+  {label:'קרנות השתלמות', color:'#fca5a5', bg:'#fff5f5', catId:'hishtalmut',  keys:['אשקהש39905556','אשקהש40035706','אשקהש6730513','מורקהש499293','מיטבקהש912-443286']},
+  {label:'קופות גמל',     color:'#fcd34d', bg:'#fffdf5', catId:'gemel',       keys:['6730511אשגמל','מורגמל1375900','אשגמל39774495','6730512אשגמל','6899425אשגמל','הפניקסגמל926-084678']},
+  {label:'גמל להשקעה',   color:'#6ee7b7', bg:'#f0fdf4', catId:'gemel_invest', keys:['אשגמללהשקעה2016-1738','מורגמללהשקעה']},
+  {label:'הראל',          color:'#fde68a', bg:'#fefce8', catId:'harel',       keys:['הראלמגוון-פוליסתחיסכ','הראלמניות106863031','הראלכללי109062745']},
+  {label:'מיטב',          color:'#c4b5fd', bg:'#f8f7ff', catId:'meitav',      keys:['מיטבדשניהולקרנות1693','מיטבדשטרייד']},
+  {label:'דירה',          color:'#d6d3d1', bg:'#fafaf9', catId:null,          keys:['דירה']},
 ];
 
 function openTableView() {
@@ -3281,10 +3298,11 @@ function buildTableView() {
       secRows.push({fk:fk, f:f, meta:meta, val:val, ri:ri});
     });
 
-    // Category header row – includes section total in סכום column
-    h += '<tr style="background:'+sec.color+';">';
-    h += '<td style="padding:7px 12px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.1);text-align:left;">'+sec.label+'</td>';
-    h += '<td style="padding:7px 10px;text-align:right;font-weight:700;font-size:13px;color:#1f2937;border-bottom:1px solid rgba(0,0,0,0.1);font-variant-numeric:tabular-nums;">'+secTotal.toLocaleString('he-IL')+'</td>';
+    // Category header row – clickable if has catId
+    var rowClick = sec.catId ? ' onclick="closeTableView();openCatModal(\'' + sec.catId + '\',true);" style="cursor:pointer;background:'+sec.color+';"' : ' style="background:'+sec.color+';"';
+    h += '<tr'+rowClick+'>';
+    h += '<td style="padding:7px 12px;font-weight:700;font-size:12px;color:#1f2937;letter-spacing:0.03em;border-bottom:1px solid rgba(0,0,0,0.1);text-align:left;">'+(sec.catId?'<span style="opacity:0.45;font-size:10px;margin-left:3px;">&#x2197;</span> ':'')+sec.label+'</td>';
+h += '<td style="padding:7px 10px;text-align:right;font-weight:700;font-size:13px;color:#1f2937;border-bottom:1px solid rgba(0,0,0,0.1);font-variant-numeric:tabular-nums;">'+secTotal.toLocaleString('he-IL')+'</td>';
     h += '<td colspan="4" style="border-bottom:1px solid rgba(0,0,0,0.1);"></td>';
     h += '</tr>';
 
