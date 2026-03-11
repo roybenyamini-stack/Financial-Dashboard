@@ -248,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.39</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.40</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2534,14 +2534,10 @@ function loadExcelFileCore(wb) {
       status.textContent = '✓ עודכן בהצלחה! ' + newLabels.length + ' חודשים';
       status.style.color = '#4ade80';
       
-      // Reset file input
-      input.value = '';
     } catch(err) {
       status.textContent = 'שגיאה: ' + err.message;
       status.style.color = '#f87171';
     }
-  };
-  reader.readAsArrayBuffer(file);
 }
 
 
