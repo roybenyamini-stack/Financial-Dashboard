@@ -248,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.52</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.53</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3583,36 +3583,34 @@ function buildTableView() {
   <!-- KPI Cards -->
   <div id="cf-kpi-row" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;"></div>
 
-  <!-- Chart + Table: single RTL scroll container. Sticky right column for labels/controls. -->
-  <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:20px;">
-    <div id="cf-scroll-container" style="overflow-x:auto;direction:rtl;">
-      <div id="cf-inner-wrap" style="direction:rtl;display:inline-block;min-width:100%;">
+  <!-- Chart + Table: LTR scroll, sticky-LEFT label col, chart+table share same COL_W -->
+  <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:20px;direction:rtl;">
 
-        <!-- ROW 1: controls (sticky-right) + chart bars -->
-        <div style="display:flex;direction:rtl;">
-          <!-- Sticky controls panel (right, 190px) -->
-          <div id="cf-controls-box" style="flex:0 0 190px;width:190px;position:sticky;right:0;background:#fff;z-index:3;border-left:1px solid #ebebeb;padding:10px 12px 8px;display:flex;flex-direction:column;gap:6px;align-self:stretch;">
-            <span style="font-size:10px;font-weight:700;color:#1a1a2e;line-height:1.4;">הכנסות / הוצאות<br>ומצטבר YTD</span>
-            <div style="display:flex;flex-direction:column;gap:4px;">
-              <button id="cf-view-monthly" onclick="cfSetView('monthly')" style="padding:3px 8px;border-radius:20px;border:1.5px solid #3b82f6;background:#3b82f6;color:white;font-size:10px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">חודשי</button>
-              <button id="cf-view-ytd" onclick="cfSetView('ytd')" style="padding:3px 8px;border-radius:20px;border:1.5px solid #e2e8f0;background:white;color:#6b7280;font-size:10px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">מצטבר YTD</button>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:3px;font-size:9px;color:#6b7280;">
-              <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:1px;background:#22c55e;display:inline-block;"></span>הכנסות</span>
-              <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:1px;background:#ef4444;display:inline-block;"></span>הוצאות</span>
-            </div>
-          </div>
-          <!-- Chart canvas (scrolls) -->
-          <div style="flex:1;height:200px;min-width:600px;" dir="ltr">
-            <canvas id="cf-chart"></canvas>
-          </div>
+    <!-- Top controls bar (outside scroll, full width) -->
+    <div style="display:flex;align-items:stretch;border-bottom:1px solid #f0f0f0;">
+      <!-- Label panel header: sticky placeholder, 190px -->
+      <div id="cf-controls-box" style="flex:0 0 190px;width:190px;padding:10px 12px 8px;display:flex;flex-direction:column;gap:5px;border-left:1px solid #ebebeb;background:#fff;">
+        <span style="font-size:10px;font-weight:700;color:#1a1a2e;line-height:1.4;">הכנסות / הוצאות<br>ומצטבר YTD</span>
+        <div style="display:flex;gap:4px;">
+          <button id="cf-view-monthly" onclick="cfSetView('monthly')" style="flex:1;padding:3px 6px;border-radius:20px;border:1.5px solid #3b82f6;background:#3b82f6;color:white;font-size:10px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">חודשי</button>
+          <button id="cf-view-ytd" onclick="cfSetView('ytd')" style="flex:1;padding:3px 6px;border-radius:20px;border:1.5px solid #e2e8f0;background:white;color:#6b7280;font-size:10px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">YTD</button>
         </div>
-
-        <!-- ROW 2: full table (sticky right column for labels) -->
-        <table id="cf-table" style="border-collapse:collapse;font-size:12px;width:100%;direction:rtl;"></table>
-
+        <div style="display:flex;gap:8px;font-size:9px;color:#6b7280;flex-wrap:wrap;">
+          <span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:1px;background:#22c55e;display:inline-block;"></span>הכנסות</span>
+          <span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:1px;background:#ef4444;display:inline-block;"></span>הוצאות</span>
+        </div>
+      </div>
+      <!-- Chart area (scrollable independently not needed — chart is in scroll below) -->
+      <div style="flex:1;overflow:hidden;height:200px;background:#fff;" dir="ltr">
+        <canvas id="cf-chart" style="display:block;width:100%;height:100%;"></canvas>
       </div>
     </div>
+
+    <!-- Scrollable table (LTR so month order = left→right = oldest→newest) -->
+    <div id="cf-scroll-container" style="overflow-x:auto;direction:ltr;">
+      <table id="cf-table" style="border-collapse:collapse;font-size:12px;width:auto;direction:ltr;"></table>
+    </div>
+
   </div>
 
 </div>
@@ -3729,14 +3727,25 @@ function cfRenderKPI() {
 }
 
 function cfRenderChart() {
+  var COL_W    = 80; // must match <th> width in cfRenderTable
   var lastIdx  = cfGetLastRealMonth();
   var startIdx = Math.max(0, lastIdx - 11);
   var months   = CF_DATA.slice(startIdx, lastIdx + 1);
   var labels   = months.map(function(m){ return m.label; });
+  var numM     = months.length;
+  var chartW   = numM * COL_W;
 
   var ctx = document.getElementById('cf-chart');
   if (!ctx) return;
   if (cfChartInstance) { cfChartInstance.destroy(); cfChartInstance = null; }
+
+  // Size canvas to match table columns exactly
+  ctx.style.width  = chartW + 'px';
+  ctx.width        = chartW;
+
+  // Also size the chart parent div so scroll area matches
+  var chartParent = ctx.parentElement;
+  if (chartParent) chartParent.style.width = chartW + 'px';
 
   var datasets;
   if (cfCurrentView === 'monthly') {
@@ -3757,118 +3766,123 @@ function cfRenderChart() {
   }
 
   cfChartInstance = new Chart(ctx, {
-    type:'bar',
-    data:{ labels:labels, datasets:datasets },
-    options:{
-      responsive:true, maintainAspectRatio:false, animation:false,
-      layout:{ padding:{ top:6, bottom:0, left:0, right:0 } },
-      plugins:{ legend:{display:false}, tooltip:{rtl:true,textDirection:'rtl'} },
-      scales:{
-        x:{ ticks:{font:{family:'Heebo',size:10},maxRotation:0}, grid:{display:false},
-            barPercentage:0.65, categoryPercentage:0.85 },
-        y:{ display:false }
+    type: 'bar',
+    data: { labels:labels, datasets:datasets },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      animation: false,
+      layout: { padding:{ top:6, bottom:0, left:0, right:0 } },
+      plugins: { legend:{display:false}, tooltip:{rtl:true, textDirection:'rtl'} },
+      scales: {
+        x: {
+          ticks: { font:{family:'Heebo',size:10}, maxRotation:0 },
+          grid:  { display:false },
+          barPercentage: 0.65,
+          categoryPercentage: 0.85
+        },
+        y: { display:false }
       }
     }
   });
 }
 
 function cfRenderTable() {
+  var COL_W    = 80;  // matches chart COL_W
+  var LABEL_W  = 190; // matches controls panel width
+
   var lastIdx  = cfGetLastRealMonth();
   var startIdx = Math.max(0, lastIdx - 11);
   var months   = CF_DATA.slice(startIdx, lastIdx + 1);
 
   var ROWS = [
-    {key:'salary',       label:'משכורת',           block:'income',   total:false},
-    {key:'rent_income',  label:'שכר דירה',          block:'income',   total:false},
-    {key:'other_income', label:'הכנסות שונות',      block:'income',   total:false},
-    {key:'buffer',       label:'פריטה מב Buffer',   block:'income',   total:false},
-    {key:'total_income', label:'סה״כ הכנסות',       block:'income',   total:true},
-    {key:'visa',         label:'חיוב ויזה',         block:'expenses', total:false},
-    {key:'cash_exp',     label:'הוצאות מזומן',      block:'expenses', total:false},
-    {key:'loans',        label:'החזר הלוואות',      block:'expenses', total:false},
-    {key:'yotam',        label:'הוצאות יותם',       block:'expenses', total:false},
-    {key:'other_exp',    label:'הוצאות שונות',      block:'expenses', total:false},
-    {key:'total_exp',    label:'סה״כ הוצאות',       block:'expenses', total:true},
-    {key:'renovation',   label:'שיפוץ',             block:'special',  total:false},
-    {key:'net_cashflow', label:'תזרים שקלי נטו',    block:'cashflow', total:true},
-    {key:'salary_usd',   label:'משכורת $',          block:'dollar',   total:false},
-    {key:'exp_usd',      label:'הוצאות $',          block:'dollar',   total:false},
-    {key:'yotam_usd',    label:'הוצאות יותם $',     block:'dollar',   total:false},
-    {key:'total_usd',    label:'סך הכל $',          block:'dollar',   total:true},
-    {key:'delta',        label:'∆ תזרים שוטף',      block:'summary',  total:true},
-    {key:'profit_loss',  label:'רווח / הפסד',       block:'summary',  total:true},
+    {key:'salary',       label:'\u05de\u05e9\u05db\u05d5\u05e8\u05ea',               block:'income',   total:false},
+    {key:'rent_income',  label:'\u05e9\u05db\u05e8 \u05d3\u05d9\u05e8\u05d4',             block:'income',   total:false},
+    {key:'other_income', label:'\u05d4\u05db\u05e0\u05e1\u05d5\u05ea \u05e9\u05d5\u05e0\u05d5\u05ea',         block:'income',   total:false},
+    {key:'buffer',       label:'\u05e4\u05e8\u05d9\u05d8\u05d4 \u05de\u05d1 Buffer',       block:'income',   total:false},
+    {key:'total_income', label:'\u05e1\u05d4\u05f4\u05db \u05d4\u05db\u05e0\u05e1\u05d5\u05ea',          block:'income',   total:true},
+    {key:'visa',         label:'\u05d7\u05d9\u05d5\u05d1 \u05d5\u05d9\u05d6\u05d4',            block:'expenses', total:false},
+    {key:'cash_exp',     label:'\u05d4\u05d5\u05e6\u05d0\u05d5\u05ea \u05de\u05d6\u05d5\u05de\u05df',         block:'expenses', total:false},
+    {key:'loans',        label:'\u05d4\u05d7\u05d6\u05e8 \u05d4\u05dc\u05d5\u05d5\u05d0\u05d5\u05ea',         block:'expenses', total:false},
+    {key:'yotam',        label:'\u05d4\u05d5\u05e6\u05d0\u05d5\u05ea \u05d9\u05d5\u05ea\u05dd',          block:'expenses', total:false},
+    {key:'other_exp',    label:'\u05d4\u05d5\u05e6\u05d0\u05d5\u05ea \u05e9\u05d5\u05e0\u05d5\u05ea',         block:'expenses', total:false},
+    {key:'total_exp',    label:'\u05e1\u05d4\u05f4\u05db \u05d4\u05d5\u05e6\u05d0\u05d5\u05ea',          block:'expenses', total:true},
+    {key:'renovation',   label:'\u05e9\u05d9\u05e4\u05d5\u05e5',                block:'special',  total:false},
+    {key:'net_cashflow', label:'\u05ea\u05d6\u05e8\u05d9\u05dd \u05e9\u05e7\u05dc\u05d9 \u05e0\u05d8\u05d5',       block:'cashflow', total:true},
+    {key:'salary_usd',   label:'\u05de\u05e9\u05db\u05d5\u05e8\u05ea $',             block:'dollar',   total:false},
+    {key:'exp_usd',      label:'\u05d4\u05d5\u05e6\u05d0\u05d5\u05ea $',             block:'dollar',   total:false},
+    {key:'yotam_usd',    label:'\u05d4\u05d5\u05e6\u05d0\u05d5\u05ea \u05d9\u05d5\u05ea\u05dd $',        block:'dollar',   total:false},
+    {key:'total_usd',    label:'\u05e1\u05da \u05d4\u05db\u05dc $',             block:'dollar',   total:true},
+    {key:'delta',        label:'\u2206 \u05ea\u05d6\u05e8\u05d9\u05dd \u05e9\u05d5\u05d8\u05e3',         block:'summary',  total:true},
+    {key:'profit_loss',  label:'\u05e8\u05d5\u05d5\u05d7 / \u05d4\u05e4\u05e1\u05d3',          block:'summary',  total:true},
   ];
 
   var BC = { income:'#16a34a', expenses:'#dc2626', special:'#b45309',
              cashflow:'#2563eb', dollar:'#7c3aed', summary:'#475569' };
-  var BL = { income:'הכנסות', expenses:'הוצאות שוטפות', special:'הוצאות חריגות',
-             cashflow:'תזרים נטו', dollar:'דולרי', summary:'סיכום' };
+  var BL = { income:'\u05d4\u05db\u05e0\u05e1\u05d5\u05ea', expenses:'\u05d4\u05d5\u05e6\u05d0\u05d5\u05ea \u05e9\u05d5\u05d8\u05e4\u05d5\u05ea', special:'\u05d4\u05d5\u05e6\u05d0\u05d5\u05ea \u05d7\u05e8\u05d9\u05d2\u05d5\u05ea',
+             cashflow:'\u05ea\u05d6\u05e8\u05d9\u05dd \u05e0\u05d8\u05d5', dollar:'\u05d3\u05d5\u05dc\u05e8\u05d9', summary:'\u05e1\u05d9\u05db\u05d5\u05dd' };
 
-  // Sticky label cell style — 190px matches the controls panel
-  var STICKY = 'position:sticky;right:0;z-index:2;width:190px;min-width:190px;max-width:190px;';
+  // Sticky label cell base style — LEFT sticky (LTR table)
+  var STICKY_BASE = 'position:sticky;left:0;z-index:2;width:'+LABEL_W+'px;min-width:'+LABEL_W+'px;max-width:'+LABEL_W+'px;direction:rtl;text-align:right;border-right:1px solid #ebebeb;white-space:nowrap;';
 
   var table = document.getElementById('cf-table');
   if (!table) return;
 
-  // ── THEAD ──
+  // ── THEAD ──────────────────────────────────────────────────
   var h = '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">';
   // sticky label header
-  h += '<th style="'+STICKY+'background:#f8fafc;padding:8px 12px;text-align:right;font-size:11px;font-weight:700;color:#374151;border-left:1px solid #ebebeb;white-space:nowrap;">סעיף</th>';
-  // month headers (LTR order inside RTL table = right-to-left visually: newest last = leftmost)
+  h += '<th style="'+STICKY_BASE+'background:#f8fafc;padding:8px 12px;font-size:11px;font-weight:700;color:#374151;">\u05e1\u05e2\u05d9\u05e3</th>';
   months.forEach(function(m){
-    h += '<th style="padding:8px 6px;text-align:center;font-size:11px;font-weight:700;color:#374151;min-width:75px;white-space:nowrap;">'+m.label+'</th>';
-    h += '<th class="cf-note-col" style="display:none;padding:8px 4px;text-align:center;font-size:10px;font-weight:600;color:#9ca3af;min-width:90px;">הערות</th>';
+    h += '<th style="width:'+COL_W+'px;min-width:'+COL_W+'px;max-width:'+COL_W+'px;padding:8px 4px;text-align:center;font-size:11px;font-weight:700;color:#374151;white-space:nowrap;">'+m.label+'</th>';
+    h += '<th class="cf-note-col" style="display:none;padding:8px 4px;text-align:center;font-size:10px;font-weight:600;color:#9ca3af;min-width:90px;">\u05d4\u05e2\u05e8\u05d5\u05ea</th>';
   });
   h += '</tr></thead>';
 
-  // ── TBODY ──
+  // ── TBODY ──────────────────────────────────────────────────
   var b = '<tbody>';
   var lastBlock = null, rowIdx = 0;
 
   ROWS.forEach(function(row){
-    var bl  = row.block;
-    var col = BC[bl];
+    var bl    = row.block;
+    var col   = BC[bl];
     var isTot = row.total;
 
-    // Block separator row
+    // Block separator
     if (bl !== lastBlock) {
       b += '<tr style="background:#f1f5f9;border-top:2px solid #e2e8f0;">';
-      b += '<td style="'+STICKY+'background:#f1f5f9;padding:3px 12px;font-size:9px;font-weight:800;color:'+col+';letter-spacing:0.5px;border-right:3px solid '+col+';border-left:1px solid #ebebeb;">'+BL[bl].toUpperCase()+'</td>';
-      b += '<td colspan="999" style="background:#f1f5f9;"></td>';
+      b += '<td style="'+STICKY_BASE+'background:#f1f5f9;padding:3px 10px;font-size:9px;font-weight:800;color:'+col+';letter-spacing:0.4px;border-right:3px solid '+col+';">'+BL[bl].toUpperCase()+'</td>';
+      b += '<td colspan="999" style="background:#f1f5f9;padding:3px;"></td>';
       b += '</tr>';
       rowIdx = 0;
     }
     lastBlock = bl;
 
-    var bg = isTot ? '#f8fafc' : (rowIdx%2===0 ? '#fff' : '#f9fafb');
+    var bg  = isTot ? '#f8fafc' : (rowIdx%2===0 ? '#fff' : '#f9fafb');
     if (!isTot) rowIdx++;
-    var rowS = 'background:'+bg+';border-bottom:1px solid #f3f4f6;';
 
-    b += '<tr style="'+rowS+'">';
+    b += '<tr style="background:'+bg+';border-bottom:1px solid #f3f4f6;">';
 
     // Sticky label cell
-    var lPad = isTot ? 'padding:7px 12px;' : 'padding:6px 12px 6px 22px;';
-    var lSty  = STICKY+'background:'+bg+';'+lPad+'text-align:right;font-size:12px;white-space:nowrap;border-right:2px solid '+col+';border-left:1px solid #ebebeb;'
-               +(isTot?'font-weight:700;color:#111827;':'color:#4b5563;');
-    b += '<td style="'+lSty+'">'+row.label+'</td>';
+    var lPad = isTot ? 'padding:7px 12px;' : 'padding:6px 12px 6px 20px;';
+    b += '<td style="'+STICKY_BASE+'background:'+bg+';'+lPad+'font-size:12px;border-right:2px solid '+col+';'+(isTot?'font-weight:700;color:#111827;':'color:#4b5563;')+'">'+row.label+'</td>';
 
     // Data cells
     months.forEach(function(m){
-      var cell = m.rows[row.key] || {val:null,note:null};
+      var cell = m.rows[row.key] || {val:null, note:null};
       var val  = cell.val, note = cell.note;
       var vc   = '#374151';
       if (isTot) {
-        if (bl==='income') vc='#16a34a';
+        if      (bl==='income')   vc='#16a34a';
         else if (bl==='expenses') vc='#dc2626';
         else if (bl==='cashflow'||bl==='summary'||bl==='dollar')
           vc = val!==null&&val>0?'#16a34a':val!==null&&val<0?'#dc2626':'#9ca3af';
       } else {
-        if (bl==='income') vc='#16a34a';
-        else if (bl==='expenses'||bl==='special') vc='#dc2626';
-        else if (bl==='dollar'&&val!==null&&val<0) vc='#dc2626';
-        else if (bl==='dollar'&&val!==null&&val>0) vc='#7c3aed';
+        if      (bl==='income')                           vc='#16a34a';
+        else if (bl==='expenses'||bl==='special')         vc='#dc2626';
+        else if (bl==='dollar'&&val!==null&&val<0)        vc='#dc2626';
+        else if (bl==='dollar'&&val!==null&&val>0)        vc='#7c3aed';
       }
-      var cs = 'padding:7px 8px;text-align:center;font-size:12px;color:'+vc+';font-variant-numeric:tabular-nums;white-space:nowrap;'+(isTot?'font-weight:700;':'');
+      var cs = 'width:'+COL_W+'px;max-width:'+COL_W+'px;padding:7px 4px;text-align:center;font-size:12px;color:'+vc+';font-variant-numeric:tabular-nums;white-space:nowrap;'+(isTot?'font-weight:700;':'');
       b += '<td style="'+cs+'">'+(val!==null?val.toLocaleString():'—')+'</td>';
       b += '<td class="cf-note-col" style="display:none;padding:7px 4px;text-align:right;font-size:10px;color:#6b7280;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(note||'')+'">'+( note||'')+'</td>';
     });
