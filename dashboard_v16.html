@@ -24,6 +24,7 @@ body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; mi
 .stat-label  { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 3px; }
 .stat-value  { font-size: 19px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
 .stat-value.green { color: #4ade80; }
+.stat-value.red { color: #f87171; }
 .stat-value.red   { color: #f87171; }
 .stat-change { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 2px; }
 .divider { display: none; }
@@ -247,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.37</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.38</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -271,6 +272,26 @@ body{background:var(--bg,#f0f2f5);}
       <div class="stat-change" id="hdr-ret-range">ינו׳ 2025 – פבר׳ 26</div>
     </div>
   </div>
+  <!-- CASHFLOW HEADER STATS (shown only in cashflow tab) -->
+  <div id="cf-header-stats" class="header-stats" style="display:none;">
+    <div class="stat-item">
+      <div class="stat-label">תזרים מצטבר YTD</div>
+      <div class="stat-value green" id="cf-hdr-ytd">—</div>
+      <div class="stat-change">אלפי ש״ח</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-item">
+      <div class="stat-label">ממוצע חודשי</div>
+      <div class="stat-value" id="cf-hdr-avg">—</div>
+      <div class="stat-change">אלפי ש״ח</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-item">
+      <div class="stat-label">מגמה vs חודש קודם</div>
+      <div class="stat-value" id="cf-hdr-trend">—</div>
+      <div class="stat-change" id="cf-hdr-trend-sub">—</div>
+    </div>
+  </div>
   <div style="margin-top:12px; text-align:left; display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
     <div style="display:flex; align-items:center; gap:8px;">
       <label id="excel-upload-btn" style="cursor:pointer; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.4); border-radius:8px; padding:7px 14px; font-size:12px; font-family:Heebo,sans-serif; display:inline-block;">
@@ -288,7 +309,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 
 <!-- CARDS -->
-<div class="cards-row">
+<div class="cards-row" id="inv-cards-row">
   <div class="card-total active" id="card-all" onclick="selectView('all')">
     <div class="label">סה״כ</div>
     <div class="value" id="card-val-all">14,964</div>
@@ -325,9 +346,11 @@ body{background:var(--bg,#f0f2f5);}
     <div class="card-change pos" id="card-chg-meitav">▲ +13.2%</div>
   </div>
 </div>
+<!-- CASHFLOW CARDS ROW (shown only in cashflow tab) -->
+<div id="cf-cards-row" style="display:none; grid-template-columns: repeat(5,1fr); gap:10px; margin-bottom:10px; padding:0 0 0 0;" class="cards-row-cf"></div>
 
 <!-- CHART -->
-<div class="chart-section">
+<div class="chart-section" id="inv-chart-section">
   <div class="chart-header">
     <div>
       <div class="chart-title">הצטברות נכסים <span class="chart-subtitle" style="margin-top:0;">· באלפי ש״ח · לחץ על קטגוריה או קרן לסינון</span></div>
@@ -3697,8 +3720,67 @@ function cfParseWorkbook(wb) {
   return result;
 }
 
+function cfUpdateHeader() {
+  var today = new Date();
+  var currentYear = today.getFullYear();
+  // YTD: sum of net cashflow for current year up to last real month
+  var ytd = 0, count = 0, monthsThisYear = [];
+  var lastIdx = cfGetLastRealMonth();
+  for(var i=0;i<=lastIdx;i++){
+    var m=CF_DATA[i];
+    if(m.year===currentYear && m.rows.net_cashflow && m.rows.net_cashflow.val!==null){
+      ytd += m.rows.net_cashflow.val;
+      monthsThisYear.push(m.rows.net_cashflow.val);
+      count++;
+    }
+  }
+  var avg = count>0 ? Math.round(ytd/count) : 0;
+  var el = document.getElementById('cf-hdr-ytd');
+  if(el){ el.textContent=(ytd>=0?'+':'')+ytd; el.className='stat-value '+(ytd>=0?'green':'red'); }
+  var el2=document.getElementById('cf-hdr-avg');
+  if(el2){ el2.textContent=(avg>=0?'+':'')+avg; el2.className='stat-value '+(avg>=0?'green':'red'); }
+  // Trend: last vs prev month
+  var last = CF_DATA[lastIdx];
+  var prev = lastIdx>0 ? CF_DATA[lastIdx-1] : null;
+  var lastNet = last&&last.rows.net_cashflow?last.rows.net_cashflow.val:null;
+  var prevNet = prev&&prev.rows.net_cashflow?prev.rows.net_cashflow.val:null;
+  var trend = (lastNet!==null&&prevNet!==null) ? lastNet-prevNet : null;
+  var el3=document.getElementById('cf-hdr-trend');
+  var el3s=document.getElementById('cf-hdr-trend-sub');
+  if(el3&&trend!==null){ el3.textContent=(trend>=0?'+':'')+trend; el3.className='stat-value '+(trend>=0?'green':'red'); }
+  if(el3s&&prev){ el3s.textContent='vs '+prev.label; }
+}
+
+function cfUpdateCFCards() {
+  var lastIdx = cfGetLastRealMonth();
+  var m = CF_DATA[lastIdx];
+  var r = m.rows;
+  var cards = [
+    {label:'משכורות', val:r.salary&&r.salary.val||0, color:'#16a34a', icon:'💼'},
+    {label:'שכ"ד + הכנסות שונות', val:(r.rent_income&&r.rent_income.val||0)+(r.other_income&&r.other_income.val||0), color:'#0891b2', icon:'🏠'},
+    {label:'הוצאות שוטפות', val:(r.visa&&r.visa.val||0)+(r.cash_exp&&r.cash_exp.val||0), color:'#dc2626', icon:'💳'},
+    {label:'הוצאות חריגות', val:(r.loans&&r.loans.val||0)+(r.renovation&&r.renovation.val||0)+(r.yotam&&r.yotam.val||0)+(r.other_exp&&r.other_exp.val||0), color:'#b45309', icon:'🔧'},
+    {label:'תזרים דולרי נטו', val:r.total_usd&&r.total_usd.val||0, color:'#7c3aed', icon:'$'},
+  ];
+  var container = document.getElementById('cf-cards-row');
+  if(!container) return;
+  var html = '';
+  cards.forEach(function(card){
+    var isNeg = card.val < 0;
+    var col = (card.label==='הוצאות שוטפות'||card.label==='הוצאות חריגות') ? '#dc2626' : card.color;
+    html += '<div style="background:white;border-radius:12px;padding:12px 14px;border-right:4px solid '+col+';box-shadow:0 2px 8px rgba(0,0,0,0.06);">';
+    html += '<div style="font-size:10px;color:#6b7280;font-weight:600;margin-bottom:4px;">'+card.icon+' '+card.label+'</div>';
+    html += '<div style="font-size:20px;font-weight:800;color:'+col+';">'+card.val.toLocaleString()+'</div>';
+    html += '<div style="font-size:10px;color:#9ca3af;margin-top:1px;">'+m.label+' · אלפי ש״ח</div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
 function cfInit() {
   if (!document.getElementById('cf-kpi-row')) return;
+  cfUpdateHeader();
+  cfUpdateCFCards();
   cfRenderKPI();
   cfRenderChart();
   cfRenderTable();
@@ -3726,7 +3808,23 @@ function switchTab(id){
   if(panel)panel.classList.add('active');
   var t=document.getElementById('hdr-tab-title');
   if(t)t.textContent=TAB_NAMES[id]||id;
-  if(id==='cashflow' && !cfInited){ cfInited=true; setTimeout(cfInit,80); }
+
+  var isCF = (id === 'cashflow');
+  // Header stats swap
+  var invStats = document.querySelector('.header-stats:not(#cf-header-stats)');
+  if(invStats) invStats.style.display = isCF ? 'none' : '';
+  var cfStats = document.getElementById('cf-header-stats');
+  if(cfStats) cfStats.style.display = isCF ? 'flex' : 'none';
+  // Cards swap
+  var invCards = document.getElementById('inv-cards-row');
+  if(invCards) invCards.style.display = isCF ? 'none' : '';
+  var cfCards = document.getElementById('cf-cards-row');
+  if(cfCards) cfCards.style.display = isCF ? 'grid' : 'none';
+  // Chart hide/show
+  var invChart = document.getElementById('inv-chart-section');
+  if(invChart) invChart.style.display = isCF ? 'none' : '';
+
+  if(isCF && !cfInited){ cfInited=true; setTimeout(cfInit,80); }
 }
 </script>
 </body></html>
