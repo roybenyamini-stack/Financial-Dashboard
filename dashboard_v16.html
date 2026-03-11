@@ -248,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.43</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.44</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -2400,8 +2400,17 @@ function smartUploadRouter(input) {
         var newData = cfParseWorkbook(wb);
         if (newData.length > 0) {
           CF_DATA = newData;
-          if (typeof cfInit === 'function') cfInit();
+          // Always reset cfInited so the tab will re-render next time it is opened
+          cfInited = false;
+          // If cashflow tab is currently active – render immediately
+          var cfPanel = document.getElementById('tab-cashflow');
+          if (cfPanel && cfPanel.classList.contains('active')) {
+            cfInited = true;
+            cfInit();
+          }
           if(status) { status.textContent = '✅ עודכנו נתוני תזרים – ' + newData.length + ' חודשים'; setTimeout(function(){status.textContent='';},4000); }
+        } else {
+          if(status) { status.textContent = '⚠️ לא נמצאו נתוני תזרים בקובץ'; setTimeout(function(){status.textContent='';},4000); }
         }
       } else {
         loadExcelFileCore(wb);
@@ -2411,6 +2420,11 @@ function smartUploadRouter(input) {
     }
   };
   reader.readAsArrayBuffer(file);
+}
+
+// cfLoadExcel – called by the upload button inside the cashflow tab
+function cfLoadExcel(input) {
+  smartUploadRouter(input);
 }
 
 function loadExcelFile(input) {
