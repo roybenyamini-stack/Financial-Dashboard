@@ -11,7 +11,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Heebo', sans-serif; background: #f0f2f5; color: #1a1a2e; min-height: 100vh; }
 
-#top-fixed { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 100; background: #f0f2f5; width: 100%; box-sizing: border-box; }
+#top-fixed { padding: 14px 20px 0 20px; background: #f0f2f5; width: 100%; box-sizing: border-box; }
 #categories-scroll { padding: 0 20px 40px 20px; width: 100%; box-sizing: border-box; }
 
 /* HEADER */
@@ -230,6 +230,9 @@ body{background:var(--bg,#f0f2f5);}
   border-bottom: 2px solid rgba(255,255,255,0.08);
   overflow-x: auto;
   scrollbar-width: none;
+  position: sticky;
+  top: 0;
+  z-index: 99;
 }
 #tabs-nav::-webkit-scrollbar { display: none; }
 .tab-btn {
@@ -275,7 +278,7 @@ body{background:var(--bg,#f0f2f5);}
 <div id="top-fixed">
 <div class="header">
   <div class="header-title">
-    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.26</span></h1>
+    <h1>📊 תיק השקעות <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.27</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -405,7 +408,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 </div><!-- /header inner -->
 
-<!-- TABS NAV inside top-fixed -->
+</div><!-- /top-fixed -->
 <div id="tabs-nav">
   <button class="tab-btn"         onclick="switchTab('overview')"    id="tabn-overview">מבט על</button>
   <button class="tab-btn active"  onclick="switchTab('investments')" id="tabn-investments">השקעות</button>
@@ -414,7 +417,6 @@ body{background:var(--bg,#f0f2f5);}
   <button class="tab-btn"         onclick="switchTab('pension')"     id="tabn-pension">פנסיה וביטוחים</button>
   <button class="tab-btn"         onclick="switchTab('simulator')"   id="tabn-simulator">סימולטור פיננסי</button>
 </div>
-</div><!-- /top-fixed -->
 <!-- ===== TAB: השקעות (default, contains all existing content) ===== -->
 <div class="tab-panel active" id="tab-investments">
 
