@@ -248,7 +248,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.56</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.57</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3769,14 +3769,15 @@ function cfRenderChart() {
       responsive: true,
       maintainAspectRatio: false,
       animation: false,
-      layout: { padding:{ top:6, bottom:0, left:20, right:20 } },
+      layout: { padding:{ top:8, bottom:0, left:0, right:0 } },
       plugins: { legend:{display:false}, tooltip:{rtl:true, textDirection:'rtl'} },
       scales: {
         x: {
-          ticks: { font:{family:'Heebo',size:10}, maxRotation:0 },
+          display: false,
+          offset: true,
           grid:  { display:false },
-          barPercentage:    0.65,
-          categoryPercentage: 0.85
+          barPercentage:    0.7,
+          categoryPercentage: 1.0
         },
         y: { display:false }
       }
@@ -3895,7 +3896,17 @@ function cfRenderTable() {
   });
 
   b += '</tbody>';
-  table.innerHTML = h + b;
+
+  // ── TFOOT — שורת חודשים חוזרת בתחתית ──
+  var f = '<tfoot><tr style="background:#f8fafc;border-top:2px solid #e2e8f0;">';
+  months.forEach(function(m){
+    f += '<th style="width:'+COL_W+'px;min-width:'+COL_W+'px;max-width:'+COL_W+'px;padding:7px 4px;text-align:center;font-size:11px;font-weight:700;color:#374151;white-space:nowrap;">'+m.label+'</th>';
+    f += '<th class="cf-note-col" style="display:none;"></th>';
+  });
+  f += '<th style="position:sticky;right:0;z-index:2;background:#f8fafc;width:'+LABEL_W+'px;min-width:'+LABEL_W+'px;padding:7px 12px;font-size:11px;font-weight:700;color:#374151;direction:rtl;text-align:right;border-right:1px solid #ebebeb;">סעיף</th>';
+  f += '</tr></tfoot>';
+
+  table.innerHTML = h + b + f;
 }
 
 function cfShowNoData() {
