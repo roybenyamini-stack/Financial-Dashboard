@@ -247,7 +247,7 @@ body{background:var(--bg,#f0f2f5);}
 </div>
 <div class="header">
   <div class="header-title">
-    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.35</span></h1>
+    <h1><span id="hdr-tab-title">השקעות</span> <span style="font-size:11px;font-weight:700;color:#ef4444;margin-right:8px;font-family:monospace;">v16.36</span></h1>
     <p id="hdr-subtitle" style="color:white; font-weight:700; font-size:13px;">מציג: פבר׳ 26</p>
   </div>
   <div class="header-stats">
@@ -3265,13 +3265,13 @@ var TV_META = {
 };
 
 var TV_SECTIONS = [
-  {label:'מזומן',         color:'#b2ebf8', bg:'#f0fbff', keys:['מזומןשקלי','מזומןדולרי','מיטבשקלית']},
-  {label:'קרנות השתלמות', color:'#fca5a5', bg:'#fff5f5', keys:['אשקהש39905556','אשקהש40035706','אשקהש6730513','מורקהש499293','מיטבקהש912-443286']},
-  {label:'קופות גמל',     color:'#fcd34d', bg:'#fffdf5', keys:['6730511אשגמל','מורגמל1375900','אשגמל39774495','6730512אשגמל','6899425אשגמל','הפניקסגמל926-084678']},
-  {label:'גמל להשקעה',   color:'#6ee7b7', bg:'#f0fdf4', keys:['אשגמללהשקעה2016-1738','מורגמללהשקעה']},
-  {label:'הראל',          color:'#fde68a', bg:'#fefce8', keys:['הראלמגוון-פוליסתחיסכ','הראלמניות106863031','הראלכללי109062745']},
-  {label:'מיטב',          color:'#c4b5fd', bg:'#f8f7ff', keys:['מיטבדשניהולקרנות1693','מיטבדשטרייד']},
-  {label:'דירה',          color:'#d6d3d1', bg:'#fafaf9', keys:['דירה'], noSubtotal:true},
+  {label:'מזומן',         color:'#b2ebf8', bg:'#f0fbff', catId:'mezuman',      keys:['מזומןשקלי','מזומןדולרי','מיטבשקלית']},
+  {label:'קרנות השתלמות', color:'#fca5a5', bg:'#fff5f5', catId:'hishtalmut',   keys:['אשקהש39905556','אשקהש40035706','אשקהש6730513','מורקהש499293','מיטבקהש912-443286']},
+  {label:'קופות גמל',     color:'#fcd34d', bg:'#fffdf5', catId:'gemel',        keys:['6730511אשגמל','מורגמל1375900','אשגמל39774495','6730512אשגמל','6899425אשגמל','הפניקסגמל926-084678']},
+  {label:'גמל להשקעה',   color:'#6ee7b7', bg:'#f0fdf4', catId:'gemel_invest',  keys:['אשגמללהשקעה2016-1738','מורגמללהשקעה']},
+  {label:'הראל',          color:'#fde68a', bg:'#fefce8', catId:'harel',        keys:['הראלמגוון-פוליסתחיסכ','הראלמניות106863031','הראלכללי109062745']},
+  {label:'מיטב',          color:'#c4b5fd', bg:'#f8f7ff', catId:'meitav',       keys:['מיטבדשניהולקרנות1693','מיטבדשטרייד']},
+  {label:'דירה',          color:'#d6d3d1', bg:'#fafaf9', catId:null,           keys:['דירה'], noSubtotal:true},
 ];
 
 function openTableView() {
